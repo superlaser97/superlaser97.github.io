@@ -8,12 +8,22 @@
 
         <!-- Textbox for Name, Description, Image, Price, Quantity -->
         <p>Input your details below</p>
-        <input type="text" name="name" placeholder="Name">
-        <input type="text" name="description" placeholder="Description">
-        <input type="text" name="image" placeholder="Image">
-        <input type="text" name="price" placeholder="Price">
-        <input type="text" name="quantity" placeholder="Quantity">
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="description" placeholder="Description">
+        <input type="text" id="image" placeholder="Image">
+        <input type="text" id="price" placeholder="Price">
+        <input type="text" id="quantity" placeholder="Quantity">
         <input type="submit" onclick="UpdateText()" name="submit" value="Submit">
+
+        <!-- Table for displaying all items -->
+        <table id="table">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
 
         <br><br>
         <label id="inputtedPerson">Nothing's here</label>
