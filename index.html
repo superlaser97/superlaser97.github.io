@@ -3,29 +3,109 @@
     <head>
         <link rel="stylesheet" href="styles.css">
     </head>
-    <body>
+    <body onload="OnLoad()">
+        <script src="jquery-3.6.0.js"></script>
         <script src="scripts.js"></script>
 
-        <!-- Textbox for Name, Description, Image, Price, Quantity -->
-        <p>Input your details below</p>
-        <input type="text" id="name" placeholder="Name">
-        <input type="text" id="description" placeholder="Description">
-        <input type="text" id="image" placeholder="Image">
-        <input type="text" id="price" placeholder="Price">
-        <input type="text" id="quantity" placeholder="Quantity">
-        <input type="submit" onclick="UpdateText()" name="submit" value="Submit">
+        <!-- Textbox to paste responses data -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Paste the responses here</h1>
+                    <textarea id="rawCBResponses-textarea"></textarea>
+                </div>
+            </div>
+        </div>
 
-        <!-- Table for displaying all items -->
-        <table id="table">
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Price</th>
-                <th>Quantity</th>
-            </tr>
+        <!-- Button to load csv file -->
+        <button id="loadRawCBResponses-Btn" onclick="OnLoadRawCBResponsesBtn_Click()">Load Raw CB Responses</button>
 
-        <br><br>
-        <label id="inputtedPerson">Nothing's here</label>
+        <br>
+        <br>
+
+        <!-- Textbox to paste player details data -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Paste the player details here</h1>
+                    <textarea id="rawPlayerDetails-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button to load csv file -->
+        <button id="loadRawPlayerDetails-Btn" onclick="OnLoadRawPlayerDetailsBtn_Click()">Load Raw Player Details</button>
+
+        <br>
+        <br>
+
+        <h1 onclick="ToggleTableVisibility('rawCBResponses-table')">Raw CB Responses</h1>
+
+        <div style="display: none;">
+            <!-- table that lists the responses -->
+            <table id="rawCBResponses-table">
+                <!-- timestamp, in game name, Wed1, Wed2, Thu1, Thu2, Sat1, Sat2, Sun1, Sun2 -->
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>In Game Name</th>
+                        <th>Wed1</th>
+                        <th>Wed2</th>
+                        <th>Thu1</th>
+                        <th>Thu2</th>
+                        <th>Sat1</th>
+                        <th>Sat2</th>
+                        <th>Sun1</th>
+                        <th>Sun2</th>
+                        <th>Max number of days</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <h1 onclick="ToggleTableVisibility('playerDetails-table')">Raw Player Details</h1>
+
+        <div style="display: none;">
+            <!-- table that lists the player details -->
+            <table id="playerDetails-table">
+                <!-- IGN, Clan, Type, Remarks -->
+                <thead>
+                    <tr>
+                        <th>IGN</th>
+                        <th>Clan</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <br>
+        <br>
+
+        <button id="generatePlayersOnBoard-Btn" onclick="OnGeneratePlayersOnBoardBtn_Click()">Generate Raw Player Details</button>
+        <h1 onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board</h1>
+        
+        <div style="display: none;">
+            <!-- table that lists the players on board -->
+            <table id="playersOnBoard-table">
+                <!-- IGN, MaxNumSlots, Clan, Type -->
+                <thead>
+                    <tr>
+                        <th>IGN</th>
+                        <th>MaxNumSlots</th>
+                        <th>Clan</th>
+                        <th>Type</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        
     </body>
 </html> 
