@@ -19,11 +19,19 @@ table
   width: 100%;
   color: white;
   text-align:center;
+  padding: 20px;
 }
 
 table td
 {
   background-color: #5b5b5b;
+}
+
+table th
+{
+  background-color: white;
+  color: black;
+  height: 30px;
 }
 
 textarea
@@ -40,4 +48,9 @@ button
   height: 40px;
   margin-left: 20px;
   margin-right: 20px;
+}
+
+table td.redColoredTableRow
+{
+  background-color: #744646;
 }
