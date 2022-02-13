@@ -82,10 +82,10 @@ class RawCBResponse
 }
 
 // struct that stores a single PlayerOnBoard
-// IGN, MaxNumSlots, Clan, Type, EnterBattle, Remarks
+// IGN, MaxNumSlots, Clan, Type, EnterBattle, Remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B
 class PlayerOnBoard
 {
-    constructor(IGN, MaxNumSlots, Clan, Type, EnterBattle, Remarks)
+    constructor(IGN, MaxNumSlots, Clan, Type, EnterBattle, Remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B)
     {
         this.IGN = IGN;
         this.MaxNumSlots = MaxNumSlots;
@@ -93,6 +93,15 @@ class PlayerOnBoard
         this.Type = Type;
         this.EnterBattle = EnterBattle;
         this.Remarks = Remarks;
+
+        this.N1A = N1A;
+        this.N1B = N1B;
+        this.N2A = N2A;
+        this.N2B = N2B;
+        this.N3A = N3A;
+        this.N3B = N3B;
+        this.N4A = N4A;
+        this.N4B = N4B;
     }
 }
 
@@ -273,6 +282,7 @@ function UpdateRawPlayerDetailsTable()
     }
 }
 
+// Function to update the PlayersOnboard table
 function UpdatePlayersOnBoardTable()
 {
     for (var i = 0; i < PlayersOnBoard.length; i++)
@@ -301,9 +311,56 @@ function UpdatePlayersOnBoardTable()
                 PlayersOnBoard[i].Clan,
                 PlayersOnBoard[i].Type,
                 PlayersOnBoard[i].EnterBattle,
-                PlayersOnBoard[i].Remarks
+                PlayersOnBoard[i].Remarks,
+                PlayersOnBoard[i].N1A,
+                PlayersOnBoard[i].N1B,
+                PlayersOnBoard[i].N2A,
+                PlayersOnBoard[i].N2B,
+                PlayersOnBoard[i].N3A,
+                PlayersOnBoard[i].N3B,
+                PlayersOnBoard[i].N4A,
+                PlayersOnBoard[i].N4B,
             ],
             cellClass);
+    }
+}
+
+// Function to update the RawCBScheduleResponses table
+function UpdateRawCBResponsesTable()
+{
+    // Replace all occurance of "Available" with "X"
+    for (var i = 0; i < RawCBResponses.length; i++)
+    {
+        var RawCBResponse = RawCBResponses[i];
+        RawCBResponse.Day1A = RawCBResponse.Day1A.replace("Available", "X");
+        RawCBResponse.Day1B = RawCBResponse.Day1B.replace("Available", "X");
+        RawCBResponse.Day2A = RawCBResponse.Day2A.replace("Available", "X");
+        RawCBResponse.Day2B = RawCBResponse.Day2B.replace("Available", "X");
+        RawCBResponse.Day3A = RawCBResponse.Day3A.replace("Available", "X");
+        RawCBResponse.Day3B = RawCBResponse.Day3B.replace("Available", "X");
+        RawCBResponse.Day4A = RawCBResponse.Day4A.replace("Available", "X");
+        RawCBResponse.Day4B = RawCBResponse.Day4B.replace("Available", "X");
+    }
+
+    // Update the RawCBScheduleResponses table
+    for (var i = 0; i < RawCBResponses.length; i++)
+    {
+        var RawCBResponse = RawCBResponses[i];
+        AddTableRow(
+            "rawCBResponses-table", 
+            [
+                RawCBResponse.Timestamp, 
+                RawCBResponse.IGN, 
+                RawCBResponse.Day1A, 
+                RawCBResponse.Day1B, 
+                RawCBResponse.Day2A, 
+                RawCBResponse.Day2B, 
+                RawCBResponse.Day3A, 
+                RawCBResponse.Day3B, 
+                RawCBResponse.Day4A, 
+                RawCBResponse.Day4B,
+                RawCBResponse.MaxNumSlots
+            ]);
     }
 }
 
@@ -640,45 +697,6 @@ function SetRawCBResponses(csv)
     }
 }
 
-// Function to update the RawCBScheduleResponses table
-function UpdateRawCBResponsesTable()
-{
-    // Replace all occurance of "Available" with "X"
-    for (var i = 0; i < RawCBResponses.length; i++)
-    {
-        var RawCBResponse = RawCBResponses[i];
-        RawCBResponse.Day1A = RawCBResponse.Day1A.replace("Available", "X");
-        RawCBResponse.Day1B = RawCBResponse.Day1B.replace("Available", "X");
-        RawCBResponse.Day2A = RawCBResponse.Day2A.replace("Available", "X");
-        RawCBResponse.Day2B = RawCBResponse.Day2B.replace("Available", "X");
-        RawCBResponse.Day3A = RawCBResponse.Day3A.replace("Available", "X");
-        RawCBResponse.Day3B = RawCBResponse.Day3B.replace("Available", "X");
-        RawCBResponse.Day4A = RawCBResponse.Day4A.replace("Available", "X");
-        RawCBResponse.Day4B = RawCBResponse.Day4B.replace("Available", "X");
-    }
-
-    // Update the RawCBScheduleResponses table
-    for (var i = 0; i < RawCBResponses.length; i++)
-    {
-        var RawCBResponse = RawCBResponses[i];
-        AddTableRow(
-            "rawCBResponses-table", 
-            [
-                RawCBResponse.Timestamp, 
-                RawCBResponse.IGN, 
-                RawCBResponse.Day1A, 
-                RawCBResponse.Day1B, 
-                RawCBResponse.Day2A, 
-                RawCBResponse.Day2B, 
-                RawCBResponse.Day3A, 
-                RawCBResponse.Day3B, 
-                RawCBResponse.Day4A, 
-                RawCBResponse.Day4B,
-                RawCBResponse.MaxNumSlots
-            ]);
-    }
-}
-
 // Replace the PlayerDetails array with the a string of csv
 function SetRawPlayerDetails(csv)
 {
@@ -725,8 +743,16 @@ function GeneratePlayersOnboard()
         var clan = "";
         var type = "";
         var enterBattle = "";
-
         var remarks = "";
+
+        var N1A = "";
+        var N1B = "";
+        var N2A = "";
+        var N2B = "";
+        var N3A = "";
+        var N3B = "";
+        var N4A = "";
+        var N4B = "";
 
         // Get the player's clan and type from the rawplayerdetails array
         for (var j = 0; j < RawPlayerDetails.length; j++)
@@ -746,6 +772,15 @@ function GeneratePlayersOnboard()
             if (RawCBResponse.IGN == playerIGNs[i])
             {
                 maxNumSlots = RawCBResponse.MaxNumSlots;
+
+                N1A = RawCBResponse.Day1A;
+                N1B = RawCBResponse.Day1B;
+                N2A = RawCBResponse.Day2A;
+                N2B = RawCBResponse.Day2B;
+                N3A = RawCBResponse.Day3A;
+                N3B = RawCBResponse.Day3B;
+                N4A = RawCBResponse.Day4A;
+                N4B = RawCBResponse.Day4B;
             }
         }
 
@@ -768,7 +803,7 @@ function GeneratePlayersOnboard()
         }
 
         // Add the player to the playersOnBoard array
-        PlayersOnBoard.push(new PlayerOnBoard(playerIGNs[i], maxNumSlots, clan, type, enterBattle, remarks));
+        PlayersOnBoard.push(new PlayerOnBoard(playerIGNs[i], maxNumSlots, clan, type, enterBattle, remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B));
     }
 }
 
