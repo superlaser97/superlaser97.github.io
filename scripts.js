@@ -203,7 +203,10 @@ var WC_PlayersOnBoard = [];
 // WeekRosterData working copy
 var WC_WeekRosterData = "";
 
-
+// Randomize Seed
+var RandomizeSeed = 1296106;
+// GetPlayersAvailable call counter
+var GetPlayersAvailableCallCounter = 0;
 
 
 
@@ -541,9 +544,11 @@ function OnLoad()
 // Function to return a list of players IGN that are available for the given slot
 // Use the WC_PlayersOnboard array to determine which players are available
 // Takes in the slot (e.g. "N1A")
-// Returns an array of players IGN
+// Returns an array of players IGN with their clan tag
 function GetPlayersAvailable(slot)
 {
+    GetPlayersAvailableCallCounter++;
+
     // Initialize the playersAvailable array
     var playersAvailable = [];
 
@@ -584,9 +589,12 @@ function GetPlayersAvailable(slot)
         if(available)
         {
             // Add the player IGN to the playersAvailable array
-            playersAvailable.push(WC_PlayersOnBoard[i].IGN);
+            playersAvailable.push("[" + WC_PlayersOnBoard[i].Clan + "] " + WC_PlayersOnBoard[i].IGN);
         }
     }
+
+    // randomize the playersAvailable array with randomizeArray()
+    playersAvailable = ReorderArray(playersAvailable, RandomizeSeed + GetPlayersAvailableCallCounter );
 
     // Return the playersAvailable array
     return playersAvailable;
@@ -911,5 +919,30 @@ function AddValuesToWeekRosterData()
         WC_NightRosterData_Blue_4B);
 }
 
-
-
+// Function to randomize an array order and return it
+// Parametmer to a seed string to randomize the array in a consistent way
+function ReorderArray(array, seed) 
+{
+    var m = array.length, t, i;
+  
+    // While there remain elements to shuffle…
+    while (m) {
+  
+      // Pick a remaining element…
+      i = Math.floor(random(seed) * m--);
+  
+      // And swap it with the current element.
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+      ++seed;
+    }
+  
+    return array;
+  }
+  
+  function random(seed) 
+  {
+    var x = Math.sin(seed++) * 10000; 
+    return x - Math.floor(x);
+  }
