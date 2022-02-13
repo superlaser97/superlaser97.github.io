@@ -59,3 +59,24 @@ table td.darkColoredTableRow
 {
   background-color: purple;
 }
+
+select.tableSelect
+{
+  text-align: left;
+  padding: 0%;
+  margin: 0%;
+  background-color: #5b5b5b;
+  color: white;
+  border-color: transparent;
+}
+
+select.tableSelect:focus
+{
+  outline: none;
+}
+
+select.tableSelect option
+{
+  background-color: white;
+  color: black;
+}
