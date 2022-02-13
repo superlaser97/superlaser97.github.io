@@ -52,5 +52,10 @@ button
 
 table td.redColoredTableRow
 {
-  background-color: #744646;
+  background-color: red;
+}
+
+table td.darkColoredTableRow
+{
+  background-color: purple;
 }

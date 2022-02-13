@@ -143,8 +143,14 @@ class NightRosterData
     }
 }
 
-
-
+// Static class that contains player remarks
+// [DOESN'T EXISTS], [NOT PARTICIPATING], [DUPLICATE]
+class PlayerRemarks
+{
+    static get DOESN_T_EXISTS() { return "DOESN'T EXISTS"; }
+    static get NOT_PARTICIPATING() { return "NOT PARTICIPATING"; }
+    static get DUPLICATE() { return "DUPLICATE"; }
+}
 
 
 
@@ -172,28 +178,7 @@ var WC_WeekRosterData_Red = "";
 
 
 
-
-// OnLoad
-function OnLoad()
-{
-    // ************ TESTING PURPOSES ONLY ************
-    // Update textarea rawCBResponses-textarea with the rawCBResponse_CSV
-    document.getElementById("rawCBResponses-textarea").value = RawCBResponses_CSV;
-
-    // Update textarea rawPlayerDetails-textarea with the rawPlayerDetails_CSV
-    document.getElementById("rawPlayerDetails-textarea").value = RawPlayerDetail_CSV;
-
-    // Set the RawCBScheduleResponses array
-    SetRawCBResponses(RawCBResponses_CSV);
-    // Update the RawCBScheduleResponses table
-    UpdateRawCBResponsesTable();
-
-    // Set the PlayerDetails array
-    SetRawPlayerDetails(RawPlayerDetail_CSV);
-    // Update the PlayerDetails array
-    UpdateRawPlayerDetailsTable();
-    //*************************************************
-}
+//******************* UI FUNCTIONS *********************
 
 // On loadRawCBResponses button click
 function OnLoadRawCBResponsesBtn_Click()
@@ -219,104 +204,32 @@ function OnLoadRawPlayerDetailsBtn_Click()
     UpdateRawPlayerDetailsTable();
 }
 
-// Replace the RawCBScheduleResponses array with the a string of csv
-// Update the RawCBScheduleResponses table
-function SetRawCBResponses(csv)
+// On generatePlayersOnBoard button click
+function OnGeneratePlayersOnBoardBtn_Click()
 {
-    RawCBResponses = [];
-    var lines = csv.split("\n");
-    for (var i = 1; i < lines.length; i++)
-    {
-        var line = lines[i];
-        var values = line.split("\t");
-        var timestamp = values[0];
-        var ign = values[1];
-        var day1a = values[2];
-        var day1b = values[3];
-        var day2a = values[4];
-        var day2b = values[5];
-        var day3a = values[6];
-        var day3b = values[7];
-        var day4a = values[8];
-        var day4b = values[9];
-        var maxNumSlots = values[10];
-        RawCBResponses.push(new RawCBResponse(timestamp, ign, day1a, day1b, day2a, day2b, day3a, day3b, day4a, day4b, maxNumSlots));
-    }
+    GeneratePlayersOnboard();
+    UpdatePlayersOnBoardTable();
 }
 
-// Function to update the RawCBScheduleResponses table
-function UpdateRawCBResponsesTable()
-{
-    // Replace all occurance of "Available" with "X"
-    for (var i = 0; i < RawCBResponses.length; i++)
-    {
-        var RawCBResponse = RawCBResponses[i];
-        RawCBResponse.Day1A = RawCBResponse.Day1A.replace("Available", "X");
-        RawCBResponse.Day1B = RawCBResponse.Day1B.replace("Available", "X");
-        RawCBResponse.Day2A = RawCBResponse.Day2A.replace("Available", "X");
-        RawCBResponse.Day2B = RawCBResponse.Day2B.replace("Available", "X");
-        RawCBResponse.Day3A = RawCBResponse.Day3A.replace("Available", "X");
-        RawCBResponse.Day3B = RawCBResponse.Day3B.replace("Available", "X");
-        RawCBResponse.Day4A = RawCBResponse.Day4A.replace("Available", "X");
-        RawCBResponse.Day4B = RawCBResponse.Day4B.replace("Available", "X");
-    }
+//******************************************************
 
-    // Update the RawCBScheduleResponses table
-    for (var i = 0; i < RawCBResponses.length; i++)
-    {
-        var RawCBResponse = RawCBResponses[i];
-        AddTableRow(
-            "rawCBResponses-table", 
-            [
-                RawCBResponse.Timestamp, 
-                RawCBResponse.IGN, 
-                RawCBResponse.Day1A, 
-                RawCBResponse.Day1B, 
-                RawCBResponse.Day2A, 
-                RawCBResponse.Day2B, 
-                RawCBResponse.Day3A, 
-                RawCBResponse.Day3B, 
-                RawCBResponse.Day4A, 
-                RawCBResponse.Day4B,
-                RawCBResponse.MaxNumSlots
-            ]);
-    }
-}
 
-// Replace the PlayerDetails array with the a string of csv
-function SetRawPlayerDetails(csv)
-{
-    RawPlayerDetails = [];
-    var lines = csv.split("\n");
-    for (var i = 1; i < lines.length; i++)
-    {
-        var line = lines[i];
-        var values = line.split("\t");
-        var ign = values[0];
-        var clan = values[1];
-        var type = values[2];
-        var team = values[3];
-        var enterBattle = values[4];
-        RawPlayerDetails.push(new RawPlayerDetail(ign, clan, type, team , enterBattle));
-    }
-}
 
-// Function to update the PlayerDetails table
-function UpdateRawPlayerDetailsTable()
+
+
+//******************* UPDATE UI FUNCTIONS **************
+
+// Function that takes in table id and toggle it's visiblity
+function ToggleTableVisibility(tableID)
 {
-    // Update the PlayerDetails table
-    for (var i = 0; i < RawPlayerDetails.length; i++)
+    var table = document.getElementById(tableID).parentNode;
+    if (table.style.display == "none")
     {
-        var PlayerDetail = RawPlayerDetails[i];
-        AddTableRow(
-            "playerDetails-table", 
-            [
-                PlayerDetail.IGN, 
-                PlayerDetail.Clan, 
-                PlayerDetail.Type,
-                PlayerDetail.Team,
-                PlayerDetail.EnterBattle
-            ]);
+        table.style.display = "block";
+    }
+    else
+    {
+        table.style.display = "none";
     }
 }
 
@@ -341,97 +254,40 @@ function AddTableRow(tableID, values, newclass = "")
     }
 }
 
-// On generatePlayersOnBoard button click
-function OnGeneratePlayersOnBoardBtn_Click()
+// Function to update the PlayerDetails table
+function UpdateRawPlayerDetailsTable()
 {
-    // Get a list of player IGNs from the rawcbresponses array
-    var playerIGNs = [];
-    for (var i = 0; i < RawCBResponses.length; i++)
+    // Update the PlayerDetails table
+    for (var i = 0; i < RawPlayerDetails.length; i++)
     {
-        var RawCBResponse = RawCBResponses[i];
-        playerIGNs.push(RawCBResponse.IGN);
+        var PlayerDetail = RawPlayerDetails[i];
+        AddTableRow(
+            "playerDetails-table", 
+            [
+                PlayerDetail.IGN, 
+                PlayerDetail.Clan, 
+                PlayerDetail.Type,
+                PlayerDetail.Team,
+                PlayerDetail.EnterBattle
+            ]);
     }
+}
 
-    // Get a list of duplicates from the playerIGNs array
-    var playerIGNDuplicates = [];
-    for (var i = 0; i < playerIGNs.length; i++)
+function UpdatePlayersOnBoardTable()
+{
+    for (var i = 0; i < PlayersOnBoard.length; i++)
     {
-        var playerIGN = playerIGNs[i];
-        if (playerIGNs.indexOf(playerIGN) != i)
-        {
-            playerIGNDuplicates.push(playerIGN);
-        }
-    }
-
-    // Foreach playerIGN in the playerIGN array
-    for (var i = 0; i < playerIGNs.length; i++)
-    {
-        var maxNumSlots = 0;
-        var clan = "";
-        var type = "";
-        var enterBattle = "";
-
-        var playerDoesNotExists = false;
-        var playerIsNotParticipating = false;
-        var playerHasDuplicate = false;
-
-        var remarks = "";
-        var playerDoesNotExistsRemarks = " [DOESN'T EXIST] ";
-        var playerIsNotParticipatingRemarks = " [NOT PARTICIPATING] ";
-        var playerHasDuplicateRemarks = " [DUPLICATE] ";
-
-        // Get the player's clan and type from the rawplayerdetails array
-        for (var j = 0; j < RawPlayerDetails.length; j++)
-        {
-            var RawPlayerDetail = RawPlayerDetails[j];
-            if (RawPlayerDetail.IGN == playerIGNs[i])
-            {
-                clan = RawPlayerDetail.Clan;
-                type = RawPlayerDetail.Type;
-                enterBattle = RawPlayerDetail.EnterBattle;
-            }
-        }
-        // Get the player's maxNumSlots from the rawcbresponses array
-        for (var j = 0; j < RawCBResponses.length; j++)
-        {
-            var RawCBResponse = RawCBResponses[j];
-            if (RawCBResponse.IGN == playerIGNs[i])
-            {
-                maxNumSlots = RawCBResponse.MaxNumSlots;
-            }
-        }
-
-        // if clan and type are empty
-        if (clan == "" && type == "")
-        {
-            playerDoesNotExists = true;
-            remarks += playerDoesNotExistsRemarks;
-        }
-
-        // if maxnumslots is 0
-        if (maxNumSlots == 0)
-        {
-            playerIsNotParticipating = true;
-            remarks += playerIsNotParticipatingRemarks;
-        }
-
-        // if playerIGN is in the playerIGNDuplicates array
-        if (playerIGNDuplicates.indexOf(playerIGNs[i]) != -1)
-        {
-            playerHasDuplicate = true;
-            remarks += playerHasDuplicateRemarks;
-        }
-
-        // Add the player to the playersOnBoard array
-        PlayersOnBoard.push(new PlayerOnBoard(playerIGNs[i], maxNumSlots, clan, type, enterBattle, remarks));
-
         var cellClass = ""
         var redCellClass = "redColoredTableRow";
+        var darkCellClass = "darkColoredTableRow";
 
-        // If the player does not exist or
-        // if the player is not participating or
-        // if the player has a duplicate
-        if (playerDoesNotExists || playerIsNotParticipating || playerHasDuplicate)
+        // If the playeronboard remarks contains [NOT PARTICIPATING]
+        if (PlayersOnBoard[i].Remarks.includes(PlayerRemarks.NOT_PARTICIPATING))
+        {
+            cellClass = darkCellClass;
+        }
+        // Else if the playeronboard remarks contains [DUPLICATE] or [DOESN'T EXIST]
+        else if (PlayersOnBoard[i].Remarks.includes(PlayerRemarks.DUPLICATE) || PlayersOnBoard[i].Remarks.includes(PlayerRemarks.DOESN_T_EXISTS))
         {
             cellClass = redCellClass;
         }
@@ -440,28 +296,14 @@ function OnGeneratePlayersOnBoardBtn_Click()
         AddTableRow(
             "playersOnBoard-table",
             [
-                playerIGNs[i],
-                maxNumSlots,
-                clan,
-                type,
-                enterBattle,
-                remarks
+                PlayersOnBoard[i].IGN,
+                PlayersOnBoard[i].MaxNumSlots,
+                PlayersOnBoard[i].Clan,
+                PlayersOnBoard[i].Type,
+                PlayersOnBoard[i].EnterBattle,
+                PlayersOnBoard[i].Remarks
             ],
             cellClass);
-    }
-}
-
-// Function that takes in table id and toggle it's visiblity
-function ToggleTableVisibility(tableID)
-{
-    var table = document.getElementById(tableID).parentNode;
-    if (table.style.display == "none")
-    {
-        table.style.display = "block";
-    }
-    else
-    {
-        table.style.display = "none";
     }
 }
 
@@ -732,3 +574,288 @@ function AddDummyValuesToWeekRosterData()
         WC_NightRosterData_4A,
         WC_NightRosterData_4B);
 }
+
+//******************************************************
+
+
+
+
+
+
+
+
+// OnLoad
+function OnLoad()
+{
+    // ************ TESTING PURPOSES ONLY ************
+    // TO AUTO GENERATE THE WEEK ROSTER DATA FROM DUMMY DATA
+    // DO NOT USE THIS IN PRODUCTION
+    // ***********************************************
+
+    // Update textarea rawCBResponses-textarea with the rawCBResponse_CSV
+    document.getElementById("rawCBResponses-textarea").value = RawCBResponses_CSV;
+
+    // Update textarea rawPlayerDetails-textarea with the rawPlayerDetails_CSV
+    document.getElementById("rawPlayerDetails-textarea").value = RawPlayerDetail_CSV;
+
+    // Set the RawCBScheduleResponses array
+    SetRawCBResponses(RawCBResponses_CSV);
+    // Update the RawCBScheduleResponses table
+    UpdateRawCBResponsesTable();
+
+    // Set the PlayerDetails array
+    SetRawPlayerDetails(RawPlayerDetail_CSV);
+    // Update the PlayerDetails array
+    UpdateRawPlayerDetailsTable();
+    
+    GeneratePlayersOnboard();
+    UpdatePlayersOnBoardTable();
+
+    GenerateWC_PlayersOnboard();
+    //*************************************************
+}
+
+// Replace the RawCBScheduleResponses array with the a string of csv
+// Update the RawCBScheduleResponses table
+function SetRawCBResponses(csv)
+{
+    RawCBResponses = [];
+    var lines = csv.split("\n");
+    for (var i = 0; i < lines.length; i++)
+    {
+        var line = lines[i];
+        var values = line.split("\t");
+        var timestamp = values[0];
+        var ign = values[1];
+        var day1a = values[2];
+        var day1b = values[3];
+        var day2a = values[4];
+        var day2b = values[5];
+        var day3a = values[6];
+        var day3b = values[7];
+        var day4a = values[8];
+        var day4b = values[9];
+        var maxNumSlots = values[10];
+        RawCBResponses.push(new RawCBResponse(timestamp, ign, day1a, day1b, day2a, day2b, day3a, day3b, day4a, day4b, maxNumSlots));
+    }
+}
+
+// Function to update the RawCBScheduleResponses table
+function UpdateRawCBResponsesTable()
+{
+    // Replace all occurance of "Available" with "X"
+    for (var i = 0; i < RawCBResponses.length; i++)
+    {
+        var RawCBResponse = RawCBResponses[i];
+        RawCBResponse.Day1A = RawCBResponse.Day1A.replace("Available", "X");
+        RawCBResponse.Day1B = RawCBResponse.Day1B.replace("Available", "X");
+        RawCBResponse.Day2A = RawCBResponse.Day2A.replace("Available", "X");
+        RawCBResponse.Day2B = RawCBResponse.Day2B.replace("Available", "X");
+        RawCBResponse.Day3A = RawCBResponse.Day3A.replace("Available", "X");
+        RawCBResponse.Day3B = RawCBResponse.Day3B.replace("Available", "X");
+        RawCBResponse.Day4A = RawCBResponse.Day4A.replace("Available", "X");
+        RawCBResponse.Day4B = RawCBResponse.Day4B.replace("Available", "X");
+    }
+
+    // Update the RawCBScheduleResponses table
+    for (var i = 0; i < RawCBResponses.length; i++)
+    {
+        var RawCBResponse = RawCBResponses[i];
+        AddTableRow(
+            "rawCBResponses-table", 
+            [
+                RawCBResponse.Timestamp, 
+                RawCBResponse.IGN, 
+                RawCBResponse.Day1A, 
+                RawCBResponse.Day1B, 
+                RawCBResponse.Day2A, 
+                RawCBResponse.Day2B, 
+                RawCBResponse.Day3A, 
+                RawCBResponse.Day3B, 
+                RawCBResponse.Day4A, 
+                RawCBResponse.Day4B,
+                RawCBResponse.MaxNumSlots
+            ]);
+    }
+}
+
+// Replace the PlayerDetails array with the a string of csv
+function SetRawPlayerDetails(csv)
+{
+    RawPlayerDetails = [];
+    var lines = csv.split("\n");
+    for (var i = 1; i < lines.length; i++)
+    {
+        var line = lines[i];
+        var values = line.split("\t");
+        var ign = values[0];
+        var clan = values[1];
+        var type = values[2];
+        var team = values[3];
+        var enterBattle = values[4];
+        RawPlayerDetails.push(new RawPlayerDetail(ign, clan, type, team , enterBattle));
+    }
+}
+
+function GeneratePlayersOnboard()
+{
+    // Get a list of player IGNs from the rawcbresponses array
+    var playerIGNs = [];
+    for (var i = 0; i < RawCBResponses.length; i++)
+    {
+        var RawCBResponse = RawCBResponses[i];
+        playerIGNs.push(RawCBResponse.IGN);
+    }
+
+    // Get a list of duplicates from the playerIGNs array
+    var playerIGNDuplicates = [];
+    for (var i = 0; i < playerIGNs.length; i++)
+    {
+        var playerIGN = playerIGNs[i];
+        if (playerIGNs.indexOf(playerIGN) != i)
+        {
+            playerIGNDuplicates.push(playerIGN);
+        }
+    }
+
+    // Foreach playerIGN in the playerIGN array
+    for (var i = 0; i < playerIGNs.length; i++)
+    {
+        var maxNumSlots = 0;
+        var clan = "";
+        var type = "";
+        var enterBattle = "";
+
+        var remarks = "";
+
+        // Get the player's clan and type from the rawplayerdetails array
+        for (var j = 0; j < RawPlayerDetails.length; j++)
+        {
+            var RawPlayerDetail = RawPlayerDetails[j];
+            if (RawPlayerDetail.IGN == playerIGNs[i])
+            {
+                clan = RawPlayerDetail.Clan;
+                type = RawPlayerDetail.Type;
+                enterBattle = RawPlayerDetail.EnterBattle;
+            }
+        }
+        // Get the player's maxNumSlots from the rawcbresponses array
+        for (var j = 0; j < RawCBResponses.length; j++)
+        {
+            var RawCBResponse = RawCBResponses[j];
+            if (RawCBResponse.IGN == playerIGNs[i])
+            {
+                maxNumSlots = RawCBResponse.MaxNumSlots;
+            }
+        }
+
+        // if clan and type are empty
+        if (clan == "" && type == "")
+        {
+            remarks += PlayerRemarks.DOESN_T_EXISTS;
+        }
+
+        // if maxnumslots is 0
+        if (maxNumSlots == 0)
+        {
+            remarks += PlayerRemarks.NOT_PARTICIPATING;
+        }
+
+        // if playerIGN is in the playerIGNDuplicates array
+        if (playerIGNDuplicates.indexOf(playerIGNs[i]) != -1)
+        {
+            remarks += PlayerRemarks.DUPLICATE;
+        }
+
+        // Add the player to the playersOnBoard array
+        PlayersOnBoard.push(new PlayerOnBoard(playerIGNs[i], maxNumSlots, clan, type, enterBattle, remarks));
+    }
+}
+
+function GenerateWC_PlayersOnboard()
+{
+    // Foreach playersOnBoard in the playersOnBoard array
+    for (var i = 0; i < PlayersOnBoard.length; i++)
+    {
+        // Push the player to the wcPlayersOnBoard array
+        WC_PlayersOnBoard.push(PlayersOnBoard[i]);
+    }
+
+    // Get a list of IGN of players who are not participating or does not exist
+    var notParticipatingOrDoesntExistPlayers = [];
+    for (var i = 0; i < WC_PlayersOnBoard.length; i++)
+    {
+        var player = WC_PlayersOnBoard[i];
+        if (player.Remarks.indexOf(PlayerRemarks.NOT_PARTICIPATING) != -1 || player.Remarks.indexOf(PlayerRemarks.DOESN_T_EXISTS) != -1)
+        {
+            notParticipatingOrDoesntExistPlayers.push(player.IGN);
+        }
+    }
+
+    // Remove the players who are not participating or does not exist from the wcPlayersOnBoard array
+    for (var i = 0; i < WC_PlayersOnBoard.length; i++)
+    {
+        var player = WC_PlayersOnBoard[i];
+        if (notParticipatingOrDoesntExistPlayers.indexOf(player.IGN) != -1)
+        {
+            WC_PlayersOnBoard.splice(i, 1);
+            i--;
+        }
+    }
+
+
+    // Array of players that are duplicates
+    var playerIGNDuplicates = [];
+
+    // For each player that contains the duplicate string in the remarks
+    // Add the duplicate player to the playerIGNDuplicates array if it is not already in the array
+    for (var i = 0; i < WC_PlayersOnBoard.length; i++)
+    {
+        var player = WC_PlayersOnBoard[i];
+
+        // If player remarks contains the duplicate string
+        if (player.Remarks.includes(PlayerRemarks.DUPLICATE))
+        {
+            // If the player is not already in the playerIGNDuplicates array
+            if (playerIGNDuplicates.indexOf(player.IGN) == -1)
+            {
+                // Push the player to the playerIGNDuplicates array
+                playerIGNDuplicates.push(player.IGN);
+            }
+        }
+    }
+
+    // for each player in playerignduplicates array
+    for (var i = 0; i < playerIGNDuplicates.length; i++)
+    {
+        // Get the indexes of the players in the wcPlayersOnBoard array that have the same IGN
+        var indexes = [];
+        for (var j = 0; j < WC_PlayersOnBoard.length; j++)
+        {
+            var player = WC_PlayersOnBoard[j];
+            if (player.IGN == playerIGNDuplicates[i])
+            {
+                indexes.push(j);
+            }
+        }
+
+        // Using the indexes, remove the players from the wcPlayersOnBoard array except the last one
+        for (var j = 0; j < indexes.length - 1; j++)
+        {
+            WC_PlayersOnBoard.splice(indexes[j], 1);
+        }
+    }
+
+    // Show duplicate players in the console
+    for (var i = 0; i < playerIGNDuplicates.length; i++)
+    {
+        console.log("DUPLICATE: " + playerIGNDuplicates[i]);
+    }
+
+    // Show players on board length and wc_players on board length
+    console.log("Players on board length: " + PlayersOnBoard.length);
+    console.log("WC_Players on board length: " + WC_PlayersOnBoard.length);
+}
+
+
+
