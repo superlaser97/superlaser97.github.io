@@ -4,42 +4,25 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body onload="OnLoad()">
-        <script src="jquery-3.6.0.js"></script>
         <script src="scripts.js"></script>
 
         <!-- Textbox to paste responses data -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Paste the responses here</h1>
-                    <textarea id="rawCBResponses-textarea"></textarea>
-                </div>
-            </div>
+        <div class="splitContainer">
+            <textarea id="rawCBResponses-textarea"></textarea>
+            <!-- Button to load csv file -->
+            <button id="loadRawCBResponses-Btn" onclick="OnLoadRawCBResponsesBtn_Click()">Load Raw CB Responses</button>
+        </div>
+        <div class="splitContainer">
+            <textarea id="rawPlayerDetails-textarea"></textarea>
+            <!-- Button to load csv file -->
+            <button id="loadRawPlayerDetails-Btn" onclick="OnLoadRawPlayerDetailsBtn_Click()">Load Raw Player Details</button>
         </div>
 
-        <!-- Button to load csv file -->
-        <button id="loadRawCBResponses-Btn" onclick="OnLoadRawCBResponsesBtn_Click()">Load Raw CB Responses</button>
 
         <br>
         <br>
 
-        <!-- Textbox to paste player details data -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Paste the player details here</h1>
-                    <textarea id="rawPlayerDetails-textarea"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- Button to load csv file -->
-        <button id="loadRawPlayerDetails-Btn" onclick="OnLoadRawPlayerDetailsBtn_Click()">Load Raw Player Details</button>
-
-        <br>
-        <br>
-
-        <h1 onclick="ToggleTableVisibility('rawCBResponses-table')">Raw CB Responses</h1>
+        <h1 onclick="ToggleTableVisibility('rawCBResponses-table')">Raw CB Responses ▼</h1>
 
         <div style="display: none;">
             <!-- table that lists the responses -->
@@ -65,7 +48,7 @@
             </table>
         </div>
 
-        <h1 onclick="ToggleTableVisibility('playerDetails-table')">Raw Player Details</h1>
+        <h1 onclick="ToggleTableVisibility('playerDetails-table')">Raw Player Details ▼</h1>
 
         <div style="display: none;">
             <!-- table that lists the player details -->
@@ -89,18 +72,19 @@
         <br>
 
         <button id="generatePlayersOnBoard-Btn" onclick="OnGeneratePlayersOnBoardBtn_Click()">Generate Players OnBoard</button>
-        <h1 onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board</h1>
+        <h1 onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board ▼</h1>
         
         <div style="display: none;">
             <!-- table that lists the players on board -->
             <table id="playersOnBoard-table">
-                <!-- IGN, MaxNumSlots, Clan, Type -->
+                <!-- IGN, MaxNumSlots, Clan, Type, Team -->
                 <thead>
                     <tr>
                         <th>IGN</th>
                         <th>MaxNumSlots</th>
                         <th>Clan</th>
                         <th>Type</th>
+                        <th>Team</th>
                         <th>Can Start BTL</th>
                         <th>Remarks</th>
                         <th>N1A</th>
@@ -122,34 +106,28 @@
         <br>
         
         <button id="updateRosteringTable-Btn" onclick="OnGenerateWeekRosterDataBtn_Click()">Update Rostering Table (TEST)</button>
-        <h1 onclick="ToggleTableVisibility('rostering-table-blue')">Blue Team Roster</h1>
-        <div style="display: block;">
-            <table id="rostering-table-blue">
-                <thead>
-                    <tr><th colspan="8">Clan Battles Week X</th></tr>
-                    <tr>
-                        <th colspan="2">Night 1</th>
-                        <th colspan="2">Night 2</th>
-                        <th colspan="2">Night 3</th>
-                        <th colspan="2">Night 4</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        <h1 onclick="ToggleTableVisibility('rostering-table-blue')">Red Team Roster</h1>
-        <div style="display: block;">
-            <table id="rostering-table-red">
-                <thead>
-                    <tr><th colspan="8">Clan Battles Week X</th></tr>
-                    <tr>
-                        <th colspan="2">Night 1</th>
-                        <th colspan="2">Night 2</th>
-                        <th colspan="2">Night 3</th>
-                        <th colspan="2">Night 4</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+        <table id="rostering-table-blue">
+            <thead>
+                <tr><th colspan="8" id="blueTeam">Blue Team Roster</th></tr>
+                <tr>
+                    <th colspan="2">Night 1</th>
+                    <th colspan="2">Night 2</th>
+                    <th colspan="2">Night 3</th>
+                    <th colspan="2">Night 4</th>
+                </tr>
+            </thead>
+        </table>
+        <table id="rostering-table-red">
+            <thead>
+                <tr><th colspan="8" id="redTeam">Red Team</th></tr>
+                <tr>
+                    <th colspan="2">Night 1</th>
+                    <th colspan="2">Night 2</th>
+                    <th colspan="2">Night 3</th>
+                    <th colspan="2">Night 4</th>
+                </tr>
+            </thead>
+        </table>
 
     </body>
 </html> 

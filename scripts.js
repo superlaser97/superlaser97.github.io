@@ -82,14 +82,15 @@ class RawCBResponse
 }
 
 // struct that stores a single PlayerOnBoard
-// IGN, MaxNumSlots, Clan, Type, EnterBattle, Remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B
+// IGN, MaxNumSlots, Clan, Team, Type, EnterBattle, Remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B
 class PlayerOnBoard
 {
-    constructor(IGN, MaxNumSlots, Clan, Type, EnterBattle, Remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B)
+    constructor(IGN, MaxNumSlots, Clan, Team, Type, EnterBattle, Remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B)
     {
         this.IGN = IGN;
         this.MaxNumSlots = MaxNumSlots;
         this.Clan = Clan;
+        this.Team = Team;
         this.Type = Type;
         this.EnterBattle = EnterBattle;
         this.Remarks = Remarks;
@@ -264,7 +265,7 @@ function OnGeneratePlayersOnBoardBtn_Click()
 function OnGenerateWeekRosterDataBtn_Click()
 {
     AddPossiblePlayersToWeekRosterData();
-    FilterPlayersFromCBSlots();
+    GetFilteredPlayersAvailableInCBSlot();
     UpdateRosteringTable();
 }
 
@@ -358,6 +359,7 @@ function UpdatePlayersOnBoardTable()
                 PlayersOnBoard[i].MaxNumSlots,
                 PlayersOnBoard[i].Clan,
                 PlayersOnBoard[i].Type,
+                PlayersOnBoard[i].Team,
                 PlayersOnBoard[i].EnterBattle,
                 PlayersOnBoard[i].Remarks,
                 PlayersOnBoard[i].N1A,
@@ -593,7 +595,8 @@ function GenerateSelectForRosteringTable(players, selected)
     var select = "<select class='tableSelect'>";
     for (var i = 0; i < players.length; i++)
     {
-        select += "<option value='" + players[i].IGN + "'" + (players[i].IGN == selected ? " selected" : "") + ">" + players[i].IGN + "</option>";
+        var playerIGNWithClanTag = "[" + players[i].Clan + "] " + players[i].IGN;
+        select += "<option value='" +  playerIGNWithClanTag + "'" + (playerIGNWithClanTag == selected ? " selected" : "") + ">" + playerIGNWithClanTag + "</option>";
     }
     select += "</select>";
     return select;
@@ -770,6 +773,7 @@ function GeneratePlayersOnboard()
     {
         var maxNumSlots = 0;
         var clan = "";
+        var team = "";
         var type = "";
         var enterBattle = "";
         var remarks = "";
@@ -790,6 +794,7 @@ function GeneratePlayersOnboard()
             if (RawPlayerDetail.IGN == playerIGNs[i])
             {
                 clan = RawPlayerDetail.Clan;
+                team = RawPlayerDetail.Team;
                 type = RawPlayerDetail.Type;
                 enterBattle = RawPlayerDetail.EnterBattle;
             }
@@ -832,7 +837,7 @@ function GeneratePlayersOnboard()
         }
 
         // Add the player to the playersOnBoard array
-        PlayersOnBoard.push(new PlayerOnBoard(playerIGNs[i], maxNumSlots, clan, type, enterBattle, remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B));
+        PlayersOnBoard.push(new PlayerOnBoard(playerIGNs[i], maxNumSlots, clan, team, type, enterBattle, remarks, N1A, N1B, N2A, N2B, N3A, N3B, N4A, N4B));
     }
 }
 
@@ -925,142 +930,150 @@ function GenerateWC_PlayersOnboard()
 function AddPossiblePlayersToWeekRosterData() 
 {
     // Initlaize the players in the week roster data array (blue)
-    var Night_Blue_1A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Blue_1A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Blue_1A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Blue_1A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Blue_1A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Blue_1A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Blue_1A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
+    var Night_Blue_1A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1A, TeamType.BLUE);
+    var Night_Blue_1A_CO = Night_Blue_1A_Players[0];
+    var Night_Blue_1A_XO = Night_Blue_1A_Players[1];
+    var Night_Blue_1A_P1 = Night_Blue_1A_Players[2];
+    var Night_Blue_1A_P2 = Night_Blue_1A_Players[3];
+    var Night_Blue_1A_P3 = Night_Blue_1A_Players[4];
+    var Night_Blue_1A_P4 = Night_Blue_1A_Players[5];
+    var Night_Blue_1A_P5 = Night_Blue_1A_Players[6];
 
-    var Night_Blue_1A_Players = FilterPlayersFromCBSlots([Night_Blue_1A_CO, Night_Blue_1A_XO, Night_Blue_1A_P1, Night_Blue_1A_P2, Night_Blue_1A_P3, Night_Blue_1A_P4, Night_Blue_1A_P5], TeamType.BLUE);
-    Night_Blue_1A_CO = Night_Blue_1A_Players[0];
-    Night_Blue_1A_XO = Night_Blue_1A_Players[1];
-    Night_Blue_1A_P1 = Night_Blue_1A_Players[2];
-    Night_Blue_1A_P2 = Night_Blue_1A_Players[3];
-    Night_Blue_1A_P3 = Night_Blue_1A_Players[4];
-    Night_Blue_1A_P4 = Night_Blue_1A_Players[5];
-    Night_Blue_1A_P5 = Night_Blue_1A_Players[6];
+    var Night_Blue_1B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1B, TeamType.BLUE);
+    var Night_Blue_1B_CO = Night_Blue_1B_Players[0];
+    var Night_Blue_1B_XO = Night_Blue_1B_Players[1];
+    var Night_Blue_1B_P1 = Night_Blue_1B_Players[2];
+    var Night_Blue_1B_P2 = Night_Blue_1B_Players[3];
+    var Night_Blue_1B_P3 = Night_Blue_1B_Players[4];
+    var Night_Blue_1B_P4 = Night_Blue_1B_Players[5];
+    var Night_Blue_1B_P5 = Night_Blue_1B_Players[6];
+    
+    var Night_Blue_2A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2A, TeamType.BLUE);
+    var Night_Blue_2A_CO = Night_Blue_2A_Players[0];
+    var Night_Blue_2A_XO = Night_Blue_2A_Players[1];
+    var Night_Blue_2A_P1 = Night_Blue_2A_Players[2];
+    var Night_Blue_2A_P2 = Night_Blue_2A_Players[3];
+    var Night_Blue_2A_P3 = Night_Blue_2A_Players[4];
+    var Night_Blue_2A_P4 = Night_Blue_2A_Players[5];
+    var Night_Blue_2A_P5 = Night_Blue_2A_Players[6];
 
-    var Night_Blue_1B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_1B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_1B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_1B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_1B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_1B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_1B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Blue_2A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Blue_2A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Blue_2A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Blue_2A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Blue_2A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Blue_2A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Blue_2A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
+    var Night_Blue_2B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2B, TeamType.BLUE);
+    var Night_Blue_2B_CO = Night_Blue_2B_Players[0];
+    var Night_Blue_2B_XO = Night_Blue_2B_Players[1];
+    var Night_Blue_2B_P1 = Night_Blue_2B_Players[2];
+    var Night_Blue_2B_P2 = Night_Blue_2B_Players[3];
+    var Night_Blue_2B_P3 = Night_Blue_2B_Players[4];
+    var Night_Blue_2B_P4 = Night_Blue_2B_Players[5];
+    var Night_Blue_2B_P5 = Night_Blue_2B_Players[6];
+    
+    var Night_Blue_3A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3A, TeamType.BLUE);
+    var Night_Blue_3A_CO = Night_Blue_3A_Players[0];
+    var Night_Blue_3A_XO = Night_Blue_3A_Players[1];
+    var Night_Blue_3A_P1 = Night_Blue_3A_Players[2];
+    var Night_Blue_3A_P2 = Night_Blue_3A_Players[3];
+    var Night_Blue_3A_P3 = Night_Blue_3A_Players[4];
+    var Night_Blue_3A_P4 = Night_Blue_3A_Players[5];
+    var Night_Blue_3A_P5 = Night_Blue_3A_Players[6];
 
-    var Night_Blue_2B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Blue_2B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Blue_2B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Blue_2B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Blue_2B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Blue_2B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Blue_2B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    
-    var Night_Blue_3A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Blue_3A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Blue_3A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Blue_3A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Blue_3A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Blue_3A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Blue_3A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    
-    var Night_Blue_3B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Blue_3B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Blue_3B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Blue_3B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Blue_3B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Blue_3B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Blue_3B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    
-    var Night_Blue_4A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Blue_4A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Blue_4A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Blue_4A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Blue_4A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Blue_4A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Blue_4A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    
-    var Night_Blue_4B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Blue_4B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Blue_4B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Blue_4B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Blue_4B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Blue_4B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Blue_4B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
+    var Night_Blue_3B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3B, TeamType.BLUE);
+    var Night_Blue_3B_CO = Night_Blue_3B_Players[0];
+    var Night_Blue_3B_XO = Night_Blue_3B_Players[1];
+    var Night_Blue_3B_P1 = Night_Blue_3B_Players[2];
+    var Night_Blue_3B_P2 = Night_Blue_3B_Players[3];
+    var Night_Blue_3B_P3 = Night_Blue_3B_Players[4];
+    var Night_Blue_3B_P4 = Night_Blue_3B_Players[5];
+    var Night_Blue_3B_P5 = Night_Blue_3B_Players[6];
+
+    var Night_Blue_4A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4A, TeamType.BLUE);
+    var Night_Blue_4A_CO = Night_Blue_4A_Players[0];
+    var Night_Blue_4A_XO = Night_Blue_4A_Players[1];
+    var Night_Blue_4A_P1 = Night_Blue_4A_Players[2];
+    var Night_Blue_4A_P2 = Night_Blue_4A_Players[3];
+    var Night_Blue_4A_P3 = Night_Blue_4A_Players[4];
+    var Night_Blue_4A_P4 = Night_Blue_4A_Players[5];
+    var Night_Blue_4A_P5 = Night_Blue_4A_Players[6];
+
+    var Night_Blue_4B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4B, TeamType.BLUE);
+    var Night_Blue_4B_CO = Night_Blue_4B_Players[0];
+    var Night_Blue_4B_XO = Night_Blue_4B_Players[1];
+    var Night_Blue_4B_P1 = Night_Blue_4B_Players[2];
+    var Night_Blue_4B_P2 = Night_Blue_4B_Players[3];
+    var Night_Blue_4B_P3 = Night_Blue_4B_Players[4];
+    var Night_Blue_4B_P4 = Night_Blue_4B_Players[5];
+    var Night_Blue_4B_P5 = Night_Blue_4B_Players[6];
 
     // Initlaize the players in the week roster data array (red)
-    var Night_Red_1A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Red_1A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Red_1A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Red_1A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Red_1A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Red_1A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
-    var Night_Red_1A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1A);
+    var Night_Red_1A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1A, TeamType.RED);
+    var Night_Red_1A_CO = Night_Red_1A_Players[0];
+    var Night_Red_1A_XO = Night_Red_1A_Players[1];
+    var Night_Red_1A_P1 = Night_Red_1A_Players[2];
+    var Night_Red_1A_P2 = Night_Red_1A_Players[3];
+    var Night_Red_1A_P3 = Night_Red_1A_Players[4];
+    var Night_Red_1A_P4 = Night_Red_1A_Players[5];
+    var Night_Red_1A_P5 = Night_Red_1A_Players[6];
+
+    var Night_Red_1B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1B, TeamType.RED);
+    var Night_Red_1B_CO = Night_Red_1B_Players[0];
+    var Night_Red_1B_XO = Night_Red_1B_Players[1];
+    var Night_Red_1B_P1 = Night_Red_1B_Players[2];
+    var Night_Red_1B_P2 = Night_Red_1B_Players[3];
+    var Night_Red_1B_P3 = Night_Red_1B_Players[4];
+    var Night_Red_1B_P4 = Night_Red_1B_Players[5];
+    var Night_Red_1B_P5 = Night_Red_1B_Players[6];
     
-    var Night_Red_1B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Red_1B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Red_1B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Red_1B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Red_1B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Red_1B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
-    var Night_Red_1B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N1B);
+    var Night_Red_2A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2A, TeamType.RED);
+    var Night_Red_2A_CO = Night_Red_2A_Players[0];
+    var Night_Red_2A_XO = Night_Red_2A_Players[1];
+    var Night_Red_2A_P1 = Night_Red_2A_Players[2];
+    var Night_Red_2A_P2 = Night_Red_2A_Players[3];
+    var Night_Red_2A_P3 = Night_Red_2A_Players[4];
+    var Night_Red_2A_P4 = Night_Red_2A_Players[5];
+    var Night_Red_2A_P5 = Night_Red_2A_Players[6];
+
+    var Night_Red_2B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2B, TeamType.RED);
+    var Night_Red_2B_CO = Night_Red_2B_Players[0];
+    var Night_Red_2B_XO = Night_Red_2B_Players[1];
+    var Night_Red_2B_P1 = Night_Red_2B_Players[2];
+    var Night_Red_2B_P2 = Night_Red_2B_Players[3];
+    var Night_Red_2B_P3 = Night_Red_2B_Players[4];
+    var Night_Red_2B_P4 = Night_Red_2B_Players[5];
+    var Night_Red_2B_P5 = Night_Red_2B_Players[6];
     
-    var Night_Red_2A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Red_2A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Red_2A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Red_2A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Red_2A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Red_2A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    var Night_Red_2A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2A);
-    
-    var Night_Red_2B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Red_2B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Red_2B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Red_2B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Red_2B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Red_2B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    var Night_Red_2B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N2B);
-    
-    var Night_Red_3A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Red_3A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Red_3A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Red_3A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Red_3A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Red_3A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    var Night_Red_3A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3A);
-    
-    var Night_Red_3B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Red_3B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Red_3B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Red_3B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Red_3B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Red_3B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    var Night_Red_3B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N3B);
-    
-    var Night_Red_4A_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Red_4A_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Red_4A_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Red_4A_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Red_4A_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Red_4A_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    var Night_Red_4A_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4A);
-    
-    var Night_Red_4B_CO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Red_4B_XO = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Red_4B_P1 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Red_4B_P2 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Red_4B_P3 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Red_4B_P4 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
-    var Night_Red_4B_P5 = GetPlayersAvailableInCBSlot(ClanBattleSlots.N4B);
+    var Night_Red_3A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3A, TeamType.RED);
+    var Night_Red_3A_CO = Night_Red_3A_Players[0];
+    var Night_Red_3A_XO = Night_Red_3A_Players[1];
+    var Night_Red_3A_P1 = Night_Red_3A_Players[2];
+    var Night_Red_3A_P2 = Night_Red_3A_Players[3];
+    var Night_Red_3A_P3 = Night_Red_3A_Players[4];
+    var Night_Red_3A_P4 = Night_Red_3A_Players[5];
+    var Night_Red_3A_P5 = Night_Red_3A_Players[6];
+
+    var Night_Red_3B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3B, TeamType.RED);
+    var Night_Red_3B_CO = Night_Red_3B_Players[0];
+    var Night_Red_3B_XO = Night_Red_3B_Players[1];
+    var Night_Red_3B_P1 = Night_Red_3B_Players[2];
+    var Night_Red_3B_P2 = Night_Red_3B_Players[3];
+    var Night_Red_3B_P3 = Night_Red_3B_Players[4];
+    var Night_Red_3B_P4 = Night_Red_3B_Players[5];
+    var Night_Red_3B_P5 = Night_Red_3B_Players[6];
+
+    var Night_Red_4A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4A, TeamType.RED);
+    var Night_Red_4A_CO = Night_Red_4A_Players[0];
+    var Night_Red_4A_XO = Night_Red_4A_Players[1];
+    var Night_Red_4A_P1 = Night_Red_4A_Players[2];
+    var Night_Red_4A_P2 = Night_Red_4A_Players[3];
+    var Night_Red_4A_P3 = Night_Red_4A_Players[4];
+    var Night_Red_4A_P4 = Night_Red_4A_Players[5];
+    var Night_Red_4A_P5 = Night_Red_4A_Players[6];
+
+    var Night_Red_4B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4B, TeamType.RED);
+    var Night_Red_4B_CO = Night_Red_4B_Players[0];
+    var Night_Red_4B_XO = Night_Red_4B_Players[1];
+    var Night_Red_4B_P1 = Night_Red_4B_Players[2];
+    var Night_Red_4B_P2 = Night_Red_4B_Players[3];
+    var Night_Red_4B_P3 = Night_Red_4B_Players[4];
+    var Night_Red_4B_P4 = Night_Red_4B_Players[5];
+    var Night_Red_4B_P5 = Night_Red_4B_Players[6];
 
     // Initialize 8 NightRosterData (Blue)
     var WC_NightRosterData_Blue_1A = new NightRosterData(Night_Blue_1A_CO, Night_Blue_1A_XO, Night_Blue_1A_P1, Night_Blue_1A_P2, Night_Blue_1A_P3, Night_Blue_1A_P4, Night_Blue_1A_P5);
@@ -1133,47 +1146,169 @@ function ReorderArray(array, seed)
   }
 
 
-// Function that filters players
-// teamType: "Blue" or "Red" - the team for the session
-function FilterPlayersFromCBSlots(playersInWatch, teamType)
-{
-    // Create temporary arrays to store the players to be filtered
-    // Tag the temporay variable as temp_teamFilter
-    // Copy array to temporary array
-    var temp_teamFilter_players = [];
-    for (var i = 0; i < playersInWatch.length; i++)
-    {
-        temp_teamFilter_players.push(playersInWatch[i]);
-    }
+// playersInWatch contains 7 slots
+// Each slots contains an array of players
+// Each player in the array is a candidate for the session
+// players are filtered out based on criteria
 
-    // Filter the players from red team if this is a blue team session
-    if(teamType === TeamType.BLUE)
+// teamType: "Blue" or "Red" - the team for the session
+function GetFilteredPlayersAvailableInCBSlot(cbSlot, teamType)
+{
+    var filter_RedPlayerCantPlayOnBlue = true;
+    var filter_coMustBeCaller = true;
+    var filter_xoMustBeCaller = true;
+
+    // Copy playersAvailableInSlot array to temp arrays
+    var coSlot = GetPlayersAvailableInCBSlot(cbSlot);
+    var xoSlot = GetPlayersAvailableInCBSlot(cbSlot);
+    var p1Slot = GetPlayersAvailableInCBSlot(cbSlot);
+    var p2Slot = GetPlayersAvailableInCBSlot(cbSlot);
+    var p3Slot = GetPlayersAvailableInCBSlot(cbSlot);
+    var p4Slot = GetPlayersAvailableInCBSlot(cbSlot);
+    var p5Slot = GetPlayersAvailableInCBSlot(cbSlot);
+
+
+
+
+
+
+    // ************************** FILTER ************************************
+    // Remove players if from red team if teamType is "Blue"
+    // **********************************************************************
+    if(filter_RedPlayerCantPlayOnBlue)
     {
-        // Foreach temp_teamFilter_players
-        for(var i = 0; i < temp_teamFilter_players.length; i++)
+        // coSlot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = coSlot.length - 1; i >= 0; i--)
         {
-            // If the player is not in the Blue team
-            if(temp_teamFilter_players[i].team !== TeamType.BLUE)
+            if (teamType == TeamType.BLUE && coSlot[i].Team == TeamType.RED)
             {
-                // Remove the player from the temp_teamFilter_players array
-                temp_teamFilter_players.splice(i, 1);
-                --i;
+                coSlot.splice(i, 1);
+            }
+        }
+
+        // xoSlot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = xoSlot.length - 1; i >= 0; i--)
+        {
+            if (teamType == TeamType.BLUE && xoSlot[i].Team == TeamType.RED)
+            {
+                xoSlot.splice(i, 1);
+            }
+        }
+
+        // p1Slot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = p1Slot.length - 1; i >= 0; i--)
+        {
+            if (teamType == TeamType.BLUE && p1Slot[i].Team == TeamType.RED)
+            {
+                p1Slot.splice(i, 1);
+            }
+        }
+
+        // p2Slot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = p2Slot.length - 1; i >= 0; i--)
+        {
+            if (teamType == TeamType.BLUE && p2Slot[i].Team == TeamType.RED)
+            {
+                p2Slot.splice(i, 1);
+            }
+        }
+
+        // p3Slot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = p3Slot.length - 1; i >= 0; i--)
+        {
+            if (teamType == TeamType.BLUE && p3Slot[i].Team == TeamType.RED)
+            {
+                p3Slot.splice(i, 1);
+            }
+        }
+
+        // p4Slot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = p4Slot.length - 1; i >= 0; i--)
+        {
+            if (teamType == TeamType.BLUE && p4Slot[i].Team == TeamType.RED)
+            {
+                p4Slot.splice(i, 1);
+            }
+        }
+
+        // p5Slot
+        // For each slot, filter out players if teamType is blue and they are from the red team
+        // Loop from last to first to avoid messing up the array
+        for (var i = p5Slot.length - 1; i >= 0; i--)
+        {
+            if (teamType == TeamType.BLUE && p5Slot[i].Team == TeamType.RED)
+            {
+                p5Slot.splice(i, 1);
             }
         }
     }
+    // **********************************************************************
 
-    // Compare the playersInWatch array to the temp_teamFilter_players array
-    // If the player in playersInWatchis not in the temp_teamFilter_players array
-    // Remove player from playersInWatch array
-    for(var i = 0; i < playersInWatch.length; i++)
+
+
+    // ************************** FILTER ************************************
+    // Remove players from co slot if they are not the caller
+    // **********************************************************************
+    if(filter_coMustBeCaller)
     {
-        if(temp_teamFilter_players.indexOf(playersInWatch[i]) === -1)
+        // coSlot
+        // For each slot, filter out players that type is not caller
+        // Loop from last to first to avoid messing up the array
+        for (var i = coSlot.length - 1; i >= 0; i--)
         {
-            playersInWatch.splice(i, 1);
-            --i;
+            if(coSlot[i].Type != PlayerType.CALLER)
+            {
+                coSlot.splice(i, 1);
+            }
         }
     }
+    // **********************************************************************
+
+    
+    // ************************** FILTER ************************************
+    // Remove players from xo slot if they are not the caller
+    // **********************************************************************
+    if(filter_xoMustBeCaller)
+    {
+        // xoSlot
+        // For each slot, filter out players that type is not caller
+        // Loop from last to first to avoid messing up the array
+        for (var i = xoSlot.length - 1; i >= 0; i--)
+        {
+            if(xoSlot[i].Type != PlayerType.CALLER)
+            {
+                xoSlot.splice(i, 1);
+            }
+        }
+    }
+    // **********************************************************************
+
     
 
-    return playersInWatch;
+
+
+    var playersAvailableInSlot = [];
+
+    // Add the filtered players to the playersAvailableInSlot array
+    playersAvailableInSlot.push(coSlot);
+    playersAvailableInSlot.push(xoSlot);
+    playersAvailableInSlot.push(p1Slot);
+    playersAvailableInSlot.push(p2Slot);
+    playersAvailableInSlot.push(p3Slot);
+    playersAvailableInSlot.push(p4Slot);
+    playersAvailableInSlot.push(p5Slot);
+
+    return playersAvailableInSlot;
 }
