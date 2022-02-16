@@ -234,6 +234,10 @@ var RandomizeSeed = 1296106;
 // GetPlayersAvailable call counter
 var GetPlayersAvailableCallCounter = 0;
 
+var loadedRawCBResponses = false;
+var loadedRawPlayerDetails = false;
+var generatedPlayersOnBoard = false;
+var generatedWeekRosterData = false;
 
 
 
@@ -242,6 +246,11 @@ var GetPlayersAvailableCallCounter = 0;
 // On loadRawCBResponses button click
 function OnLoadRawCBResponsesBtn_Click()
 {
+    if(loadedRawCBResponses)
+    {
+        return;
+    }
+    
     // Get the csv from the textarea
     var csv = document.getElementById("rawCBResponses-textarea").value;
 
@@ -249,11 +258,19 @@ function OnLoadRawCBResponsesBtn_Click()
     SetRawCBResponses(csv);
     // Update the RawCBScheduleResponses table
     UpdateRawCBResponsesTable();
+
+    // Set the loadedRawCBResponses to true
+    loadedRawCBResponses = true;
 }
 
 // On loadPlayerDetails button click
 function OnLoadRawPlayerDetailsBtn_Click()
 {
+    if(loadedRawPlayerDetails)
+    {
+        return;
+    }
+    
     // Get the csv from the textarea
     var csv = document.getElementById("rawPlayerDetails-textarea").value;
 
@@ -261,23 +278,42 @@ function OnLoadRawPlayerDetailsBtn_Click()
     SetRawPlayerDetails(csv);
     // Update the PlayerDetails array
     UpdateRawPlayerDetailsTable();
+
+    // Set the loadedRawPlayerDetails to true
+    loadedRawPlayerDetails = true;
 }
 
 // On generatePlayersOnBoard button click
 function OnGeneratePlayersOnBoardBtn_Click()
 {
+    if(generatedPlayersOnBoard)
+    {
+        return;
+    }
+    
     GeneratePlayersOnboard();
     UpdatePlayersOnBoardTable();
+
+    // Set the generatedPlayersOnBoard to true
+    generatedPlayersOnBoard = true;
 }
 
 // On generateWeekRosterData button click
 function OnGenerateWeekRosterDataBtn_Click()
 {
+    if(generatedWeekRosterData)
+    {
+        return;
+    }
+    
     AddPossiblePlayersToWeekRosterData();
     GetFilteredPlayersAvailableInCBSlot();
     UpdateRosteringTable();
     PopulatePlayerSlotData();
     UpdatePlayerSlotsAssigned();
+
+    // Set the generatedWeekRosterData to true
+    generatedWeekRosterData = true;
 }
 
 function OnTableSelectedOptionChanged()
@@ -630,6 +666,12 @@ function GenerateSelectForRosteringTable(players, selected)
 // OnLoad
 function OnLoad()
 {
+    let text;
+    if (confirm("Load Test Data?") == false) 
+    {
+        return;
+    }
+
     // ************ TESTING PURPOSES ONLY ************
     // TO AUTO GENERATE THE WEEK ROSTER DATA FROM DUMMY DATA
     // DO NOT USE THIS IN PRODUCTION
@@ -660,6 +702,11 @@ function OnLoad()
     UpdateRosteringTable();
     PopulatePlayerSlotData();
     UpdatePlayerSlotsAssigned();
+
+    loadedRawCBResponses = true;
+    loadedRawPlayerDetails = true;
+    generatedPlayersOnBoard = true;
+    generatedWeekRosterData = true;
     //*************************************************
 }
 
