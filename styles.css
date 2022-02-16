@@ -1,14 +1,17 @@
 body
 {
-  /* Google sans, arial, sans-serif */
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
+  font-weight: normal;
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
   background: rgb(241, 241, 241);
 
+  padding: 10px;
+
   /* Variables */
-  --rounded-border-radius: 4px;
+  --rounded-border-radius-normal: 4px;
+  --rounded-border-radius-high: 20px;
   --def-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   --hover-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
@@ -16,9 +19,14 @@ body
 h1
 {
   font-size: 20px;
-  padding-left: 20px;
+  font-weight: normal;
   color: black;
   user-select: none;
+}
+
+h1.clickable_h1:hover
+{
+  cursor: pointer;
 }
 
 .splitContainer
@@ -28,15 +36,18 @@ h1
 
 textarea
 {
-  width:calc(100% - 40px);
-  margin-left: 20px;
-  margin-right: 20px;
+  width: 100%;
   background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius);
+  border-radius: var(--rounded-border-radius-normal);
   border: transparent solid 0px;
   overflow: hidden;
   resize: vertical;
   min-height: 75px;
+  margin: 5px 0;
+
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
 
   box-shadow: var(--def-shadow);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -44,21 +55,21 @@ textarea
 
 button
 {
-  width:calc(100% - 40px);
+  width: 100%;
   height: 40px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin: 5px 0;
   background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius);
+  border-radius: var(--rounded-border-radius-normal);
   border: transparent solid 0px;
   background-color: rgb(92, 255, 132);
-  font-weight: bold;
   
   box-shadow: var(--def-shadow);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  transition: all 0.1s cubic-bezier(.25,.8,.25,1);
 }
 
-button:hover {
+button:hover 
+{
+  cursor: pointer;
   box-shadow: var(--hover-shadow);
 }
 
@@ -67,17 +78,16 @@ table
   width: 100%;
   color: white;
   text-align:center;
-  padding: 20px;
+  padding: 10px 0px;
 }
 
 table th
 {
-  background-color: white;
-  color: black;
+  height: 40px;
+  background-color: rgb(29, 29, 29);
+  color: rgb(233, 233, 233);
   background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius);
-  padding-top: 10px;
-  padding-bottom: 10px;
+  border-radius: var(--rounded-border-radius-normal);
   border: transparent solid 2px;
 }
 
@@ -85,16 +95,14 @@ table th#blueTeam
 {
   background-color: #35a5f0;
   font-size: 20px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 10px 0px;
 }
 
 table th#redTeam
 {
   background-color: #ff4242;
   font-size: 20px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 10px 0px;
 }
 
 table td
@@ -103,7 +111,7 @@ table td
   text-align: left;
   color: black;
   background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius);
+  border-radius: var(--rounded-border-radius-normal);
   padding: 5px;
   border: transparent solid 2px;
 }
@@ -137,4 +145,51 @@ select.tableSelect option
 {
   background-color: white;
   color: black;
+}
+
+.playersSlotsAssignedSection
+{
+  background-color: transparent;
+  width: calc(100% - 40px);
+  overflow: auto;
+  height: auto;
+}
+
+.playerSlotContainer
+{
+  float: left;
+  margin: 5px;
+  padding: 0px 0px 0px 15px;
+  color: white;
+  height: 30px;
+  line-height: 30px;
+  background-color: rgb(41, 41, 41);
+  background-clip: padding-box; /* this has been added */
+  border-radius: var(--rounded-border-radius-high);
+  box-shadow: var(--def-shadow);
+}
+
+.playerSlotContainer div
+{
+  margin: 0px 0px 0px 10px;
+  padding: 0px 10px 0px 10px;
+  text-align: center;
+  float: right;
+  height: 30px;
+  line-height: 30px;
+  background-clip: padding-box; /* this has been added */
+  border-radius: var(--rounded-border-radius-high);
+  font-weight: bold;
+}
+
+.playerSlotContainer div#normal
+{
+  background-color: rgb(219, 219, 219);
+  color: black;
+}
+
+.playerSlotContainer div#overfilled
+{
+  background-color: rgb(202, 86, 86);
+  color: rgb(255, 255, 255);
 }

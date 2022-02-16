@@ -203,7 +203,16 @@ class PlayerType
     static get CALLER() { return "CALLER"; }
 }
 
-
+// struct that contains player ign, currSlotsAssigned, maxNumSlots
+class PlayerSlotData
+{
+    constructor(IGN, currSlotsAssigned, maxNumSlots)
+    {
+        this.IGN = IGN;
+        this.currSlotsAssigned = currSlotsAssigned;
+        this.maxNumSlots = maxNumSlots;
+    }
+}
 
 
 
@@ -213,12 +222,12 @@ var RawCBResponses = [];
 var RawPlayerDetails = [];
 // Array of PlayerOnBoards
 var PlayersOnBoard = [];
-
 // PlayersOnBoard working copy
 var WC_PlayersOnBoard = [];
-
 // WeekRosterData working copy
 var WC_WeekRosterData = "";
+// To track how many slots are assigned to each player
+var PlayerSlotsAssigned = [];
 
 // Randomize Seed
 var RandomizeSeed = 1296106;
@@ -267,6 +276,13 @@ function OnGenerateWeekRosterDataBtn_Click()
     AddPossiblePlayersToWeekRosterData();
     GetFilteredPlayersAvailableInCBSlot();
     UpdateRosteringTable();
+    PopulatePlayerSlotData();
+    UpdatePlayerSlotsAssigned();
+}
+
+function OnTableSelectedOptionChanged()
+{
+    UpdatePlayerSlotsAssigned();
 }
 
 //******************************************************
@@ -592,7 +608,7 @@ function UpdateRosteringTable()
 // html class "tableSelect"
 function GenerateSelectForRosteringTable(players, selected)
 {
-    var select = "<select class='tableSelect'>";
+    var select = "<select class='tableSelect' onchange='OnTableSelectedOptionChanged()'>";
     for (var i = 0; i < players.length; i++)
     {
         var playerIGNWithClanTag = "[" + players[i].Clan + "] " + players[i].IGN;
@@ -642,6 +658,8 @@ function OnLoad()
     
     AddPossiblePlayersToWeekRosterData();
     UpdateRosteringTable();
+    PopulatePlayerSlotData();
+    UpdatePlayerSlotsAssigned();
     //*************************************************
 }
 
@@ -1301,4 +1319,132 @@ function GetFilteredPlayersAvailableInCBSlot(cbSlot, teamType)
     playersAvailableInSlot.push(p5Slot);
 
     return playersAvailableInSlot;
+}
+
+// Populate playerSlotData with the players participating 
+function PopulatePlayerSlotData()
+{
+    // Foreach player in the WC_PlayersOnBoard array
+    for (var i = 0; i < WC_PlayersOnBoard.length; i++)
+    {
+        // Create new playerSlotData object
+        var playerSlotData = new Object();
+
+        // Set the playerSlotData properties
+        playerSlotData.IGN = WC_PlayersOnBoard[i].IGN;
+        playerSlotData.currSlotsAssigned = 0;
+        playerSlotData.maxNumSlots = WC_PlayersOnBoard[i].MaxNumSlots;
+
+        // Add the playerSlotData object to the playerSlotData array
+        PlayerSlotsAssigned.push(playerSlotData);
+     }
+}
+
+// Function to update currSlotsAssigned for each player
+// Determine the slots assigned by each player by referemcing the table
+function UpdatePlayerSlotsAssigned()
+{
+    // Get the table for blue team
+    var tableBlue = document.getElementById("rostering-table-blue");
+
+    // Get the table for red team
+    var tableRed = document.getElementById("rostering-table-red");
+
+    // Get the items in the table for blue team
+    var tableBlueItems = tableBlue.getElementsByTagName("td");
+    // Get the items in the table for red team
+    var tableRedItems = tableRed.getElementsByTagName("td");
+
+    // convert tableBlueItems to array
+    tableBlueItems = Array.prototype.slice.call(tableBlueItems);
+    // convert tableRedItems to array
+    tableRedItems = Array.prototype.slice.call(tableRedItems);
+
+    // Combine the blue and red team items using the concat method
+    var tableItems = tableBlueItems.concat(tableRedItems);
+
+    // Clear PlayerSlotsAssigned current slots assigned
+    for (var i = 0; i < PlayerSlotsAssigned.length; i++)
+    {
+        PlayerSlotsAssigned[i].currSlotsAssigned = 0;
+    }
+
+    // Loop through the table items
+    for (var i = 0; i < tableItems.length; i++)
+    {
+        // Extract the selected value from select element
+        var selectedValue = tableItems[i].getElementsByTagName("select")[0].value;
+
+        // If the selected value is empty
+        if (selectedValue == "")
+        {
+            // Continue to the next iteration
+            continue;
+        }
+
+        // Use regex and remove the clan tag from the selected value
+        // Clan tag is contained in [] brackets and it is in the beginning of the selected value
+        var clanTag = selectedValue.match(/\[.*?\] /);
+
+        // Remove the clan tag from the selected value
+        selectedValue = selectedValue.replace(clanTag, "");
+
+        // Loop through the playerSlotData array
+        for (var j = 0; j < PlayerSlotsAssigned.length; j++)
+        {
+            // If the selected value matches the IGN of the player in the playerSlotData array
+            if (selectedValue == PlayerSlotsAssigned[j].IGN)
+            {
+                // Increment the currSlotsAssigned property
+                PlayerSlotsAssigned[j].currSlotsAssigned++;
+            }
+        }
+    }
+
+
+    // Redraw the playersSlotsAssigned section with updated data
+    
+    // Clear the container
+    document.getElementsByClassName("playersSlotsAssignedSection")[0].innerHTML = "";
+
+    // Div template for the playerSlotData
+    var playerSlotDataTemplate = '<div class="playerSlotContainer">IGN <div id="IDNAME">CURRSLOTSASSIGNED / MAXSLOTS</div></div>';
+
+    // Loop through the playerSlotData array
+    for (var i = 0; i < PlayerSlotsAssigned.length; i++)
+    {
+        var idName = "";
+
+        // Determine if player currSlotsAssigned is
+        // less than or equals to maxNumSlots
+        // more than maxNumSlots
+        if (PlayerSlotsAssigned[i].currSlotsAssigned <= PlayerSlotsAssigned[i].maxNumSlots)
+        {
+            // Set the class name to green
+            var idName = "normal";
+        }
+        else
+        {
+            // Set the class name to red
+            var idName = "overfilled";
+        }
+
+        // Create a temporary copy of playerSlotDataTemplate
+        var tempPlayerSlotDataTemplate = playerSlotDataTemplate;
+
+        // Replace the IDNAME with the idName
+        tempPlayerSlotDataTemplate = tempPlayerSlotDataTemplate.replace("IDNAME", idName);
+        // Replace the IGN with the IGN
+        tempPlayerSlotDataTemplate = tempPlayerSlotDataTemplate.replace("IGN", PlayerSlotsAssigned[i].IGN);
+        // Replace the CURRSLOTSASSIGNED with the currSlotsAssigned
+        tempPlayerSlotDataTemplate = tempPlayerSlotDataTemplate.replace("CURRSLOTSASSIGNED", PlayerSlotsAssigned[i].currSlotsAssigned);
+        // Replace the MAXSLOTS with the maxNumSlots
+        tempPlayerSlotDataTemplate = tempPlayerSlotDataTemplate.replace("MAXSLOTS", PlayerSlotsAssigned[i].maxNumSlots);
+
+        // Append the tempPlayerSlotDataTemplate to the container
+        document.getElementsByClassName("playersSlotsAssignedSection")[0].innerHTML += tempPlayerSlotDataTemplate;
+
+        // console log the tempPlayerSlotDataTemplate
+        console.log(tempPlayerSlotDataTemplate);
+    }
 }
