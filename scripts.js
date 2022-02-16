@@ -914,16 +914,6 @@ function GenerateWC_PlayersOnboard()
             WC_PlayersOnBoard.splice(indexes[j], 1);
         }
     }
-
-    // Show duplicate players in the console
-    for (var i = 0; i < playerIGNDuplicates.length; i++)
-    {
-        console.log("DUPLICATE: " + playerIGNDuplicates[i]);
-    }
-
-    // Show players on board length and wc_players on board length
-    console.log("Players on board length: " + PlayersOnBoard.length);
-    console.log("WC_Players on board length: " + WC_PlayersOnBoard.length);
 }
 
 // Add possible players into WC_WeekRosterData
