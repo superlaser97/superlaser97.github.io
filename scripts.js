@@ -693,6 +693,22 @@ function UpdateRosteringTable()
         GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.Player5, WC_WeekRosterData.RedNight4A.Player5[0]),
         GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.Player5, WC_WeekRosterData.RedNight4B.Player5[0]),
     ]);
+
+    // Get the all cells from the first 2 rows table body of the rostering-table-red and rostering-table-blue tables
+    var cells = [];
+    cells.push(document.getElementById("rostering-table-red").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[0].getElementsByTagName("td"));
+    cells.push(document.getElementById("rostering-table-red").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[1].getElementsByTagName("td"));
+    cells.push(document.getElementById("rostering-table-blue").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[0].getElementsByTagName("td"));
+    cells.push(document.getElementById("rostering-table-blue").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[1].getElementsByTagName("td"));
+
+    // for each cells, add a class to the cell
+    for (var i = 0; i < cells.length; i++)
+    {
+        for (var j = 0; j < cells[i].length; j++)
+        {
+            cells[i][j].className = "callerCell";
+        }
+    }
 }
 
 // Function that returns a formatted string of a html select element
@@ -1729,36 +1745,36 @@ function UpdateClanBaseColumnLabel()
 
 // Takes in an array and return the most common element
 function MostFrequentInArray(arr)
+{
+        
+    // Sort the array
+    arr.sort();
+        
+    // find the max frequency using linear
+    // traversal
+    let max_count = 1, res = arr[0];
+    let curr_count = 1;
+        
+    for (let i = 1; i < arr.length; i++)
     {
-           
-        // Sort the array
-        arr.sort();
-           
-        // find the max frequency using linear
-        // traversal
-        let max_count = 1, res = arr[0];
-        let curr_count = 1;
-           
-        for (let i = 1; i < arr.length; i++)
+        if (arr[i] == arr[i - 1])
+            curr_count++;
+        else
         {
-            if (arr[i] == arr[i - 1])
-                curr_count++;
-            else
+            if (curr_count > max_count)
             {
-                if (curr_count > max_count)
-                {
-                    max_count = curr_count;
-                    res = arr[i - 1];
-                }
-                curr_count = 1;
+                max_count = curr_count;
+                res = arr[i - 1];
             }
+            curr_count = 1;
         }
-       
-        // If last element is most frequent
-        if (curr_count > max_count)
-        {
-            max_count = curr_count;
-            res = arr[arr.length - 1];
-        }
-        return res;
     }
+    
+    // If last element is most frequent
+    if (curr_count > max_count)
+    {
+        max_count = curr_count;
+        res = arr[arr.length - 1];
+    }
+    return res;
+}

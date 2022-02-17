@@ -116,6 +116,11 @@ table td
   border: transparent solid 2px;
 }
 
+table td.callerCell
+{
+  background-color: #96bedb;
+}
+
 table td.redColoredTableRow
 {
   background-color: red;
@@ -128,7 +133,7 @@ table td.darkColoredTableRow
 
 select.tableSelect
 {
-  background-color: #d4d4d4;
+  background-color: transparent;
   color: black;
   font-size: 12px;
   text-align: left;
