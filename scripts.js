@@ -241,7 +241,7 @@ var generatedWeekRosterData = false;
 
 
 
-//******************* UI FUNCTIONS *********************
+//******************* UI FUNCTIONS & EVENTS *********************
 
 // On loadRawCBResponses button click
 function OnLoadRawCBResponsesBtn_Click()
@@ -311,6 +311,8 @@ function OnGenerateWeekRosterDataBtn_Click()
     UpdateRosteringTable();
     PopulatePlayerSlotData();
     UpdatePlayerSlotsAssigned();
+    UpdatePlayerSlotAssignedLabels();
+    UpdateClanBaseColumnLabel();
 
     // Set the generatedWeekRosterData to true
     generatedWeekRosterData = true;
@@ -319,6 +321,57 @@ function OnGenerateWeekRosterDataBtn_Click()
 function OnTableSelectedOptionChanged()
 {
     UpdatePlayerSlotsAssigned();
+    UpdatePlayerSlotAssignedLabels();
+    UpdateClanBaseColumnLabel();
+}
+
+// On html body load
+function OnLoad()
+{
+    let text;
+    if (confirm("Load Test Data?") == false) 
+    {
+        return;
+    }
+
+    // ************ TESTING PURPOSES ONLY ************
+    // TO AUTO GENERATE THE WEEK ROSTER DATA FROM DUMMY DATA
+    // DO NOT USE THIS IN PRODUCTION
+    // ***********************************************
+
+    // Update textarea rawCBResponses-textarea with the rawCBResponse_CSV
+    document.getElementById("rawCBResponses-textarea").value = RawCBResponses_CSV;
+
+    // Update textarea rawPlayerDetails-textarea with the rawPlayerDetails_CSV
+    document.getElementById("rawPlayerDetails-textarea").value = RawPlayerDetail_CSV;
+
+    // Set the RawCBScheduleResponses array
+    SetRawCBResponses(RawCBResponses_CSV);
+    // Update the RawCBScheduleResponses table
+    UpdateRawCBResponsesTable();
+
+    // Set the PlayerDetails array
+    SetRawPlayerDetails(RawPlayerDetail_CSV);
+    // Update the PlayerDetails array
+    UpdateRawPlayerDetailsTable();
+    
+    GeneratePlayersOnboard();
+    UpdatePlayersOnBoardTable();
+
+    GenerateWC_PlayersOnboard();
+    
+    AddPossiblePlayersToWeekRosterData();
+    UpdateRosteringTable();
+    PopulatePlayerSlotData();
+    UpdatePlayerSlotsAssigned();
+    UpdatePlayerSlotAssignedLabels();
+    UpdateClanBaseColumnLabel();
+
+    loadedRawCBResponses = true;
+    loadedRawPlayerDetails = true;
+    generatedPlayersOnBoard = true;
+    generatedWeekRosterData = true;
+    //*************************************************
 }
 
 //******************************************************
@@ -347,7 +400,11 @@ function ToggleTableVisibility(tableID)
 function AddTableRow(tableID, values, newclass = "")
 {
     var table = document.getElementById(tableID);
-    var row = table.insertRow(-1);
+
+    // Get table body and insert a row
+    var tbody = table.getElementsByTagName("tbody")[0];
+    var row = tbody.insertRow();
+
     for (var i = 0; i < values.length; i++)
     {
         var cell = row.insertCell(-1);
@@ -662,54 +719,6 @@ function GenerateSelectForRosteringTable(players, selected)
 
 
 
-
-// OnLoad
-function OnLoad()
-{
-    let text;
-    if (confirm("Load Test Data?") == false) 
-    {
-        return;
-    }
-
-    // ************ TESTING PURPOSES ONLY ************
-    // TO AUTO GENERATE THE WEEK ROSTER DATA FROM DUMMY DATA
-    // DO NOT USE THIS IN PRODUCTION
-    // ***********************************************
-
-    // Update textarea rawCBResponses-textarea with the rawCBResponse_CSV
-    document.getElementById("rawCBResponses-textarea").value = RawCBResponses_CSV;
-
-    // Update textarea rawPlayerDetails-textarea with the rawPlayerDetails_CSV
-    document.getElementById("rawPlayerDetails-textarea").value = RawPlayerDetail_CSV;
-
-    // Set the RawCBScheduleResponses array
-    SetRawCBResponses(RawCBResponses_CSV);
-    // Update the RawCBScheduleResponses table
-    UpdateRawCBResponsesTable();
-
-    // Set the PlayerDetails array
-    SetRawPlayerDetails(RawPlayerDetail_CSV);
-    // Update the PlayerDetails array
-    UpdateRawPlayerDetailsTable();
-    
-    GeneratePlayersOnboard();
-    UpdatePlayersOnBoardTable();
-
-    GenerateWC_PlayersOnboard();
-    
-    AddPossiblePlayersToWeekRosterData();
-    UpdateRosteringTable();
-    PopulatePlayerSlotData();
-    UpdatePlayerSlotsAssigned();
-
-    loadedRawCBResponses = true;
-    loadedRawPlayerDetails = true;
-    generatedPlayersOnBoard = true;
-    generatedWeekRosterData = true;
-    //*************************************************
-}
-
 // Function to return a list of players IGN that are available for the given slot
 // Use the WC_PlayersOnboard array to determine which players are available
 // Takes in the slot (e.g. "N1A")
@@ -926,11 +935,11 @@ function GenerateWC_PlayersOnboard()
         }
     }
 
-    // Remove the players who are not participating or does not exist from the wcPlayersOnBoard array
+    // Remove the players who are not participating, is duplicate or does not exist from the wcPlayersOnBoard array
     for (var i = 0; i < WC_PlayersOnBoard.length; i++)
     {
         var player = WC_PlayersOnBoard[i];
-        if (notParticipatingOrDoesntExistPlayers.indexOf(player.IGN) != -1)
+        if (notParticipatingOrDoesntExistPlayers.indexOf(player.IGN) != -1 || player.Remarks.indexOf(PlayerRemarks.DUPLICATE) != -1)
         {
             WC_PlayersOnBoard.splice(i, 1);
             i--;
@@ -1194,11 +1203,11 @@ function ReorderArray(array, seed)
     return array;
   }
   
-  function random(seed) 
-  {
-    var x = Math.sin(seed++) * 10000; 
-    return x - Math.floor(x);
-  }
+function random(seed) 
+{
+var x = Math.sin(seed++) * 10000; 
+return x - Math.floor(x);
+}
 
 
 // playersInWatch contains 7 slots
@@ -1415,6 +1424,28 @@ function UpdatePlayerSlotsAssigned()
     {
         PlayerSlotsAssigned[i].currSlotsAssigned = 0;
     }
+}
+
+function UpdatePlayerSlotAssignedLabels()
+{
+    // Get the table for blue team
+    var tableBlue = document.getElementById("rostering-table-blue");
+
+    // Get the table for red team
+    var tableRed = document.getElementById("rostering-table-red");
+
+    // Get the items in the table for blue team
+    var tableBlueItems = tableBlue.getElementsByTagName("td");
+    // Get the items in the table for red team
+    var tableRedItems = tableRed.getElementsByTagName("td");
+
+    // convert tableBlueItems to array
+    tableBlueItems = Array.prototype.slice.call(tableBlueItems);
+    // convert tableRedItems to array
+    tableRedItems = Array.prototype.slice.call(tableRedItems);
+
+    // Combine the blue and red team items using the concat method
+    var tableItems = tableBlueItems.concat(tableRedItems);
 
     // Loop through the table items
     for (var i = 0; i < tableItems.length; i++)
@@ -1490,8 +1521,244 @@ function UpdatePlayerSlotsAssigned()
 
         // Append the tempPlayerSlotDataTemplate to the container
         document.getElementsByClassName("playersSlotsAssignedSection")[0].innerHTML += tempPlayerSlotDataTemplate;
-
-        // console log the tempPlayerSlotDataTemplate
-        console.log(tempPlayerSlotDataTemplate);
     }
 }
+
+// Function that updates the table ClanBase_ColumnLabel with the clan tag
+function UpdateClanBaseColumnLabel()
+{
+    // Get blue team table
+    var tableBlue = document.getElementById("rostering-table-blue");
+    // Get table body
+    var tableBlueBody = tableBlue.getElementsByTagName("tbody")[0];
+
+    // Get values from first column of blue team table
+    var tableBlueRows = tableBlueBody.getElementsByTagName("tr");
+
+    // contains column data
+    // each column contains player clan tag with IGN
+    var tableBlueColumnsValue = [];
+    // initialize tableBlueColumns with 8 empty arrays
+    for (var i = 0; i < 8; i++)
+    {
+        tableBlueColumnsValue.push([]);
+    }
+
+    // Loop through the table blue rows
+    for (var i = 0; i < tableBlueRows.length; i++)
+    {
+        // tableBlueRows values contain a select element
+        // Get the select elements
+        var tableBlueRow_1_Select = tableBlueRows[i].getElementsByTagName("select")[0];
+        var tableBlueRow_2_Select = tableBlueRows[i].getElementsByTagName("select")[1];
+        var tableBlueRow_3_Select = tableBlueRows[i].getElementsByTagName("select")[2];
+        var tableBlueRow_4_Select = tableBlueRows[i].getElementsByTagName("select")[3];
+        var tableBlueRow_5_Select = tableBlueRows[i].getElementsByTagName("select")[4];
+        var tableBlueRow_6_Select = tableBlueRows[i].getElementsByTagName("select")[5];
+        var tableBlueRow_7_Select = tableBlueRows[i].getElementsByTagName("select")[6];
+        var tableBlueRow_8_Select = tableBlueRows[i].getElementsByTagName("select")[7];
+
+        // push the select elements to the tableBlueColumns array
+        tableBlueColumnsValue[0].push(tableBlueRow_1_Select.value);
+        tableBlueColumnsValue[1].push(tableBlueRow_2_Select.value);
+        tableBlueColumnsValue[2].push(tableBlueRow_3_Select.value);
+        tableBlueColumnsValue[3].push(tableBlueRow_4_Select.value);
+        tableBlueColumnsValue[4].push(tableBlueRow_5_Select.value);
+        tableBlueColumnsValue[5].push(tableBlueRow_6_Select.value);
+        tableBlueColumnsValue[6].push(tableBlueRow_7_Select.value);
+        tableBlueColumnsValue[7].push(tableBlueRow_8_Select.value);
+    }
+
+    // Get all ClanBase_ColumnLabel elements from blue team table
+    var clanBaseColumnLabel_blue = tableBlue.getElementsByClassName("ClanBase_ColumnLabel");
+
+    // Loop through the tableBlueColumnsValue array
+    for (var i = 0; i < tableBlueColumnsValue.length; i++)
+    {
+        // Array to store the clan tags
+        var clanTags = [];
+
+        // Loop through the tableBlueColumnsValue array
+        for (var j = 0; j < tableBlueColumnsValue[i].length; j++)
+        {
+            // Extract clan tag from the tableBlueColumnsValue array into a string
+            // Clan tag is contained in [] brackets and it is in the beginning of the selected value
+            var clanTag = tableBlueColumnsValue[i][j].match(/\[.*?\] /);
+
+            // If there are no clan tags
+            if (clanTag == null)
+            {
+                clanTags.push("");
+            }
+            else
+            {
+                clanTags.push(clanTag[0]);
+            }
+        }
+
+        // Find the clan tag that is the most common
+        // Store the most common clan tag in mostCommonClanTag
+        var mostCommonClanTag = MostFrequentInArray(clanTags);
+
+        // Check if mostCommonClanTag appears 4 or more times in clanTags
+        if (clanTags.filter(function(value) { return value == mostCommonClanTag; }).length >= 4)
+        {
+            // Remove square brackets from mostCommonClanTag
+            mostCommonClanTag = mostCommonClanTag.replace(/\[|\]/g, '');
+
+            // Set the most common clan tag to the clanBaseColumnLabel
+            clanBaseColumnLabel_blue[i].innerHTML = mostCommonClanTag;
+
+            // Clear the clanBaseColumnLabel id
+            clanBaseColumnLabel_blue[i].id = ""; 
+        }
+        else
+        {
+            // Set the most common clan tag to the clanBaseColumnLabel
+            clanBaseColumnLabel_blue[i].innerHTML = "No Clan Base";
+
+            // Set the clanBaseColumnLabel id
+            clanBaseColumnLabel_blue[i].id = "noBase";
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    // Get red team table
+    var tableRed = document.getElementById("rostering-table-red");
+    // Get table body
+    var tableRedBody = tableRed.getElementsByTagName("tbody")[0];
+
+    // Get values from first column of red team table
+    var tableRedRows = tableRedBody.getElementsByTagName("tr");
+
+    // contains column data
+    // each column contains player clan tag with IGN
+    var tableRedColumnsValue = [];
+    // initialize tableRedColumns with 8 empty arrays
+    for (var i = 0; i < 8; i++)
+    {
+        tableRedColumnsValue.push([]);
+    }
+
+    // Loop through the table red rows
+    for (var i = 0; i < tableRedRows.length; i++)
+    {
+        // tableRedRows values contain a select element
+        // Get the select elements
+        var tableRedRow_1_Select = tableRedRows[i].getElementsByTagName("select")[0];
+        var tableRedRow_2_Select = tableRedRows[i].getElementsByTagName("select")[1];
+        var tableRedRow_3_Select = tableRedRows[i].getElementsByTagName("select")[2];
+        var tableRedRow_4_Select = tableRedRows[i].getElementsByTagName("select")[3];
+        var tableRedRow_5_Select = tableRedRows[i].getElementsByTagName("select")[4];
+        var tableRedRow_6_Select = tableRedRows[i].getElementsByTagName("select")[5];
+        var tableRedRow_7_Select = tableRedRows[i].getElementsByTagName("select")[6];
+        var tableRedRow_8_Select = tableRedRows[i].getElementsByTagName("select")[7];
+
+        // push the select elements to the tableRedColumns array
+        tableRedColumnsValue[0].push(tableRedRow_1_Select.value);
+        tableRedColumnsValue[1].push(tableRedRow_2_Select.value);
+        tableRedColumnsValue[2].push(tableRedRow_3_Select.value);
+        tableRedColumnsValue[3].push(tableRedRow_4_Select.value);
+        tableRedColumnsValue[4].push(tableRedRow_5_Select.value);
+        tableRedColumnsValue[5].push(tableRedRow_6_Select.value);
+        tableRedColumnsValue[6].push(tableRedRow_7_Select.value);
+        tableRedColumnsValue[7].push(tableRedRow_8_Select.value);
+    }
+
+    // Get all ClanBase_ColumnLabel elements from red team table
+    var clanBaseColumnLabel_red = tableRed.getElementsByClassName("ClanBase_ColumnLabel");
+
+    // Loop through the tableRedColumnsValue array
+    for (var i = 0; i < tableRedColumnsValue.length; i++)
+    {
+        // Array to store the clan tags
+        var clanTags = [];
+
+        // Loop through the tableRedColumnsValue array
+        for (var j = 0; j < tableRedColumnsValue[i].length; j++)
+        {
+            // Extract clan tag from the tableRedColumnsValue array into a string
+            // Clan tag is contained in [] brackets and it is in the beginning of the selected value
+            var clanTag = tableRedColumnsValue[i][j].match(/\[.*?\] /);
+
+            // If there are no clan tags
+            if (clanTag == null)
+            {
+                clanTags.push("");
+            }
+            else
+            {
+                clanTags.push(clanTag[0]);
+            }
+        }
+
+        // Find the clan tag that is the most common
+        // Store the most common clan tag in mostCommonClanTag
+        var mostCommonClanTag = MostFrequentInArray(clanTags);
+
+        // Check if mostCommonClanTag appears 4 or more times in clanTags
+        if (clanTags.filter(function(value) { return value == mostCommonClanTag; }).length >= 4)
+        {
+            // Remove square brackets from mostCommonClanTag
+            mostCommonClanTag = mostCommonClanTag.replace(/\[|\]/g, '');
+
+            // Set the most common clan tag to the clanBaseColumnLabel
+            clanBaseColumnLabel_red[i].innerHTML = mostCommonClanTag;
+
+            // Clear the clanBaseColumnLabel id
+            clanBaseColumnLabel_red[i].id = ""; 
+        }
+        else
+        {
+            // Set the most common clan tag to the clanBaseColumnLabel
+            clanBaseColumnLabel_red[i].innerHTML = "No Clan Base";
+
+            // Set the clanBaseColumnLabel id
+            clanBaseColumnLabel_red[i].id = "noBase";
+        }
+    }
+}
+
+// Takes in an array and return the most common element
+function MostFrequentInArray(arr)
+    {
+           
+        // Sort the array
+        arr.sort();
+           
+        // find the max frequency using linear
+        // traversal
+        let max_count = 1, res = arr[0];
+        let curr_count = 1;
+           
+        for (let i = 1; i < arr.length; i++)
+        {
+            if (arr[i] == arr[i - 1])
+                curr_count++;
+            else
+            {
+                if (curr_count > max_count)
+                {
+                    max_count = curr_count;
+                    res = arr[i - 1];
+                }
+                curr_count = 1;
+            }
+        }
+       
+        // If last element is most frequent
+        if (curr_count > max_count)
+        {
+            max_count = curr_count;
+            res = arr[arr.length - 1];
+        }
+        return res;
+    }

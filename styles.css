@@ -193,3 +193,14 @@ select.tableSelect option
   background-color: rgb(202, 86, 86);
   color: rgb(255, 255, 255);
 }
+
+.ClanBase_ColumnLabel
+{
+  background-color: rgb(32, 138, 55);
+}
+
+.ClanBase_ColumnLabel#noBase
+{
+  background-color: #d710ff;
+  color: rgb(255, 255, 255);
+}
