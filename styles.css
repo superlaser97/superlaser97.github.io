@@ -136,6 +136,11 @@ table td.callerCell
   background-color: #96bedb;
 }
 
+table td.duplicateCell
+{
+  border: #ff4242 solid 2px;
+}
+
 table td.redColoredTableRow
 {
   background-color: rgb(255, 106, 106);
@@ -245,4 +250,33 @@ select.tableSelect option
 {
   background-color: rgb(202, 202, 202);
   color: black;
+}
+
+.extra-info
+{
+  display: inline-block;
+  margin: 0px 5px 0 0;
+  font-weight: bold;
+  overflow: hidden;
+  text-align: center;
+}
+
+.extra-info.extra-info-caller
+{
+  color: rgb(0, 165, 63);
+}
+
+.extra-info.extra-info-startbtl
+{
+  color: rgb(148, 158, 0);
+}
+
+.extra-info.extra-info-bluteam
+{
+  color: rgb(0, 66, 172);
+}
+
+.extra-info.extra-info-redteam
+{
+  color: rgb(151, 0, 0);
 }

@@ -248,6 +248,8 @@ var loadedRawPlayerDetails = false;
 var generatedPlayersOnBoard = false;
 var generatedWeekRosterData = false;
 
+var showExtraPlayerInfoInRosteringTable = true;
+
 
 
 //******************* UI FUNCTIONS & EVENTS *********************
@@ -255,11 +257,6 @@ var generatedWeekRosterData = false;
 // On loadRawCBResponses button click
 function OnLoadRawCBResponsesBtn_Click()
 {
-    if(loadedRawCBResponses)
-    {
-        return;
-    }
-    
     // Get the csv from the textarea
     var csv = document.getElementById("rawCBResponses-textarea").value;
 
@@ -267,61 +264,40 @@ function OnLoadRawCBResponsesBtn_Click()
     SetRawCBResponses(csv);
     // Update the RawCBScheduleResponses table
     UpdateRawCBResponsesTable();
-
-    // Set the loadedRawCBResponses to true
-    loadedRawCBResponses = true;
 }
 
 // On loadPlayerDetails button click
 function OnLoadRawPlayerDetailsBtn_Click()
-{
-    if(loadedRawPlayerDetails)
-    {
-        return;
-    }
-    
-    // Get the csv from the textarea
+{// Get the csv from the textarea
     var csv = document.getElementById("rawPlayerDetails-textarea").value;
 
     // Set the PlayerDetails array
     SetRawPlayerDetails(csv);
     // Update the PlayerDetails array
     UpdateRawPlayerDetailsTable();
-
-    // Set the loadedRawPlayerDetails to true
-    loadedRawPlayerDetails = true;
 }
 
 // On generatePlayersOnBoard button click
 function OnGeneratePlayersOnBoardBtn_Click()
 {
-    if(generatedPlayersOnBoard)
-    {
-        return;
-    }
-    
     GeneratePlayersOnboard();
+    GenerateWC_PlayersOnboard();
     UpdatePlayersOnBoardTable();
-
-    // Set the generatedPlayersOnBoard to true
-    generatedPlayersOnBoard = true;
 }
 
-// On generateWeekRosterData button click
-function OnGenerateWeekRosterDataBtn_Click()
+// On updateWeekRosterData button click
+function OnGenerateRosteringTableBtn_Click()
 {
-    if(generatedWeekRosterData)
-    {
-        return;
-    }
-    
+    // Ask if player wants to show extra player info
+    var showExtraPlayerInfo = confirm("Do you want to show extra player info in the roster table?");
+
+    showExtraPlayerInfo ? showExtraPlayerInfoInRosteringTable = true : showExtraPlayerInfoInRosteringTable = false;
+
     AddPossiblePlayersToWeekRosterData();
-    GetFilteredPlayersAvailableInCBSlot();
+    FilterPlayersByAvailabilityInCellsDropdownMenu();
     UpdateRosteringTable();
-    PopulatePlayerSlotData();
-    UpdatePlayerSlotsAssigned();
-    UpdatePlayerSlotAssignedLabels();
-    UpdateClanBaseColumnLabel();
+    GeneratePlayerSlotAssigments();
+    RefreshRosteringTableDisplay();
 
     // Set the generatedWeekRosterData to true
     generatedWeekRosterData = true;
@@ -329,9 +305,7 @@ function OnGenerateWeekRosterDataBtn_Click()
 
 function OnTableSelectedOptionChanged()
 {
-    UpdatePlayerSlotsAssigned();
-    UpdatePlayerSlotAssignedLabels();
-    UpdateClanBaseColumnLabel();
+    RefreshRosteringTableDisplay();
 }
 
 // On html body load
@@ -347,39 +321,13 @@ function OnLoad()
     // TO AUTO GENERATE THE WEEK ROSTER DATA FROM DUMMY DATA
     // DO NOT USE THIS IN PRODUCTION
     // ***********************************************
-
-    // Update textarea rawCBResponses-textarea with the rawCBResponse_CSV
     document.getElementById("rawCBResponses-textarea").value = RawCBResponses_CSV;
-
-    // Update textarea rawPlayerDetails-textarea with the rawPlayerDetails_CSV
     document.getElementById("rawPlayerDetails-textarea").value = RawPlayerDetail_CSV;
 
-    // Set the RawCBScheduleResponses array
-    SetRawCBResponses(RawCBResponses_CSV);
-    // Update the RawCBScheduleResponses table
-    UpdateRawCBResponsesTable();
-
-    // Set the PlayerDetails array
-    SetRawPlayerDetails(RawPlayerDetail_CSV);
-    // Update the PlayerDetails array
-    UpdateRawPlayerDetailsTable();
-    
-    GeneratePlayersOnboard();
-    UpdatePlayersOnBoardTable();
-
-    GenerateWC_PlayersOnboard();
-    
-    AddPossiblePlayersToWeekRosterData();
-    UpdateRosteringTable();
-    PopulatePlayerSlotData();
-    UpdatePlayerSlotsAssigned();
-    UpdatePlayerSlotAssignedLabels();
-    UpdateClanBaseColumnLabel();
-
-    loadedRawCBResponses = true;
-    loadedRawPlayerDetails = true;
-    generatedPlayersOnBoard = true;
-    generatedWeekRosterData = true;
+    OnLoadRawCBResponsesBtn_Click();
+    OnLoadRawPlayerDetailsBtn_Click();
+    OnGeneratePlayersOnBoardBtn_Click();
+    OnGenerateRosteringTableBtn_Click();
     //*************************************************
 }
 
@@ -447,6 +395,9 @@ function AddTableRow(tableID, values, newclass = "")
 // Function to update the PlayerDetails table
 function UpdateRawPlayerDetailsTable()
 {
+    // Clear the table
+    ClearTable("playerDetails-table");
+
     // Update the PlayerDetails table
     for (var i = 0; i < RawPlayerDetails.length; i++)
     {
@@ -511,6 +462,9 @@ function UpdatePlayersOnBoardTable()
 // Function to update the RawCBScheduleResponses table
 function UpdateRawCBResponsesTable()
 {
+    // Clear the table
+    ClearTable("rawCBResponses-table");
+
     // Replace all occurance of "Available" with "X"
     for (var i = 0; i < RawCBResponses.length; i++)
     {
@@ -550,6 +504,10 @@ function UpdateRawCBResponsesTable()
 // Update rostering-table-blue with WC_WeekRosterData (WeekRosterData)
 function UpdateRosteringTable()
 {
+    // Clear the table
+    ClearTable("rostering-table-blue");
+    ClearTable("rostering-table-red");
+
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
         GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.CO, WC_WeekRosterData.BlueNight1A.CO[0]),
@@ -812,7 +770,7 @@ function GetPlayersAvailableInCBSlot(slot)
     }
 
     // randomize the playersAvailable array with randomizeArray()
-    playersAvailable = ReorderArray(playersAvailable, RandomizeSeed + GetPlayersAvailableCallCounter );
+    playersAvailable = ReorderArray(playersAvailable, RandomizeSeed + GetPlayersAvailableCallCounter);
 
     // Return the playersAvailable array
     return playersAvailable;
@@ -957,6 +915,9 @@ function GeneratePlayersOnboard()
 
 function GenerateWC_PlayersOnboard()
 {
+    // Clear the WC_PlayersOnBoard array
+    WC_PlayersOnBoard = [];
+
     // Foreach playersOnBoard in the playersOnBoard array
     for (var i = 0; i < PlayersOnBoard.length; i++)
     {
@@ -1034,7 +995,7 @@ function GenerateWC_PlayersOnboard()
 function AddPossiblePlayersToWeekRosterData() 
 {
     // Initlaize the players in the week roster data array (blue)
-    var Night_Blue_1A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1A, TeamType.BLUE);
+    var Night_Blue_1A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N1A, TeamType.BLUE);
     var Night_Blue_1A_CO = Night_Blue_1A_Players[0];
     var Night_Blue_1A_XO = Night_Blue_1A_Players[1];
     var Night_Blue_1A_P1 = Night_Blue_1A_Players[2];
@@ -1043,7 +1004,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_1A_P4 = Night_Blue_1A_Players[5];
     var Night_Blue_1A_P5 = Night_Blue_1A_Players[6];
 
-    var Night_Blue_1B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1B, TeamType.BLUE);
+    var Night_Blue_1B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N1B, TeamType.BLUE);
     var Night_Blue_1B_CO = Night_Blue_1B_Players[0];
     var Night_Blue_1B_XO = Night_Blue_1B_Players[1];
     var Night_Blue_1B_P1 = Night_Blue_1B_Players[2];
@@ -1052,7 +1013,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_1B_P4 = Night_Blue_1B_Players[5];
     var Night_Blue_1B_P5 = Night_Blue_1B_Players[6];
     
-    var Night_Blue_2A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2A, TeamType.BLUE);
+    var Night_Blue_2A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N2A, TeamType.BLUE);
     var Night_Blue_2A_CO = Night_Blue_2A_Players[0];
     var Night_Blue_2A_XO = Night_Blue_2A_Players[1];
     var Night_Blue_2A_P1 = Night_Blue_2A_Players[2];
@@ -1061,7 +1022,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_2A_P4 = Night_Blue_2A_Players[5];
     var Night_Blue_2A_P5 = Night_Blue_2A_Players[6];
 
-    var Night_Blue_2B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2B, TeamType.BLUE);
+    var Night_Blue_2B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N2B, TeamType.BLUE);
     var Night_Blue_2B_CO = Night_Blue_2B_Players[0];
     var Night_Blue_2B_XO = Night_Blue_2B_Players[1];
     var Night_Blue_2B_P1 = Night_Blue_2B_Players[2];
@@ -1070,7 +1031,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_2B_P4 = Night_Blue_2B_Players[5];
     var Night_Blue_2B_P5 = Night_Blue_2B_Players[6];
     
-    var Night_Blue_3A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3A, TeamType.BLUE);
+    var Night_Blue_3A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N3A, TeamType.BLUE);
     var Night_Blue_3A_CO = Night_Blue_3A_Players[0];
     var Night_Blue_3A_XO = Night_Blue_3A_Players[1];
     var Night_Blue_3A_P1 = Night_Blue_3A_Players[2];
@@ -1079,7 +1040,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_3A_P4 = Night_Blue_3A_Players[5];
     var Night_Blue_3A_P5 = Night_Blue_3A_Players[6];
 
-    var Night_Blue_3B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3B, TeamType.BLUE);
+    var Night_Blue_3B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N3B, TeamType.BLUE);
     var Night_Blue_3B_CO = Night_Blue_3B_Players[0];
     var Night_Blue_3B_XO = Night_Blue_3B_Players[1];
     var Night_Blue_3B_P1 = Night_Blue_3B_Players[2];
@@ -1088,7 +1049,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_3B_P4 = Night_Blue_3B_Players[5];
     var Night_Blue_3B_P5 = Night_Blue_3B_Players[6];
 
-    var Night_Blue_4A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4A, TeamType.BLUE);
+    var Night_Blue_4A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N4A, TeamType.BLUE);
     var Night_Blue_4A_CO = Night_Blue_4A_Players[0];
     var Night_Blue_4A_XO = Night_Blue_4A_Players[1];
     var Night_Blue_4A_P1 = Night_Blue_4A_Players[2];
@@ -1097,7 +1058,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_4A_P4 = Night_Blue_4A_Players[5];
     var Night_Blue_4A_P5 = Night_Blue_4A_Players[6];
 
-    var Night_Blue_4B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4B, TeamType.BLUE);
+    var Night_Blue_4B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N4B, TeamType.BLUE);
     var Night_Blue_4B_CO = Night_Blue_4B_Players[0];
     var Night_Blue_4B_XO = Night_Blue_4B_Players[1];
     var Night_Blue_4B_P1 = Night_Blue_4B_Players[2];
@@ -1107,7 +1068,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Blue_4B_P5 = Night_Blue_4B_Players[6];
 
     // Initlaize the players in the week roster data array (red)
-    var Night_Red_1A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1A, TeamType.RED);
+    var Night_Red_1A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N1A, TeamType.RED);
     var Night_Red_1A_CO = Night_Red_1A_Players[0];
     var Night_Red_1A_XO = Night_Red_1A_Players[1];
     var Night_Red_1A_P1 = Night_Red_1A_Players[2];
@@ -1116,7 +1077,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_1A_P4 = Night_Red_1A_Players[5];
     var Night_Red_1A_P5 = Night_Red_1A_Players[6];
 
-    var Night_Red_1B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N1B, TeamType.RED);
+    var Night_Red_1B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N1B, TeamType.RED);
     var Night_Red_1B_CO = Night_Red_1B_Players[0];
     var Night_Red_1B_XO = Night_Red_1B_Players[1];
     var Night_Red_1B_P1 = Night_Red_1B_Players[2];
@@ -1125,7 +1086,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_1B_P4 = Night_Red_1B_Players[5];
     var Night_Red_1B_P5 = Night_Red_1B_Players[6];
     
-    var Night_Red_2A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2A, TeamType.RED);
+    var Night_Red_2A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N2A, TeamType.RED);
     var Night_Red_2A_CO = Night_Red_2A_Players[0];
     var Night_Red_2A_XO = Night_Red_2A_Players[1];
     var Night_Red_2A_P1 = Night_Red_2A_Players[2];
@@ -1134,7 +1095,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_2A_P4 = Night_Red_2A_Players[5];
     var Night_Red_2A_P5 = Night_Red_2A_Players[6];
 
-    var Night_Red_2B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N2B, TeamType.RED);
+    var Night_Red_2B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N2B, TeamType.RED);
     var Night_Red_2B_CO = Night_Red_2B_Players[0];
     var Night_Red_2B_XO = Night_Red_2B_Players[1];
     var Night_Red_2B_P1 = Night_Red_2B_Players[2];
@@ -1143,7 +1104,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_2B_P4 = Night_Red_2B_Players[5];
     var Night_Red_2B_P5 = Night_Red_2B_Players[6];
     
-    var Night_Red_3A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3A, TeamType.RED);
+    var Night_Red_3A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N3A, TeamType.RED);
     var Night_Red_3A_CO = Night_Red_3A_Players[0];
     var Night_Red_3A_XO = Night_Red_3A_Players[1];
     var Night_Red_3A_P1 = Night_Red_3A_Players[2];
@@ -1152,7 +1113,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_3A_P4 = Night_Red_3A_Players[5];
     var Night_Red_3A_P5 = Night_Red_3A_Players[6];
 
-    var Night_Red_3B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N3B, TeamType.RED);
+    var Night_Red_3B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N3B, TeamType.RED);
     var Night_Red_3B_CO = Night_Red_3B_Players[0];
     var Night_Red_3B_XO = Night_Red_3B_Players[1];
     var Night_Red_3B_P1 = Night_Red_3B_Players[2];
@@ -1161,7 +1122,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_3B_P4 = Night_Red_3B_Players[5];
     var Night_Red_3B_P5 = Night_Red_3B_Players[6];
 
-    var Night_Red_4A_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4A, TeamType.RED);
+    var Night_Red_4A_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N4A, TeamType.RED);
     var Night_Red_4A_CO = Night_Red_4A_Players[0];
     var Night_Red_4A_XO = Night_Red_4A_Players[1];
     var Night_Red_4A_P1 = Night_Red_4A_Players[2];
@@ -1170,7 +1131,7 @@ function AddPossiblePlayersToWeekRosterData()
     var Night_Red_4A_P4 = Night_Red_4A_Players[5];
     var Night_Red_4A_P5 = Night_Red_4A_Players[6];
 
-    var Night_Red_4B_Players = GetFilteredPlayersAvailableInCBSlot(ClanBattleSlots.N4B, TeamType.RED);
+    var Night_Red_4B_Players = FilterPlayersByAvailabilityInCellsDropdownMenu(ClanBattleSlots.N4B, TeamType.RED);
     var Night_Red_4B_CO = Night_Red_4B_Players[0];
     var Night_Red_4B_XO = Night_Red_4B_Players[1];
     var Night_Red_4B_P1 = Night_Red_4B_Players[2];
@@ -1222,31 +1183,35 @@ function AddPossiblePlayersToWeekRosterData()
 }
 
 // Function to randomize an array order and return it
-// Parametmer to a seed string to randomize the array in a consistent way
-function ReorderArray(array, seed) 
+// Parametmer to a seed string to randomize the array in a repeatable way
+function ReorderArray(array, seed)
 {
-    var m = array.length, t, i;
-  
-    // While there remain elements to shuffle…
-    while (m) {
-  
-      // Pick a remaining element…
-      i = Math.floor(random(seed) * m--);
-  
-      // And swap it with the current element.
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
-      ++seed;
-    }
-  
     return array;
-  }
+
+    // A little error handling, whynot!
+    if(!seed)
+        throw new Error("deterministicShuffle: seed not given, or 0");
+
+    var temp,j;
+
+    for(var i=0; i<array.length; i++){
+        // Select a "random" position.
+        j = (seed % (i+1) + i) % array.length;
+
+        // Swap the current element with the "random" one.
+        temp=array[i];
+        array[i]=array[j];
+        array[j]=temp;
+
+    }
+
+    return array;
+}
   
 function random(seed) 
 {
-var x = Math.sin(seed++) * 10000; 
-return x - Math.floor(x);
+    var x = Math.sin(seed++) * 10000; 
+    return x - Math.floor(x);
 }
 
 
@@ -1256,7 +1221,7 @@ return x - Math.floor(x);
 // players are filtered out based on criteria
 
 // teamType: "Blue" or "Red" - the team for the session
-function GetFilteredPlayersAvailableInCBSlot(cbSlot, teamType)
+function FilterPlayersByAvailabilityInCellsDropdownMenu(cbSlot, teamType)
 {
     var filter_RedPlayerCantPlayOnBlue = true;
     var filter_coMustBeCaller = true;
@@ -1418,8 +1383,11 @@ function GetFilteredPlayersAvailableInCBSlot(cbSlot, teamType)
 }
 
 // Populate playerSlotData with the players participating 
-function PopulatePlayerSlotData()
+function GeneratePlayerSlotAssigments()
 {
+    // Clear the playerSlotData array
+    PlayerSlotsAssigned = [];
+
     // Foreach player in the WC_PlayersOnBoard array
     for (var i = 0; i < WC_PlayersOnBoard.length; i++)
     {
@@ -1459,33 +1427,12 @@ function UpdatePlayerSlotsAssigned()
     // Combine the blue and red team items using the concat method
     var tableItems = tableBlueItems.concat(tableRedItems);
 
-    // Clear PlayerSlotsAssigned current slots assigned
-    for (var i = 0; i < PlayerSlotsAssigned.length; i++)
+    // Loop through the PlayerSlotsAssigned array
+    for (var j = 0; j < PlayerSlotsAssigned.length; j++)
     {
-        PlayerSlotsAssigned[i].currSlotsAssigned = 0;
+        // Reset the currSlotsAssigned to 0
+        PlayerSlotsAssigned[j].currSlotsAssigned = 0;
     }
-}
-
-function UpdatePlayerSlotAssignedLabels()
-{
-    // Get the table for blue team
-    var tableBlue = document.getElementById("rostering-table-blue");
-
-    // Get the table for red team
-    var tableRed = document.getElementById("rostering-table-red");
-
-    // Get the items in the table for blue team
-    var tableBlueItems = tableBlue.getElementsByTagName("td");
-    // Get the items in the table for red team
-    var tableRedItems = tableRed.getElementsByTagName("td");
-
-    // convert tableBlueItems to array
-    tableBlueItems = Array.prototype.slice.call(tableBlueItems);
-    // convert tableRedItems to array
-    tableRedItems = Array.prototype.slice.call(tableRedItems);
-
-    // Combine the blue and red team items using the concat method
-    var tableItems = tableBlueItems.concat(tableRedItems);
 
     // Loop through the table items
     for (var i = 0; i < tableItems.length; i++)
@@ -1518,8 +1465,10 @@ function UpdatePlayerSlotAssignedLabels()
             }
         }
     }
+}
 
-
+function UpdatePlayerSlotAssignedLabels()
+{
     // Redraw the playersSlotsAssigned section with updated data
     
     // Clear the container
@@ -1802,3 +1751,124 @@ function MostFrequentInArray(arr)
     }
     return res;
 }
+
+function RefreshRosteringTableDisplay()
+{
+    UpdatePlayerSlotsAssigned();
+    UpdatePlayerSlotAssignedLabels();
+    UpdatePlayerDuplicateCellAppearence();
+    UpdateClanBaseColumnLabel();
+    UpdateExtraPlayerInfoInRosteringTable();
+}
+
+function UpdatePlayerDuplicateCellAppearence()
+{
+    // Get blue and red team tables
+    var tableBlue = document.getElementById("rostering-table-blue");
+    var tableRed = document.getElementById("rostering-table-red");
+
+    // Get rows from blue and red team tables
+    // Merge the rows
+    var tableRows = ""
+    tableRows += tableBlue.getElementsByTagName("tbody")[0].innerHTML;
+    tableRows += tableRed.getElementsByTagName("tbody")[0].innerHTML;
+
+    // TODO: Find a way to get the duplicate players and highlight them
+}
+
+function UpdateExtraPlayerInfoInRosteringTable()
+{
+    if(showExtraPlayerInfoInRosteringTable == false)
+    {
+        return;
+    }
+
+    // Get blue and red team tables
+    var tableBlue = document.getElementById("rostering-table-blue");
+    var tableRed = document.getElementById("rostering-table-red");
+
+    // Get all cells in blue team and red team table body
+    var tableBlueCells = tableBlue.getElementsByTagName("tbody")[0].getElementsByTagName("td");
+    var tableRedCells = tableRed.getElementsByTagName("tbody")[0].getElementsByTagName("td");
+
+    var allTableCells = [];
+
+    // Push all cells into an array
+    for (var i = 0; i < tableBlueCells.length; i++)
+    {
+        allTableCells.push(tableBlueCells[i]);
+    }
+    for (var i = 0; i < tableRedCells.length; i++)
+    {
+        allTableCells.push(tableRedCells[i]);
+    }
+
+    // Loop through allTableCells array
+    for (var i = 0; i < allTableCells.length; i++)
+    {
+        var tableCell = allTableCells[i];
+
+        // In table cell, remove elements that contain class "extra-info"
+        var extraInfoElements = tableCell.getElementsByClassName("extra-info");
+        while (extraInfoElements.length > 0)
+        {
+            extraInfoElements[0].parentNode.removeChild(extraInfoElements[0]);
+        }
+
+        // Get the player name from the select element
+        var playerName = allTableCells[i].getElementsByTagName("select")[0].value;
+        // Regex remove clan tag from player name
+        playerName = playerName.replace(/\[.*?\] /, "");
+
+        // Use WC_PlayersOnBoard array to find matching player IGN
+        var player = WC_PlayersOnBoard.find(function(element) { return element.IGN == playerName; });
+
+        var extraInfoCaller_HTMLTemplate = '<div class="extra-info extra-info-caller">CALLER</div>';
+        var extraInfoEnterBtl_HTMLTemplate = '<div class="extra-info extra-info-startbtl">KEY</div>';
+        var extraInfoStartBlueTeam_HTMLTemplate = '<div class="extra-info extra-info-bluteam">BLUE</div>';
+        var extraInfoStartRedTeam_HTMLTemplate = '<div class="extra-info extra-info-redteam">RED</div>';
+
+        var extraInfoToAdd = "";
+
+        // Check if player is a caller
+        if(player.Type == PlayerType.CALLER)
+        {
+            tableCell.prepend(CreateElementFromHTML(extraInfoCaller_HTMLTemplate));
+        }
+
+        // Check if player can enter battle
+        if(player.EnterBattle == "YES")
+        {
+            tableCell.prepend(CreateElementFromHTML(extraInfoEnterBtl_HTMLTemplate));
+        }
+
+        // Check if player in blue team
+        if(player.Team === TeamType.BLUE)
+        {
+            tableCell.prepend(CreateElementFromHTML(extraInfoStartBlueTeam_HTMLTemplate));
+        }
+
+        // Check if player in red team
+        if(player.Team === TeamType.RED)
+        {
+            tableCell.prepend(CreateElementFromHTML(extraInfoStartRedTeam_HTMLTemplate));
+        }
+    }
+}
+
+// Function to clear a table body
+function ClearTable(tableID)
+{
+    // Get table body
+    var tableBody = document.getElementById(tableID).getElementsByTagName("tbody")[0];
+
+    tableBody.innerHTML = "";
+}
+
+function CreateElementFromHTML(htmlString) {
+    var div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+  
+    // Change this to div.childNodes to support multiple top-level nodes.
+    return div.firstChild;
+  }
