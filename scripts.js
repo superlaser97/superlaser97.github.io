@@ -177,9 +177,9 @@ class NightRosterData
 // [DOESN'T EXISTS], [NOT PARTICIPATING], [DUPLICATE]
 class PlayerRemarks
 {
-    static get DOESN_T_EXISTS() { return "DOESN'T EXISTS"; }
-    static get NOT_PARTICIPATING() { return "NOT PARTICIPATING"; }
-    static get DUPLICATE() { return "DUPLICATE"; }
+    static get DOESN_T_EXISTS() { return " [ DOESN'T EXISTS ] "; }
+    static get NOT_PARTICIPATING() { return " [ NOT PARTICIPATING ] "; }
+    static get DUPLICATE() { return " [ DUPLICATE ] "; }
 }
 
 // Static class that contains clan battle slots
@@ -478,7 +478,8 @@ function UpdatePlayersOnBoardTable()
             cellClass = darkCellClass;
         }
         // Else if the playeronboard remarks contains [DUPLICATE] or [DOESN'T EXIST]
-        else if (PlayersOnBoard[i].Remarks.includes(PlayerRemarks.DUPLICATE) || PlayersOnBoard[i].Remarks.includes(PlayerRemarks.DOESN_T_EXISTS))
+        else if (PlayersOnBoard[i].Remarks.includes(PlayerRemarks.DUPLICATE) 
+            || PlayersOnBoard[i].Remarks.includes(PlayerRemarks.DOESN_T_EXISTS))
         {
             cellClass = redCellClass;
         }
@@ -904,7 +905,7 @@ function GeneratePlayersOnboard()
         for (var j = 0; j < RawPlayerDetails.length; j++)
         {
             var RawPlayerDetail = RawPlayerDetails[j];
-            if (RawPlayerDetail.IGN == playerIGNs[i])
+            if (RawPlayerDetail.IGN.toLowerCase() == playerIGNs[i].toLowerCase())
             {
                 clan = RawPlayerDetail.Clan;
                 team = RawPlayerDetail.Team;

@@ -138,12 +138,12 @@ table td.callerCell
 
 table td.redColoredTableRow
 {
-  background-color: red;
+  background-color: rgb(255, 106, 106);
 }
 
 table td.darkColoredTableRow
 {
-  background-color: rgb(226, 126, 226);
+  background-color: rgb(255, 180, 255);
 }
 
 select.tableSelect
@@ -243,7 +243,6 @@ select.tableSelect option
 
 .ClanBase_ColumnLabel#noBase
 {
-  background-color: transparent;
-  border: rgb(51, 51, 51) solid 2px;
-  color: rgb(0, 0, 0);
+  background-color: rgb(202, 202, 202);
+  color: black;
 }
