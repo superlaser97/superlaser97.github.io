@@ -396,6 +396,20 @@ function ToggleTableVisibility(tableID)
     }
 }
 
+// Function that takes in clas id and toggle it's visiblity
+function ToggleClassVisibility(classID)
+{
+    var classElement = document.getElementsByClassName(classID);
+    if (classElement[0].style.display == "none")
+    {
+        classElement[0].style.display = "block";
+    }
+    else
+    {
+        classElement[0].style.display = "none";
+    }
+}
+
 // Function to add a row to a table
 function AddTableRow(tableID, values, newclass = "")
 {

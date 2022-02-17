@@ -9,6 +9,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Quantico:wght@700&family=Roboto&display=swap" rel="stylesheet">
     </head>
     <body onload="OnLoad()">
+        <div class="TitleBar">Clan Battles Rostering System</div>
+
         <!-- Textbox to paste responses data -->
         <div class="splitContainer">
             <textarea id="rawCBResponses-textarea"></textarea>
@@ -146,10 +148,11 @@
             </tbody>
         </table>
 
-        <h1>Assigned Slots Tracker</h1>
-
         <!-- Container to display players and number of slots assigned -->
-        <div class="playersSlotsAssignedSection">
+        <div class="bottomFloatingPanel">
+            <h1 class="clickable_h1" onclick="ToggleClassVisibility('playersSlotsAssignedSection')">Assigned Slots Tracker ▼</h1>
+            <div class="playersSlotsAssignedSection" style="display: hidden;">
+            </div>
         </div>
 
     </body>
