@@ -4,9 +4,12 @@
         <script src="scripts.js"></script>
 
         <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Quantico:wght@700&family=Roboto&display=swap" rel="stylesheet">
+        <script src="scripts.js"></script>
     </head>
     <body onload="OnLoad()">
-
         <!-- Textbox to paste responses data -->
         <div class="splitContainer">
             <textarea id="rawCBResponses-textarea"></textarea>
@@ -19,11 +22,7 @@
             <button id="loadRawPlayerDetails-Btn" onclick="OnLoadRawPlayerDetailsBtn_Click()">Load Raw Player Details</button>
         </div>
 
-
-        <br>
-        <br>
-
-        <h1 onclick="ToggleTableVisibility('rawCBResponses-table')">Raw CB Responses ▼</h1>
+        <h1 class="clickable_h1" onclick="ToggleTableVisibility('rawCBResponses-table')">Raw CB Responses ▼</h1>
 
         <div style="display: none;">
             <!-- table that lists the responses -->
@@ -49,7 +48,7 @@
             </table>
         </div>
 
-        <h1 onclick="ToggleTableVisibility('playerDetails-table')">Raw Player Details ▼</h1>
+        <h1 class="clickable_h1" onclick="ToggleTableVisibility('playerDetails-table')">Raw Player Details ▼</h1>
 
         <div style="display: none;">
             <!-- table that lists the player details -->
@@ -69,11 +68,8 @@
             </table>
         </div>
 
-        <br>
-        <br>
-
         <button id="generatePlayersOnBoard-Btn" onclick="OnGeneratePlayersOnBoardBtn_Click()">Generate Players OnBoard</button>
-        <h1 onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board ▼</h1>
+        <h1 class="clickable_h1" onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board ▼</h1>
         
         <div style="display: none;">
             <!-- table that lists the players on board -->
@@ -102,9 +98,6 @@
                 </tbody>
             </table>
         </div>
-
-        <br>
-        <br>
         
         <button id="updateRosteringTable-Btn" onclick="OnGenerateWeekRosterDataBtn_Click()">Update Rostering Table (TEST)</button>
         <table id="rostering-table-blue">
@@ -129,6 +122,12 @@
                 </tr>
             </thead>
         </table>
+
+        <h1>Assigned Slots Tracker</h1>
+
+        <!-- Container to display players and number of slots assigned -->
+        <div class="playersSlotsAssignedSection">
+        </div>
 
     </body>
 </html> 
