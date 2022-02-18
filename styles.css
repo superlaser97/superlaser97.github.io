@@ -68,7 +68,7 @@ textarea
 
 button
 {
-  width: 100%;
+  width: 400px;
   height: 40px;
   margin: 5px 0;
   background-clip: padding-box; /* this has been added */
@@ -159,6 +159,7 @@ select.tableSelect
   text-align: left;
   border-color: transparent;
   appearance: none;
+  width: 100%;
 }
 
 select.tableSelect:focus

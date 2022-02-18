@@ -69,6 +69,9 @@
             </table>
         </div>
 
+        <br>
+        <br>
+
         <button id="generatePlayersOnBoard-Btn" onclick="OnGeneratePlayersOnBoardBtn_Click()">Generate Players OnBoard</button>
         <h1 class="clickable_h1" onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board ▼</h1>
         
@@ -99,6 +102,9 @@
                 </tbody>
             </table>
         </div>
+
+        <br>
+        <br>
         
         <button id="updateRosteringTable-Btn" onclick="OnGenerateRosteringTableBtn_Click()">Generate Rostering Table</button>
         <table id="rostering-table-blue">
@@ -147,6 +153,14 @@
             <tbody>
             </tbody>
         </table>
+
+        <h1>Import Export Rostering Table</h1>
+        <div class="splitContainer">
+            <textarea id="export-import-rosteringtable-textarea"></textarea>
+            <!-- Button to load csv file -->
+            <button id="loadRawCBResponses-Btn" onclick="OnExportRosteringTableBtn_Click()">Export Rostering Table</button>
+            <button id="loadRawCBResponses-Btn" onclick="OnImportRosteringTableBtn_Click()">Import Rostering Table</button>
+        </div>
 
         <!-- Container to display players and number of slots assigned -->
         <div class="bottomFloatingPanel">

@@ -223,8 +223,6 @@ class PlayerSlotData
     }
 }
 
-
-
 // Array of RawCBScheduleResponses
 var RawCBResponses = [];
 // Array of PlayerDetails
@@ -306,6 +304,16 @@ function OnGenerateRosteringTableBtn_Click()
 function OnTableSelectedOptionChanged()
 {
     RefreshRosteringTableDisplay();
+}
+
+function OnExportRosteringTableBtn_Click()
+{
+    SaveRosteringTable();
+}
+
+function OnImportRosteringTableBtn_Click()
+{
+    LoadRosteringTable();
 }
 
 // On html body load
@@ -1857,6 +1865,7 @@ function UpdateExtraPlayerInfoInRosteringTable()
 }
 
 // Function to clear a table body
+// Takes in an ID from the table
 function ClearTable(tableID)
 {
     // Get table body
@@ -1865,10 +1874,126 @@ function ClearTable(tableID)
     tableBody.innerHTML = "";
 }
 
-function CreateElementFromHTML(htmlString) {
+// Function to create a html DOM element from a string
+function CreateElementFromHTML(htmlString) 
+{
     var div = document.createElement('div');
     div.innerHTML = htmlString.trim();
-  
+
     // Change this to div.childNodes to support multiple top-level nodes.
     return div.firstChild;
-  }
+}
+
+// Function that saves the rostering-table-blue and rostering-table-red select elements to a json string
+function SaveRosteringTable()
+{
+    // Get all table cells from blue and red team tables
+    var tableBlueCells = document.getElementById("rostering-table-blue").getElementsByTagName("tbody")[0].getElementsByTagName("td");
+    var tableRedCells = document.getElementById("rostering-table-red").getElementsByTagName("tbody")[0].getElementsByTagName("td");
+
+    // Create an array to store all table cells
+    var allTableCells = [];
+
+    // Push all cells into an array
+    for (var i = 0; i < tableBlueCells.length; i++)
+    {
+        allTableCells.push(tableBlueCells[i]);
+    }
+    for (var i = 0; i < tableRedCells.length; i++)
+    {
+        allTableCells.push(tableRedCells[i]);
+    }
+
+    // Create an array to store all player IGNs
+    var allPlayerIGNs = [];
+
+    // Loop through allTableCells array
+    for (var i = 0; i < allTableCells.length; i++)
+    {
+        var tableCell = allTableCells[i];
+
+        // Get all player IGNs from the options in the select element
+        var playerIGNs = tableCell.getElementsByTagName("select")[0].getElementsByTagName("option");
+
+        var playerIGNsToAdd = [];
+
+        // Store all player IGNs in an array
+        for (var j = 0; j < playerIGNs.length; j++)
+        {
+            playerIGNsToAdd.push(playerIGNs[j].value);
+        }
+
+        // Add all player IGNs to allPlayerIGNs array
+        allPlayerIGNs.push(playerIGNsToAdd);
+    }
+
+    // Create a json string from allPlayerIGNs array
+    var jsonString = JSON.stringify(allPlayerIGNs);
+
+    // Set the json string to the export-import-rosteringtable-textarea textarea
+    document.getElementById("export-import-rosteringtable-textarea").value = jsonString;
+}
+
+// Function that loads the rostering-table-blue and rostering-table-red select elements from a json string
+function LoadRosteringTable()
+{
+    // Get json string from textarea
+    var jsonString = document.getElementById("export-import-rosteringtable-textarea").value;
+
+    // Check if json string is empty
+    if(jsonString == "")
+    {
+        alert("No data in clipboard");
+        return;
+    }
+
+    // Parse json string to an array
+    var allPlayerIGNs = JSON.parse(jsonString);
+
+    // Get all table cells from blue and red team tables
+    var tableBlueCells = document.getElementById("rostering-table-blue").getElementsByTagName("tbody")[0].getElementsByTagName("td");
+    var tableRedCells = document.getElementById("rostering-table-red").getElementsByTagName("tbody")[0].getElementsByTagName("td");
+
+    // Loop through blue and red team table cells
+    for (var i = 0; i < tableBlueCells.length; i++)
+    {
+        var tableCell = tableBlueCells[i];
+
+        // Clear the select element
+        tableCell.getElementsByTagName("select")[0].innerHTML = "";
+
+        // Loop through allPlayerIGNs array
+        for (var j = 0; j < allPlayerIGNs[i].length; j++)
+        {
+            // Create an option element
+            var option = document.createElement("option");
+
+            // Set the option text
+            option.text = allPlayerIGNs[i][j];
+
+            // Add the option to the select element
+            tableCell.getElementsByTagName("select")[0].add(option);
+        }
+    }
+
+    for (var i = 0; i < tableRedCells.length; i++)
+    {
+        var tableCell = tableRedCells[i];
+
+        // Clear the select element
+        tableCell.getElementsByTagName("select")[0].innerHTML = "";
+
+        // Loop through allPlayerIGNs array
+        for (var j = 0; j < allPlayerIGNs[i + tableBlueCells.length].length; j++)
+        {
+            // Create an option element
+            var option = document.createElement("option");
+
+            // Set the option text
+            option.text = allPlayerIGNs[i + tableBlueCells.length][j];
+
+            // Add the option to the select element
+            tableCell.getElementsByTagName("select")[0].add(option);
+        }
+    }
+}
