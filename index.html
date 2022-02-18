@@ -107,6 +107,7 @@
         <br>
         
         <button id="updateRosteringTable-Btn" onclick="OnGenerateRosteringTableBtn_Click()">Generate Rostering Table</button>
+        <button id="togglePlayerExtraInfo-Btn" onclick="OnToggleExtraPlayerInfoBtn_Click()">Toggle Extra Info</button>
         <table id="rostering-table-blue">
             <thead>
                 <tr><th colspan="8" id="blueTeam">Blue Team Roster</th></tr>
@@ -165,7 +166,7 @@
         <!-- Container to display players and number of slots assigned -->
         <div class="bottomFloatingPanel">
             <h1 class="clickable_h1" onclick="ToggleClassVisibility('playersSlotsAssignedSection')">Assigned Slots Tracker ▼</h1>
-            <div class="playersSlotsAssignedSection" style="display: hidden;">
+            <div class="playersSlotsAssignedSection" style="display: none;">
             </div>
         </div>
 

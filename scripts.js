@@ -285,12 +285,7 @@ function OnGeneratePlayersOnBoardBtn_Click()
 
 // On updateWeekRosterData button click
 function OnGenerateRosteringTableBtn_Click()
-{
-    // Ask if player wants to show extra player info
-    var showExtraPlayerInfo = confirm("Do you want to show extra player info in the roster table?");
-
-    showExtraPlayerInfo ? showExtraPlayerInfoInRosteringTable = true : showExtraPlayerInfoInRosteringTable = false;
-
+{   
     AddPossiblePlayersToWeekRosterData();
     FilterPlayersByAvailabilityInCellsDropdownMenu();
     UpdateRosteringTable();
@@ -314,6 +309,12 @@ function OnExportRosteringTableBtn_Click()
 function OnImportRosteringTableBtn_Click()
 {
     LoadRosteringTable();
+}
+
+function OnToggleExtraPlayerInfoBtn_Click()
+{
+    showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
+    UpdateExtraPlayerInfoInRosteringTable();
 }
 
 // On html body load
@@ -1786,11 +1787,6 @@ function UpdatePlayerDuplicateCellAppearence()
 
 function UpdateExtraPlayerInfoInRosteringTable()
 {
-    if(showExtraPlayerInfoInRosteringTable == false)
-    {
-        return;
-    }
-
     // Get blue and red team tables
     var tableBlue = document.getElementById("rostering-table-blue");
     var tableRed = document.getElementById("rostering-table-red");
@@ -1822,7 +1818,18 @@ function UpdateExtraPlayerInfoInRosteringTable()
         {
             extraInfoElements[0].parentNode.removeChild(extraInfoElements[0]);
         }
+    }
 
+    if(showExtraPlayerInfoInRosteringTable == false)
+    {
+        return;
+    }
+
+    // Loop through allTableCells array
+    for (var i = 0; i < allTableCells.length; i++)
+    {
+        var tableCell = allTableCells[i];
+        
         // Get the player name from the select element
         var playerName = allTableCells[i].getElementsByTagName("select")[0].value;
         // Regex remove clan tag from player name
@@ -1835,8 +1842,6 @@ function UpdateExtraPlayerInfoInRosteringTable()
         var extraInfoEnterBtl_HTMLTemplate = '<div class="extra-info extra-info-startbtl">KEY</div>';
         var extraInfoStartBlueTeam_HTMLTemplate = '<div class="extra-info extra-info-bluteam">BLUE</div>';
         var extraInfoStartRedTeam_HTMLTemplate = '<div class="extra-info extra-info-redteam">RED</div>';
-
-        var extraInfoToAdd = "";
 
         // Check if player is a caller
         if(player.Type == PlayerType.CALLER)
