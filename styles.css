@@ -144,6 +144,11 @@ table td
   border: transparent solid 2px;
 }
 
+table td.duplicate-player
+{
+  border: #a13636 solid 2px;
+}
+
 table td.callerCell
 {
   background-color: #c7d4c7;

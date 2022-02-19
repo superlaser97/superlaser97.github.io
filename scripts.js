@@ -1782,17 +1782,140 @@ function RefreshRosteringTableDisplay()
 
 function UpdatePlayerDuplicateCellAppearence()
 {
-    // Get blue and red team tables
+    // Get select element values from blue and red team tables
     var tableBlue = document.getElementById("rostering-table-blue");
+    var tableBlueBody = tableBlue.getElementsByTagName("tbody")[0];
     var tableRed = document.getElementById("rostering-table-red");
+    var tableRedBody = tableRed.getElementsByTagName("tbody")[0];
+    
+    tableBlueColumns = [];
+    tableBlueColumns_1 = [];
+    tableBlueColumns_2 = [];
+    tableBlueColumns_3 = [];
+    tableBlueColumns_4 = [];
+    tableBlueColumns_5 = [];
+    tableBlueColumns_6 = [];
+    tableBlueColumns_7 = [];
+    tableBlueColumns_8 = [];
+    
+    tableRedColumns = [];
+    tableRedColumns_1 = [];
+    tableRedColumns_2 = [];
+    tableRedColumns_3 = [];
+    tableRedColumns_4 = [];
+    tableRedColumns_5 = [];
+    tableRedColumns_6 = [];
+    tableRedColumns_7 = [];
+    tableRedColumns_8 = [];
 
-    // Get rows from blue and red team tables
-    // Merge the rows
-    var tableRows = ""
-    tableRows += tableBlue.getElementsByTagName("tbody")[0].innerHTML;
-    tableRows += tableRed.getElementsByTagName("tbody")[0].innerHTML;
+    // Loop through the table blue rows
+    for (var i = 0; i < tableBlueBody.rows.length; i++)
+    {
+        tableBlueColumns_1.push(tableBlueBody.rows[i].getElementsByTagName("select")[0]);
+        tableBlueColumns_2.push(tableBlueBody.rows[i].getElementsByTagName("select")[1]);
+        tableBlueColumns_3.push(tableBlueBody.rows[i].getElementsByTagName("select")[2]);
+        tableBlueColumns_4.push(tableBlueBody.rows[i].getElementsByTagName("select")[3]);
+        tableBlueColumns_5.push(tableBlueBody.rows[i].getElementsByTagName("select")[4]);
+        tableBlueColumns_6.push(tableBlueBody.rows[i].getElementsByTagName("select")[5]);
+        tableBlueColumns_7.push(tableBlueBody.rows[i].getElementsByTagName("select")[6]);
+        tableBlueColumns_8.push(tableBlueBody.rows[i].getElementsByTagName("select")[7]);
+    }
 
-    // TODO: Find a way to get the duplicate players and highlight them
+    // Loop through the table red rows
+    for (var i = 0; i < tableRedBody.rows.length; i++)
+    {
+        tableRedColumns_1.push(tableRedBody.rows[i].getElementsByTagName("select")[0]);
+        tableRedColumns_2.push(tableRedBody.rows[i].getElementsByTagName("select")[1]);
+        tableRedColumns_3.push(tableRedBody.rows[i].getElementsByTagName("select")[2]);
+        tableRedColumns_4.push(tableRedBody.rows[i].getElementsByTagName("select")[3]);
+        tableRedColumns_5.push(tableRedBody.rows[i].getElementsByTagName("select")[4]);
+        tableRedColumns_6.push(tableRedBody.rows[i].getElementsByTagName("select")[5]);
+        tableRedColumns_7.push(tableRedBody.rows[i].getElementsByTagName("select")[6]);
+        tableRedColumns_8.push(tableRedBody.rows[i].getElementsByTagName("select")[7]);
+    }
+
+    tableBlueColumns.push(tableBlueColumns_1, tableBlueColumns_2, tableBlueColumns_3, tableBlueColumns_4, tableBlueColumns_5, tableBlueColumns_6, tableBlueColumns_7, tableBlueColumns_8);
+    tableRedColumns.push(tableRedColumns_1, tableRedColumns_2, tableRedColumns_3, tableRedColumns_4, tableRedColumns_5, tableRedColumns_6, tableRedColumns_7, tableRedColumns_8);
+
+    // Loop through the table blue and red columns
+    for (var i = 0; i < 8; i++)
+    {
+        // Array of playerNames
+        var playerNames = [];
+
+        // Loop through the table blue columns
+        for (var j = 0; j < tableBlueColumns[i].length; j++)
+        {
+            // Get the playerName from the select element
+            var playerName = tableBlueColumns[i][j].value;
+
+            // If the playerName is not empty
+            if (playerName != "")
+            {
+                // Push the playerName to the playerNames array
+                playerNames.push(playerName);
+            }
+        }
+
+        // Loop through the table red columns
+        for (var j = 0; j < tableRedColumns[i].length; j++)
+        {
+            // Get the playerName from the select element
+            var playerName = tableRedColumns[i][j].value;
+
+            // If the playerName is not empty
+            if (playerName != "")
+            {
+                // Push the playerName to the playerNames array
+                playerNames.push(playerName);
+            }
+        }
+
+        // Get the items in the playerNames array that appear more than once
+        var duplicatePlayers = playerNames.filter(function(item, pos) {
+            return playerNames.indexOf(item) != pos;
+        });
+
+        // loop through the table blue columns
+        for (var j = 0; j < tableBlueColumns[i].length; j++)
+        {
+            // Get the playerName from the select element
+            var playerName = tableBlueColumns[i][j].value;
+
+            // Get the parent element of the select element
+            var parentElement = tableBlueColumns[i][j].parentElement;
+
+            // If the playerName is in the duplicatePlayers array
+            if (duplicatePlayers.indexOf(playerName) != -1)
+            {
+                // Add class duplicate-player to the parent element
+                parentElement.classList.add("duplicate-player");
+            }
+            else
+            {
+                // Remove class duplicate-player from the parent element
+                parentElement.classList.remove("duplicate-player");
+            }
+        }
+
+        // loop through the table red columns
+        for (var j = 0; j < tableRedColumns[i].length; j++)
+        {
+            // Get the playerName from the select element
+            var playerName = tableRedColumns[i][j].value;
+
+            // Get the parent element of the select element
+            var parentElement = tableRedColumns[i][j].parentElement;
+
+            // If the playerName is in the duplicatePlayers array
+            // and playerName doesn't contain EmptyPlayer.IGN (which is the default value)
+            if (duplicatePlayers.indexOf(playerName) != -1)
+            {
+                // Add class duplicate-player to the parent element
+                parentElement.classList.add("duplicate-player");
+            }
+        }
+    }
 }
 
 function UpdateExtraPlayerInfoInRosteringTable()
