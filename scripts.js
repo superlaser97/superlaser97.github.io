@@ -1,33 +1,33 @@
 // Raw csv string for the rawCBResponses
 var RawCBResponses_CSV = 
-`44568.81943	Hingheru88	Available	Available		Available	Available		Available	Available	8
-44568.8429	AnotherLazyBoy	Available		Available		Available	Available	Available		7
-44568.85409	songinator	Available		Available		Available		Available		3
-44568.86869	swanno1	Available		Available		Available		Available		4
-44568.9138	adityakool15	Available								1
-44568.943	niklausmaximus	Available	Available	Available	Available			Available		5
-44569.43694	PunMasterWally	Available		Available				Available		2
-44569.53216	EyeDeeKayy		Available		Available		Available		Available	8
-44569.78107	StAnDin_WoLfY			Available		Available		Available		4
-44569.89295	The_Crynek	Available		Available		Available	Available	Available		3
-44569.92674	Jeremy07	Available	Available	Available	Available		Available		Available	8
-44570.06959	Wolfcain	Available		Available		Available		Available		5
-44570.49012	Arrcadedus_1									0
-44570.49282	_Ducky_		Available		Available		Available		Available	4
-44570.50172	Spaceshiphaku		Available		Available			Available	Available	4
-44570.53309	Cascayd	Available	Available	Available	Available	Available	Available	Available	Available	6
-44570.64245	Strik3agle98		Available		Available	Available	Available	Available	Available	2
-44570.64384	OniichanYamate									0
-44570.69061	Wulffenhienze		Available		Available		Available			4
-44571.04427	Bob778_	Available		Available		Available			Available	3
-44571.07648	ronalchn	Available		Available		Available	Available	Available	Available	6
-44571.61114	Nilaos			Available						1
-44571.64872	BeardyBandit			Available				Available		2
-44571.91669	niklausmaximus			Available	Available				Available	6
-44571.91758	Jordysiu915		Available		Available		Available			3
-44571.92006	Luc_defender	Available	Available	Available				Available	Available	3
-44571.93416	Bagpfbones78									0
-44571.97723	LiveOnEvil									0`;
+`Hingheru88	Available	Available	Available	Available	Available	Available			Available	Available	8
+AnotherLazyBoy	Available		Available		Available	Available	Available	Available	Available		7
+songinator	Available		Available		Available				Available		3
+swanno1	Available		Available		Available		Available		Available		4
+adityakool15	Available										1
+niklausmaximus	Available	Available	Available	Available					Available		5
+PunMasterWally	Available		Available						Available		2
+EyeDeeKayy		Available		Available		Available	Available	Available		Available	8
+StAnDin_WoLfY			Available		Available			Available	Available		4
+The_Crynek	Available		Available		Available	Available			Available		3
+Jeremy07	Available	Available	Available	Available		Available				Available	8
+Wolfcain	Available		Available		Available		Available	Available	Available		5
+Arrcadedus_1											0
+_Ducky_		Available		Available		Available				Available	4
+Spaceshiphaku		Available		Available					Available	Available	4
+Cascayd	Available	Available	Available	Available	Available	Available			Available	Available	6
+Strik3agle98		Available		Available	Available	Available			Available	Available	2
+OniichanYamate											0
+Wulffenhienze		Available		Available		Available					4
+Bob778_	Available		Available		Available					Available	3
+ronalchn	Available		Available		Available	Available	Available	Available	Available	Available	6
+Nilaos			Available								1
+BeardyBandit			Available						Available		2
+niklausmaximus			Available	Available						Available	6
+Jordysiu915		Available		Available		Available	Available				3
+Luc_defender	Available	Available	Available						Available	Available	3
+Bagpfbones78											0
+LiveOnEvil											0`;
 
 // Raw csv string for the rawplayerdetails
 var RawPlayerDetail_CSV = 
@@ -74,9 +74,8 @@ LiveOnEvil	VKNGS	PLAYER	BLUE	`;
 // struct that stores a single RawCBScheduleResponse
 class RawCBResponse
 {
-    constructor(Timestamp, IGN, Day1A, Day1B, Day2A, Day2B, Day3A, Day3B, Day4A, Day4B, MaxNumSlots)
+    constructor(IGN, Day1A, Day1B, Day2A, Day2B, Day3A, Day3B, Day4A, Day4B, MaxNumSlots)
     {
-        this.Timestamp = Timestamp;
         this.IGN = IGN;
         this.Day1A = Day1A;
         this.Day1B = Day1B;
@@ -804,18 +803,17 @@ function SetRawCBResponses(csv)
     {
         var line = lines[i];
         var values = line.split("\t");
-        var timestamp = values[0];
-        var ign = values[1];
-        var day1a = values[2];
-        var day1b = values[3];
-        var day2a = values[4];
-        var day2b = values[5];
-        var day3a = values[6];
-        var day3b = values[7];
-        var day4a = values[8];
-        var day4b = values[9];
+        var ign = values[0];
+        var day1a = values[1];
+        var day1b = values[2];
+        var day2a = values[3];
+        var day2b = values[4];
+        var day3a = values[5];
+        var day3b = values[6];
+        var day4a = values[7];
+        var day4b = values[8];
         var maxNumSlots = values[10];
-        RawCBResponses.push(new RawCBResponse(timestamp, ign, day1a, day1b, day2a, day2b, day3a, day3b, day4a, day4b, maxNumSlots));
+        RawCBResponses.push(new RawCBResponse(ign, day1a, day1b, day2a, day2b, day3a, day3b, day4a, day4b, maxNumSlots));
     }
 }
 
