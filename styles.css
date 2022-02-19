@@ -61,7 +61,7 @@ textarea
   border-radius: var(--rounded-border-radius-normal);
   border: transparent solid 0px;
   overflow: hidden;
-  resize: vertical;
+  resize: none;
   min-height: 75px;
   margin: 5px 0;
 
