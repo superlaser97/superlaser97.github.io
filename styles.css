@@ -1,12 +1,13 @@
-body
+html
 {
   font-family: 'Roboto', sans-serif;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  width: 100%;
+  margin: 0px;
   background: rgb(241, 241, 241);
 
-  padding: 90px 10px 70px 10px;
+  padding: 70px 0px 70px 0px;
 
   /* Variables */
   --accent-color: rgb(48, 105, 105);
@@ -21,16 +22,19 @@ body
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   width: 100%;
   background: var(--accent-color);
   line-height: 60px;
   padding: 10px 10px 10px 30px;
   color: white;
   font-size: x-large;
+  box-shadow: var(--def-shadow);
 }
 
 h1
 {
+  padding-left: 10px;
   font-size: 20px;
   font-weight: normal;
   color: black;
@@ -44,7 +48,10 @@ h1.clickable_h1:hover
 
 .splitContainer
 {
-  width: auto;
+  float: left;
+  width: calc(50% - 20px);
+  margin: 0;
+  padding: 10px;
 }
 
 textarea
@@ -68,9 +75,9 @@ textarea
 
 button
 {
-  width: 400px;
+  width: 300px;
   height: 40px;
-  margin: 5px 0;
+  margin: 5px 0 0 10px;
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-normal);
   border: transparent solid 0px;
@@ -79,6 +86,12 @@ button
   
   box-shadow: var(--def-shadow);
   transition: all 0.1s cubic-bezier(.25,.8,.25,1);
+}
+
+.splitContainer button
+{
+  width: 100%;
+  margin: 5px 0 0 0px;
 }
 
 button:hover 
@@ -100,7 +113,7 @@ table th
   font-weight: normal;
   height: 40px;
   background-color: rgb(29, 29, 29);
-  color: rgb(233, 233, 233);
+  color: rgb(255, 255, 255);
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-normal);
   border: transparent solid 2px;
@@ -108,14 +121,14 @@ table th
 
 table th#blueTeam
 {
-  background-color: #35a5f0;
+  background-color: #0e70b1;
   font-size: 20px;
   padding: 10px 0px;
 }
 
 table th#redTeam
 {
-  background-color: #ff4242;
+  background-color: #a13636;
   font-size: 20px;
   padding: 10px 0px;
 }
@@ -143,21 +156,22 @@ table td.duplicateCell
 
 table td.redColoredTableRow
 {
-  background-color: rgb(255, 106, 106);
+  background-color: rgb(223, 124, 124);
 }
 
 table td.darkColoredTableRow
 {
-  background-color: rgb(255, 180, 255);
+  background-color: rgb(78, 78, 78);
+  color: white;
 }
 
 select.tableSelect
 {
   background-color: transparent;
+  border-color: transparent;
   color: black;
   font-size: 12px;
   text-align: left;
-  border-color: transparent;
   appearance: none;
   width: 100%;
 }
@@ -256,7 +270,9 @@ select.tableSelect option
 .extra-info
 {
   display: inline-block;
+  font-size: 12px;
   margin: 0px 5px 0 0;
+  padding: 0px;
   font-weight: bold;
   overflow: hidden;
   text-align: center;

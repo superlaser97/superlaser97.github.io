@@ -223,6 +223,12 @@ class PlayerSlotData
     }
 }
 
+class EmptyPlayer
+{
+    static get IGN() { return "None"; }
+    static get Clan() { return "X"; }
+}
+
 // Array of RawCBScheduleResponses
 var RawCBResponses = [];
 // Array of PlayerDetails
@@ -240,11 +246,6 @@ var PlayerSlotsAssigned = [];
 var RandomizeSeed = 1296106;
 // GetPlayersAvailable call counter
 var GetPlayersAvailableCallCounter = 0;
-
-var loadedRawCBResponses = false;
-var loadedRawPlayerDetails = false;
-var generatedPlayersOnBoard = false;
-var generatedWeekRosterData = false;
 
 var showExtraPlayerInfoInRosteringTable = true;
 
@@ -426,6 +427,9 @@ function UpdateRawPlayerDetailsTable()
 // Function to update the PlayersOnboard table
 function UpdatePlayersOnBoardTable()
 {
+    // Clear the table
+    ClearTable("playersOnBoard-table");
+
     for (var i = 0; i < PlayersOnBoard.length; i++)
     {
         var cellClass = ""
@@ -519,170 +523,170 @@ function UpdateRosteringTable()
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.CO, WC_WeekRosterData.BlueNight1A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.CO, WC_WeekRosterData.BlueNight1B.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.CO, WC_WeekRosterData.BlueNight2A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.CO, WC_WeekRosterData.BlueNight2B.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.CO, WC_WeekRosterData.BlueNight3A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.CO, WC_WeekRosterData.BlueNight3B.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.CO, WC_WeekRosterData.BlueNight4A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.CO, WC_WeekRosterData.BlueNight4B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.CO, WC_WeekRosterData.BlueNight1A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.CO, WC_WeekRosterData.BlueNight1B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.CO, WC_WeekRosterData.BlueNight2A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.CO, WC_WeekRosterData.BlueNight2B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.CO, WC_WeekRosterData.BlueNight3A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.CO, WC_WeekRosterData.BlueNight3B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.CO, WC_WeekRosterData.BlueNight4A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.CO, WC_WeekRosterData.BlueNight4B.CO[0]),
     ]);
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.XO, WC_WeekRosterData.BlueNight1A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.XO, WC_WeekRosterData.BlueNight1B.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.XO, WC_WeekRosterData.BlueNight2A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.XO, WC_WeekRosterData.BlueNight2B.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.XO, WC_WeekRosterData.BlueNight3A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.XO, WC_WeekRosterData.BlueNight3B.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.XO, WC_WeekRosterData.BlueNight4A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.XO, WC_WeekRosterData.BlueNight4B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.XO, WC_WeekRosterData.BlueNight1A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.XO, WC_WeekRosterData.BlueNight1B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.XO, WC_WeekRosterData.BlueNight2A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.XO, WC_WeekRosterData.BlueNight2B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.XO, WC_WeekRosterData.BlueNight3A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.XO, WC_WeekRosterData.BlueNight3B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.XO, WC_WeekRosterData.BlueNight4A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.XO, WC_WeekRosterData.BlueNight4B.XO[0]),
     ]);
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.Player1, WC_WeekRosterData.BlueNight1A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.Player1, WC_WeekRosterData.BlueNight1B.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.Player1, WC_WeekRosterData.BlueNight2A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.Player1, WC_WeekRosterData.BlueNight2B.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.Player1, WC_WeekRosterData.BlueNight3A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.Player1, WC_WeekRosterData.BlueNight3B.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.Player1, WC_WeekRosterData.BlueNight4A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.Player1, WC_WeekRosterData.BlueNight4B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.Player1, WC_WeekRosterData.BlueNight1A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.Player1, WC_WeekRosterData.BlueNight1B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.Player1, WC_WeekRosterData.BlueNight2A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.Player1, WC_WeekRosterData.BlueNight2B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.Player1, WC_WeekRosterData.BlueNight3A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.Player1, WC_WeekRosterData.BlueNight3B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.Player1, WC_WeekRosterData.BlueNight4A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.Player1, WC_WeekRosterData.BlueNight4B.Player1[0]),
     ]);
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.Player2, WC_WeekRosterData.BlueNight1A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.Player2, WC_WeekRosterData.BlueNight1B.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.Player2, WC_WeekRosterData.BlueNight2A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.Player2, WC_WeekRosterData.BlueNight2B.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.Player2, WC_WeekRosterData.BlueNight3A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.Player2, WC_WeekRosterData.BlueNight3B.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.Player2, WC_WeekRosterData.BlueNight4A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.Player2, WC_WeekRosterData.BlueNight4B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.Player2, WC_WeekRosterData.BlueNight1A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.Player2, WC_WeekRosterData.BlueNight1B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.Player2, WC_WeekRosterData.BlueNight2A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.Player2, WC_WeekRosterData.BlueNight2B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.Player2, WC_WeekRosterData.BlueNight3A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.Player2, WC_WeekRosterData.BlueNight3B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.Player2, WC_WeekRosterData.BlueNight4A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.Player2, WC_WeekRosterData.BlueNight4B.Player2[0]),
     ]);
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.Player3, WC_WeekRosterData.BlueNight1A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.Player3, WC_WeekRosterData.BlueNight1B.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.Player3, WC_WeekRosterData.BlueNight2A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.Player3, WC_WeekRosterData.BlueNight2B.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.Player3, WC_WeekRosterData.BlueNight3A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.Player3, WC_WeekRosterData.BlueNight3B.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.Player3, WC_WeekRosterData.BlueNight4A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.Player3, WC_WeekRosterData.BlueNight4B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.Player3, WC_WeekRosterData.BlueNight1A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.Player3, WC_WeekRosterData.BlueNight1B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.Player3, WC_WeekRosterData.BlueNight2A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.Player3, WC_WeekRosterData.BlueNight2B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.Player3, WC_WeekRosterData.BlueNight3A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.Player3, WC_WeekRosterData.BlueNight3B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.Player3, WC_WeekRosterData.BlueNight4A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.Player3, WC_WeekRosterData.BlueNight4B.Player3[0]),
     ]);
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.Player4, WC_WeekRosterData.BlueNight1A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.Player4, WC_WeekRosterData.BlueNight1B.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.Player4, WC_WeekRosterData.BlueNight2A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.Player4, WC_WeekRosterData.BlueNight2B.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.Player4, WC_WeekRosterData.BlueNight3A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.Player4, WC_WeekRosterData.BlueNight3B.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.Player4, WC_WeekRosterData.BlueNight4A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.Player4, WC_WeekRosterData.BlueNight4B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.Player4, WC_WeekRosterData.BlueNight1A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.Player4, WC_WeekRosterData.BlueNight1B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.Player4, WC_WeekRosterData.BlueNight2A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.Player4, WC_WeekRosterData.BlueNight2B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.Player4, WC_WeekRosterData.BlueNight3A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.Player4, WC_WeekRosterData.BlueNight3B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.Player4, WC_WeekRosterData.BlueNight4A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.Player4, WC_WeekRosterData.BlueNight4B.Player4[0]),
     ]);
 
     // Update the rostering-table-blue
     AddTableRow("rostering-table-blue", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1A.Player5, WC_WeekRosterData.BlueNight1A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight1B.Player5, WC_WeekRosterData.BlueNight1B.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2A.Player5, WC_WeekRosterData.BlueNight2A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight2B.Player5, WC_WeekRosterData.BlueNight2B.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3A.Player5, WC_WeekRosterData.BlueNight3A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight3B.Player5, WC_WeekRosterData.BlueNight3B.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4A.Player5, WC_WeekRosterData.BlueNight4A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.BlueNight4B.Player5, WC_WeekRosterData.BlueNight4B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1A.Player5, WC_WeekRosterData.BlueNight1A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight1B.Player5, WC_WeekRosterData.BlueNight1B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2A.Player5, WC_WeekRosterData.BlueNight2A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight2B.Player5, WC_WeekRosterData.BlueNight2B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3A.Player5, WC_WeekRosterData.BlueNight3A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight3B.Player5, WC_WeekRosterData.BlueNight3B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4A.Player5, WC_WeekRosterData.BlueNight4A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.BlueNight4B.Player5, WC_WeekRosterData.BlueNight4B.Player5[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.CO, WC_WeekRosterData.RedNight1A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.CO, WC_WeekRosterData.RedNight1B.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.CO, WC_WeekRosterData.RedNight2A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.CO, WC_WeekRosterData.RedNight2B.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.CO, WC_WeekRosterData.RedNight3A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.CO, WC_WeekRosterData.RedNight3B.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.CO, WC_WeekRosterData.RedNight4A.CO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.CO, WC_WeekRosterData.RedNight4B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.CO, WC_WeekRosterData.RedNight1A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.CO, WC_WeekRosterData.RedNight1B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.CO, WC_WeekRosterData.RedNight2A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.CO, WC_WeekRosterData.RedNight2B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.CO, WC_WeekRosterData.RedNight3A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.CO, WC_WeekRosterData.RedNight3B.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.CO, WC_WeekRosterData.RedNight4A.CO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.CO, WC_WeekRosterData.RedNight4B.CO[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.XO, WC_WeekRosterData.RedNight1A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.XO, WC_WeekRosterData.RedNight1B.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.XO, WC_WeekRosterData.RedNight2A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.XO, WC_WeekRosterData.RedNight2B.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.XO, WC_WeekRosterData.RedNight3A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.XO, WC_WeekRosterData.RedNight3B.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.XO, WC_WeekRosterData.RedNight4A.XO[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.XO, WC_WeekRosterData.RedNight4B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.XO, WC_WeekRosterData.RedNight1A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.XO, WC_WeekRosterData.RedNight1B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.XO, WC_WeekRosterData.RedNight2A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.XO, WC_WeekRosterData.RedNight2B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.XO, WC_WeekRosterData.RedNight3A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.XO, WC_WeekRosterData.RedNight3B.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.XO, WC_WeekRosterData.RedNight4A.XO[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.XO, WC_WeekRosterData.RedNight4B.XO[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.Player1, WC_WeekRosterData.RedNight1A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.Player1, WC_WeekRosterData.RedNight1B.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.Player1, WC_WeekRosterData.RedNight2A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.Player1, WC_WeekRosterData.RedNight2B.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.Player1, WC_WeekRosterData.RedNight3A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.Player1, WC_WeekRosterData.RedNight3B.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.Player1, WC_WeekRosterData.RedNight4A.Player1[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.Player1, WC_WeekRosterData.RedNight4B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.Player1, WC_WeekRosterData.RedNight1A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.Player1, WC_WeekRosterData.RedNight1B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.Player1, WC_WeekRosterData.RedNight2A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.Player1, WC_WeekRosterData.RedNight2B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.Player1, WC_WeekRosterData.RedNight3A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.Player1, WC_WeekRosterData.RedNight3B.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.Player1, WC_WeekRosterData.RedNight4A.Player1[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.Player1, WC_WeekRosterData.RedNight4B.Player1[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.Player2, WC_WeekRosterData.RedNight1A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.Player2, WC_WeekRosterData.RedNight1B.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.Player2, WC_WeekRosterData.RedNight2A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.Player2, WC_WeekRosterData.RedNight2B.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.Player2, WC_WeekRosterData.RedNight3A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.Player2, WC_WeekRosterData.RedNight3B.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.Player2, WC_WeekRosterData.RedNight4A.Player2[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.Player2, WC_WeekRosterData.RedNight4B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.Player2, WC_WeekRosterData.RedNight1A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.Player2, WC_WeekRosterData.RedNight1B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.Player2, WC_WeekRosterData.RedNight2A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.Player2, WC_WeekRosterData.RedNight2B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.Player2, WC_WeekRosterData.RedNight3A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.Player2, WC_WeekRosterData.RedNight3B.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.Player2, WC_WeekRosterData.RedNight4A.Player2[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.Player2, WC_WeekRosterData.RedNight4B.Player2[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.Player3, WC_WeekRosterData.RedNight1A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.Player3, WC_WeekRosterData.RedNight1B.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.Player3, WC_WeekRosterData.RedNight2A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.Player3, WC_WeekRosterData.RedNight2B.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.Player3, WC_WeekRosterData.RedNight3A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.Player3, WC_WeekRosterData.RedNight3B.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.Player3, WC_WeekRosterData.RedNight4A.Player3[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.Player3, WC_WeekRosterData.RedNight4B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.Player3, WC_WeekRosterData.RedNight1A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.Player3, WC_WeekRosterData.RedNight1B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.Player3, WC_WeekRosterData.RedNight2A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.Player3, WC_WeekRosterData.RedNight2B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.Player3, WC_WeekRosterData.RedNight3A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.Player3, WC_WeekRosterData.RedNight3B.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.Player3, WC_WeekRosterData.RedNight4A.Player3[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.Player3, WC_WeekRosterData.RedNight4B.Player3[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.Player4, WC_WeekRosterData.RedNight1A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.Player4, WC_WeekRosterData.RedNight1B.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.Player4, WC_WeekRosterData.RedNight2A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.Player4, WC_WeekRosterData.RedNight2B.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.Player4, WC_WeekRosterData.RedNight3A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.Player4, WC_WeekRosterData.RedNight3B.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.Player4, WC_WeekRosterData.RedNight4A.Player4[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.Player4, WC_WeekRosterData.RedNight4B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.Player4, WC_WeekRosterData.RedNight1A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.Player4, WC_WeekRosterData.RedNight1B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.Player4, WC_WeekRosterData.RedNight2A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.Player4, WC_WeekRosterData.RedNight2B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.Player4, WC_WeekRosterData.RedNight3A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.Player4, WC_WeekRosterData.RedNight3B.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.Player4, WC_WeekRosterData.RedNight4A.Player4[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.Player4, WC_WeekRosterData.RedNight4B.Player4[0]),
     ]);
 
     // Update the rostering-table-red
     AddTableRow("rostering-table-red", [
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1A.Player5, WC_WeekRosterData.RedNight1A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight1B.Player5, WC_WeekRosterData.RedNight1B.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2A.Player5, WC_WeekRosterData.RedNight2A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight2B.Player5, WC_WeekRosterData.RedNight2B.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3A.Player5, WC_WeekRosterData.RedNight3A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight3B.Player5, WC_WeekRosterData.RedNight3B.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4A.Player5, WC_WeekRosterData.RedNight4A.Player5[0]),
-        GenerateSelectForRosteringTable(WC_WeekRosterData.RedNight4B.Player5, WC_WeekRosterData.RedNight4B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1A.Player5, WC_WeekRosterData.RedNight1A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight1B.Player5, WC_WeekRosterData.RedNight1B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2A.Player5, WC_WeekRosterData.RedNight2A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight2B.Player5, WC_WeekRosterData.RedNight2B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3A.Player5, WC_WeekRosterData.RedNight3A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight3B.Player5, WC_WeekRosterData.RedNight3B.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4A.Player5, WC_WeekRosterData.RedNight4A.Player5[0]),
+        GenerateSelectElementForRosteringTable(WC_WeekRosterData.RedNight4B.Player5, WC_WeekRosterData.RedNight4B.Player5[0]),
     ]);
 
     // Get the all cells from the first 2 rows table body of the rostering-table-red and rostering-table-blue tables
@@ -706,9 +710,14 @@ function UpdateRosteringTable()
 // Takes in a list of string
 // Takes in the string
 // html class "tableSelect"
-function GenerateSelectForRosteringTable(players, selected)
+function GenerateSelectElementForRosteringTable(players, selected)
 {
     var select = "<select class='tableSelect' onchange='OnTableSelectedOptionChanged()'>";
+    
+    // Add a empty player option
+    var emptyPlayerIGNWithClanTag = "[" + EmptyPlayer.Clan + "] " + EmptyPlayer.IGN;
+    select += "<option value='" +  emptyPlayerIGNWithClanTag + "'" + ">" + emptyPlayerIGNWithClanTag + "</option>";
+
     for (var i = 0; i < players.length; i++)
     {
         var playerIGNWithClanTag = "[" + players[i].Clan + "] " + players[i].IGN;
@@ -830,6 +839,9 @@ function SetRawPlayerDetails(csv)
 
 function GeneratePlayersOnboard()
 {
+    // Clear PlayersOnBoard array
+    PlayersOnBoard = [];
+
     // Get a list of player IGNs from the rawcbresponses array
     var playerIGNs = [];
     for (var i = 0; i < RawCBResponses.length; i++)
@@ -1596,27 +1608,25 @@ function UpdateClanBaseColumnLabel()
 
         // Find the clan tag that is the most common
         // Store the most common clan tag in mostCommonClanTag
-        var mostCommonClanTag = MostFrequentInArray(clanTags);
+        // Remove square brackets from mostCommonClanTag
+        var mostCommonClanTag = MostFrequentInArray(clanTags).replace(/\[|\]/g, '');
+        var numTimesMostCommonClanTag = clanTags.filter(function(value) { return value == mostCommonClanTag; }).length;
 
-        // Check if mostCommonClanTag appears 4 or more times in clanTags
-        if (clanTags.filter(function(value) { return value == mostCommonClanTag; }).length >= 4)
+        // Set the most common clan tag to the clanBaseColumnLabel
+        clanBaseColumnLabel_blue[i].innerHTML = "No Clan Base";
+
+        // Set the clanBaseColumnLabel id
+        clanBaseColumnLabel_blue[i].id = "noBase";
+
+        // Check if mostCommonClanTag appears 4 or more times in clanTags 
+        // and is not equals to EmptyPlayer.Clan
+        if (numTimesMostCommonClanTag >= 4 && mostCommonClanTag !== EmptyPlayer.Clan)
         {
-            // Remove square brackets from mostCommonClanTag
-            mostCommonClanTag = mostCommonClanTag.replace(/\[|\]/g, '');
-
             // Set the most common clan tag to the clanBaseColumnLabel
             clanBaseColumnLabel_blue[i].innerHTML = mostCommonClanTag;
 
             // Clear the clanBaseColumnLabel id
             clanBaseColumnLabel_blue[i].id = ""; 
-        }
-        else
-        {
-            // Set the most common clan tag to the clanBaseColumnLabel
-            clanBaseColumnLabel_blue[i].innerHTML = "No Clan Base";
-
-            // Set the clanBaseColumnLabel id
-            clanBaseColumnLabel_blue[i].id = "noBase";
         }
     }
 
@@ -1834,6 +1844,11 @@ function UpdateExtraPlayerInfoInRosteringTable()
         var playerName = allTableCells[i].getElementsByTagName("select")[0].value;
         // Regex remove clan tag from player name
         playerName = playerName.replace(/\[.*?\] /, "");
+
+        if(playerName == EmptyPlayer.IGN)
+        {
+            continue;
+        }
 
         // Use WC_PlayersOnBoard array to find matching player IGN
         var player = WC_PlayersOnBoard.find(function(element) { return element.IGN == playerName; });
