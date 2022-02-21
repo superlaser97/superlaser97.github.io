@@ -2,76 +2,76 @@
 //# sourceMappingURL=E:\_Stuff\Projects\superlaser97.github.io\script.js.map
 // Sample string for inputCBResponse
 const sample_csv_inputCBResponses = `Tramapolean	Available		Available		Available	Available			Available		3
-    AnotherLazyBoy	Available		Available		Available		Available	Available	Available		6
-    Jeremy07	Available	Available	Available	Available		Available				Available	6
-    SyIvia	Available		Available		Available		Available		Available		2
-    niklausmaximus	Available	Available	Available	Available					Available		6
-    OniichanYamate		Available		Available	Available	Available			Available		4
-    Bagpfbones78	Available	Available	Available	Available				Available	Available	Available	6
-    Jimbo762au	Available				Available				Available		3
-    sl3epwalka	Available		Available		Available		Available				4
-    Hingheru88	Available	Available	Available	Available		Available			Available	Available	8
-    Seiron_	Available		Available		Available				Available		4
-    BeardyBandit	Available								Available		2
-    Cascayd	Available		Available		Available	Available			Available	Available	6
-    xDreadHeartz	Available	Available	Available	Available		Available			Available	Available	7
-    spaceshiphaku	Available	Available	Available	Available					Available	Available	6
-    Bob778_				Available		Available				Available	3
-    Songinator	Available		Available						Available		3
-    Wulffenheinze	Available	Available		Available	Available	Available			Available	Available	4
-    swanno1	Available		Available		Available				Available		4
-    LiveOnEvil	Available	Available	Available	Available	Available	Available			Available	Available	4
-    luc_defender	Available	Available			Available	Available			Available	Available	4
-    adityakool15					Available						1
-    ronalchn	Available								Available		2
-    jordysiu915		Available		Available		Available					2
-    Wolfcain			Available		Available		Available	Available	Available		5
-    EyeDeeKayy	Available		Available		Available	Available	Available	Available	Available		8
-    stoolz	Available		Available		Available		Available	Available	Available		6
-    9_9_destroyer	Available	Available	Available	Available	Available	Available			Available	Available	8
-    BlackDe47h	Available		Available		Available	Available	Available	Available	Available	Available	8
-    Arrcadedus_1					Available	Available					2
-    PunMasterWally	Available		Available						Available		3
-    Nilaos			Available								1
-    _Ducky_		Available		Available		Available	Available	Available		Available	6`;
+AnotherLazyBoy	Available		Available		Available		Available	Available	Available		6
+Jeremy07	Available	Available	Available	Available		Available				Available	6
+SyIvia	Available		Available		Available		Available		Available		2
+niklausmaximus	Available	Available	Available	Available					Available		6
+OniichanYamate		Available		Available	Available	Available			Available		4
+Bagpfbones78	Available	Available	Available	Available				Available	Available	Available	6
+Jimbo762au	Available				Available				Available		3
+sl3epwalka	Available		Available		Available		Available				4
+Hingheru88	Available	Available	Available	Available		Available			Available	Available	8
+Seiron_	Available		Available		Available				Available		4
+BeardyBandit	Available								Available		2
+Cascayd	Available		Available		Available	Available			Available	Available	6
+xDreadHeartz	Available	Available	Available	Available		Available			Available	Available	7
+spaceshiphaku	Available	Available	Available	Available					Available	Available	6
+Bob778_				Available		Available				Available	3
+Songinator	Available		Available						Available		3
+Wulffenheinze	Available	Available		Available	Available	Available			Available	Available	4
+swanno1	Available		Available		Available				Available		4
+LiveOnEvil	Available	Available	Available	Available	Available	Available			Available	Available	4
+luc_defender	Available	Available			Available	Available			Available	Available	4
+adityakool15					Available						1
+ronalchn	Available								Available		2
+jordysiu915		Available		Available		Available					2
+Wolfcain			Available		Available		Available	Available	Available		5
+EyeDeeKayy	Available		Available		Available	Available	Available	Available	Available		8
+stoolz	Available		Available		Available		Available	Available	Available		6
+9_9_destroyer	Available	Available	Available	Available	Available	Available			Available	Available	8
+BlackDe47h	Available		Available		Available	Available	Available	Available	Available	Available	8
+Arrcadedus_1					Available	Available					2
+PunMasterWally	Available		Available						Available		3
+Nilaos			Available								1
+_Ducky_		Available		Available		Available	Available	Available		Available	6`;
 // Sample string for inputCBResponse
 const sample_csv_inputPlayerDetails = `_Ducky_	VKNGS	CALLER	BLUE	YES	YES
-    9_9_destroyer	VKNGS	CALLER	RED	YES	YES
-    adityakool15	RAN_	PLAYER	RED		YES
-    AnotherLazyBoy	VKNGS	CALLER	BLUE	YES	YES
-    Arrcadedus_1	BOB	CALLER	RED	YES	YES
-    Bagpfbones78	VKNGS	CALLER	BLUE		YES
-    BeardyBandit	BOB	CALLER	RED	YES	YES
-    BlackDe47h	BOB	CALLER	RED	YES	YES
-    Bob778_	AUSNZ	CALLER	BLUE	YES	
-    Cascayd	VKNGS	CALLER	RED	YES	YES
-    EyeDeeKayy	BOB	PLAYER	RED	YES	YES
-    Hingheru88	BOB	CALLER	RED	YES	YES
-    Jeremy07	VKNGS	PLAYER	RED	YES	YES
-    Jimbo762au	AUSNZ	CALLER	RED		YES
-    jordysiu915	VKNGS	PLAYER	BLUE	YES	
-    LiveOnEvil	VKNGS	PLAYER	RED		YES
-    luc_defender	VKNGS	PLAYER	RED		
-    Moggytwo	AUSNZ	CALLER	BLUE	YES	YES
-    Niklausmaximus	VKNGS	PLAYER	BLUE	YES	YES
-    OniichanYamate	VKNGS	PLAYER	RED	YES	YES
-    PunMasterWally	BOB	CALLER	RED	YES	YES
-    ronalchn	VKNGS	PLAYER	RED	YES	YES
-    Seiron_	RAN_	PLAYER	RED		YES
-    sl3epwalka	VKNGS	PLAYER	BLUE	YES	YES
-    Snowball328	REPOI	PLAYER	BLUE		
-    songinator	BOB	PLAYER	RED	YES	YES
-    spaceshiphaku	VKNGS	PLAYER	BLUE	YES	YES
-    stoolz	AUSNZ	CALLER	RED		YES
-    Strik3agle98	TKR	PLAYER	BLUE		
-    swanno1	BOB	CALLER	RED	YES	YES
-    SyIvia	AYNME	PLAYER	RED		YES
-    The_Crynek	REPOI	PLAYER	BLUE		
-    Tramapolean	VKNGS	PLAYER	RED		YES
-    Wolfcain	AUSNZ	CALLER	BLUE	YES	YES
-    Wulffenheinze	BOB	PLAYER	RED	YES	
-    xDreadHeartz	VKNGS	PLAYER	BLUE	YES	YES
-    Nilaos	1AN-E	PLAYER	RED		YES`;
+9_9_destroyer	VKNGS	CALLER	RED	YES	YES
+adityakool15	RAN_	PLAYER	RED		YES
+AnotherLazyBoy	VKNGS	CALLER	BLUE	YES	YES
+Arrcadedus_1	BOB	CALLER	RED	YES	YES
+Bagpfbones78	VKNGS	CALLER	BLUE		YES
+BeardyBandit	BOB	CALLER	RED	YES	YES
+BlackDe47h	BOB	CALLER	RED	YES	YES
+Bob778_	AUSNZ	CALLER	BLUE	YES	
+Cascayd	VKNGS	CALLER	RED	YES	YES
+EyeDeeKayy	BOB	PLAYER	RED	YES	YES
+Hingheru88	BOB	CALLER	RED	YES	YES
+Jeremy07	VKNGS	PLAYER	RED	YES	YES
+Jimbo762au	AUSNZ	CALLER	RED		YES
+jordysiu915	VKNGS	PLAYER	BLUE	YES	
+LiveOnEvil	VKNGS	PLAYER	RED		YES
+luc_defender	VKNGS	PLAYER	RED		
+Moggytwo	AUSNZ	CALLER	BLUE	YES	YES
+Niklausmaximus	VKNGS	PLAYER	BLUE	YES	YES
+OniichanYamate	VKNGS	PLAYER	RED	YES	YES
+PunMasterWally	BOB	CALLER	RED	YES	YES
+ronalchn	VKNGS	PLAYER	RED	YES	YES
+Seiron_	RAN_	PLAYER	RED		YES
+sl3epwalka	VKNGS	PLAYER	BLUE	YES	YES
+Snowball328	REPOI	PLAYER	BLUE		
+songinator	BOB	PLAYER	RED	YES	YES
+spaceshiphaku	VKNGS	PLAYER	BLUE	YES	YES
+stoolz	AUSNZ	CALLER	RED		YES
+Strik3agle98	TKR	PLAYER	BLUE		
+swanno1	BOB	CALLER	RED	YES	YES
+SyIvia	AYNME	PLAYER	RED		YES
+The_Crynek	REPOI	PLAYER	BLUE		
+Tramapolean	VKNGS	PLAYER	RED		YES
+Wolfcain	AUSNZ	CALLER	BLUE	YES	YES
+Wulffenheinze	BOB	PLAYER	RED	YES	
+xDreadHeartz	VKNGS	PLAYER	BLUE	YES	YES
+Nilaos	1AN-E	PLAYER	RED		YES`;
 // ENUM for player types
 var PlayerTypes;
 (function (PlayerTypes) {
@@ -152,13 +152,16 @@ function OnBtnClick_GenerateRosteringTable() {
     UpdateRosteringTableUIElements();
 }
 function OnBtnClick_ImportRosterData() {
-    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
-    cbRoster = JSON.parse(roster_textarea.value);
+    // Check if cbRoster is empty
+    if (cbRoster.Players.length == 0) {
+        alert("cbRoster is empty. Please generate roster data first.");
+        return;
+    }
+    ImportRosterDataFromTextbox();
     UpdateRosteringTableUIElements();
 }
 function OnBtnClick_ExportRosterData() {
-    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
-    roster_textarea.value = JSON.stringify(cbRoster);
+    ExportRosterDataToTextbox();
 }
 function OnBtnClick_ToggleExtraInfo() {
     showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
@@ -198,6 +201,64 @@ function OnCellClicked(cell) {
         // Show the textbox element
         textboxElement.style.display = "block";
     }
+}
+function ImportRosterDataFromTextbox() {
+    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
+    let backupCBRoster = { SelectedPlayers: [] };
+    // Try to parse the string
+    try {
+        backupCBRoster = JSON.parse(roster_textarea.value);
+    }
+    catch (e) {
+        alert("Error parsing roster data. Please make sure the data is valid.");
+        return;
+    }
+    // Restore the roster data
+    // Iterate over cbRoster.Players
+    // Team
+    for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++) {
+        // Session
+        for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++) {
+            // Player Candidates
+            for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++) {
+                // All player candidates
+                let playerInSlots = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
+                // Iterate over playerInSlots
+                for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++) {
+                    playerInSlots[playerInSlotIndex].Selected = false;
+                    if (backupCBRoster.SelectedPlayers[teamIndex][sessionIndex][playerIndex] === playerInSlots[playerInSlotIndex].IGN) {
+                        playerInSlots[playerInSlotIndex].Selected = true;
+                    }
+                }
+                // Check if there are no players that are selected
+                if (playerInSlots.filter(player => player.Selected).length === 0) {
+                    // Set the last player as selected
+                    playerInSlots[playerInSlots.length - 1].Selected = true;
+                }
+            }
+        }
+    }
+}
+function ExportRosterDataToTextbox() {
+    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
+    let backupCBRoster = { SelectedPlayers: [] };
+    // Iterate over cbRoster.Players and get the selected players
+    for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++) {
+        backupCBRoster.SelectedPlayers[teamIndex] = [];
+        for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++) {
+            backupCBRoster.SelectedPlayers[teamIndex][sessionIndex] = [];
+            for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++) {
+                let playerInSlots = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
+                // For each player in the slot, check if they are selected
+                for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++) {
+                    if (playerInSlots[playerInSlotIndex].Selected) {
+                        backupCBRoster.SelectedPlayers[teamIndex][sessionIndex].push(playerInSlots[playerInSlotIndex].IGN);
+                    }
+                }
+            }
+        }
+    }
+    roster_textarea.value = JSON.stringify(backupCBRoster);
 }
 function UpdateRosteringTableUIElements() {
     UpdateTableWithRosterData();
@@ -310,9 +371,13 @@ function UpdateRosteringTableCellColors() {
                 continue;
             }
             // If value of selectElement is found in selectedPlayersThatAppearedMoreThanOnce
+            // or select element doesn't contain the value of a empty player
             if (selectedPlayersThatAppearedMoreThanOnce.includes(selectElement.value) || selectElement.value.includes("[X] None")) {
-                // Add a class to the parent element
-                parentElement.classList.add("duplicate-player");
+                // And showExtraPlayerInfoInRosteringTable is true
+                if (showExtraPlayerInfoInRosteringTable) {
+                    // Add a class to the parent element
+                    parentElement.classList.add("duplicate-player");
+                }
             }
         }
     }
@@ -428,8 +493,13 @@ function UpdateTableWithRosterData() {
                 // Add the select element to the array
                 elementsToAdd.push([selectElement, textboxElement]);
             }
+            let callerCellClass = "callerCell";
+            let classToAddToCell = "";
+            if (playerPosition == 0 || playerPosition == 1) {
+                classToAddToCell = callerCellClass;
+            }
             // Add the select elements to the table row
-            AddRowToTableAnyData_ForRosteringTable(rosterIDs[team], elementsToAdd);
+            AddRowToTableAnyData_ForRosteringTable(rosterIDs[team], elementsToAdd, classToAddToCell);
         }
     }
 }
@@ -690,6 +760,16 @@ function GeneratePlayersOnboardArray() {
         // Push the new PlayerOnboard object to the playersOnboardArray
         playersOnboardArray.push(newPlayerOnboard);
     }
+    // sort the playersOnboardArray by the IGN
+    playersOnboardArray.sort(function (a, b) {
+        if (a.IGN < b.IGN) {
+            return -1;
+        }
+        if (a.IGN > b.IGN) {
+            return 1;
+        }
+        return 0;
+    });
 }
 // Function to update the table with the playersOnboardArray
 function UpdateTableWithPlayersOnboardArray() {
@@ -819,31 +899,25 @@ function ItemAppearsMoreThanOnceInArray(item, array) {
 // Takes in an array of select elements to be added to the row
 // Takes in an array of IDs of the cells to be added to the row
 // Takes in a class name (optional)
-function AddRowToTableAnyData_ForRosteringTable(tableId, rowData, cellIDs = [], rowClass = "") {
+function AddRowToTableAnyData_ForRosteringTable(tableId, rowData, cellClass = "") {
     // Get the table
     let table = document.getElementById(tableId);
     // Get the table body
     let tableBody = table.tBodies[0];
     // Create a new row
     let newRow = document.createElement("tr");
-    // If row class is not empty
-    if (rowClass != "") {
-        // Set the row class
-        newRow.className = rowClass;
-    }
     // For each row data
     for (let i = 0; i < rowData.length; i++) {
         // Create a new cell
         let newCell = document.createElement("td");
-        // TODO: ENABLE THIS
         for (let j = 0; j < rowData[i].length; j++) {
             newCell.appendChild(rowData[i][j]);
         }
-        if (cellIDs.length > 0) {
-            newCell.id = cellIDs[i];
-        }
         // Cell on click event
         newCell.oncontextmenu = function () { OnCellClicked(newCell); };
+        if (cellClass != "") {
+            newCell.classList.add(cellClass);
+        }
         // Append the cell to the row
         newRow.appendChild(newCell);
     }
