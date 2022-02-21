@@ -208,7 +208,7 @@ let playersOnboardArray: PlayerOnboard[] = [];
 // cbRosterData
 let cbRoster: CBRoster = { Players: [], PlayerSlotAssigments: [] };
 
-
+let showExtraPlayerInfoInRosteringTable = true;
 
 
 
@@ -270,6 +270,12 @@ function OnBtnClick_ExportRosterData()
     roster_textarea.value = JSON.stringify(cbRoster);
 }
 
+function OnBtnClick_ToggleExtraInfo()
+{
+    showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
+    UpdateRosteringTableUIElements();
+}
+
 function OnSelectElementChanged(selectElement: HTMLSelectElement)
 {
     let team: number = Number(selectElement.id.split("-")[0]);
@@ -306,15 +312,62 @@ function UpdateRosteringTableUIElements()
     UpdateSessionClanBaseHeader();
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
+    UpdateUnrosterdPlayersTable();
+}
+
+function UpdateUnrosterdPlayersTable()
+{
+    // TODO: FIX THIS
+    return;
+    // 1st layer - slot
+    // 2nd layer - unselected players
+    let unSelectedPlayersInSelectElements: string[][] = [[], [], [], [], [], [], [], [], [], []];
+
+    for(let slot = 0; slot < ALLSESSIONSLOTS.length; slot++)
+    {
+        let selectElementsInSlot_BlueAndRedTeams: HTMLSelectElement[] = [];
+
+        for(let team = 0; team < ALLTEAMS.length; team++)
+        {
+            for(let playerPosition = 0; playerPosition < cbRoster.Players[team][slot].length; playerPosition++)
+            {
+                let selectElementID = team + "-" + slot + "-" + playerPosition;
+                selectElementsInSlot_BlueAndRedTeams.push(document.getElementById(selectElementID) as HTMLSelectElement);
+            }
+        }
+
+        // Loop the select elements in slot
+        for(let selectElement of selectElementsInSlot_BlueAndRedTeams)
+        {
+            // For each options in select element
+            for(let option of selectElement.options)
+            {
+                // If option is not selected
+                if(!option.selected)
+                {
+                    unSelectedPlayersInSelectElements[slot].push(option.value);
+                }
+            }
+        }
+
+        // Deduplicate unSelectedPlayersInSelectElements
+        unSelectedPlayersInSelectElements[slot] = unSelectedPlayersInSelectElements[slot].filter((value, index, self) => self.indexOf(value) === index);
+    }
+
+    console.log(unSelectedPlayersInSelectElements);
 }
 
 function UpdateAllRosteringTableCellsWithPlayerData()
 {
+    if(showExtraPlayerInfoInRosteringTable == false)
+    {
+        return;
+    }
+
     var extraInfoCaller_HTMLTemplate: string = '<div class="extra-info extra-info-caller">CALLER</div>';
     var extraInfoEnterBtl_HTMLTemplate: string = '<div class="extra-info extra-info-startbtl">KEY</div>';
     var extraInfoStartBlueTeam_HTMLTemplate: string = '<div class="extra-info extra-info-bluteam">BLUE</div>';
     var extraInfoStartRedTeam_HTMLTemplate: string = '<div class="extra-info extra-info-redteam">RED</div>';
-
 
     for (let team = 0; team < cbRoster.Players.length; team++)
     {

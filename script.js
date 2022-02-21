@@ -122,6 +122,7 @@ let inputPlayerDetailsArray = [];
 let playersOnboardArray = [];
 // cbRosterData
 let cbRoster = { Players: [], PlayerSlotAssigments: [] };
+let showExtraPlayerInfoInRosteringTable = true;
 function OnPageLoad() {
     // Prompt if want to run test data
     if (confirm("Do you want to run test data?")) {
@@ -164,6 +165,10 @@ function OnBtnClick_ExportRosterData() {
     let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
     roster_textarea.value = JSON.stringify(cbRoster);
 }
+function OnBtnClick_ToggleExtraInfo() {
+    showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
+    UpdateRosteringTableUIElements();
+}
 function OnSelectElementChanged(selectElement) {
     let team = Number(selectElement.id.split("-")[0]);
     let slot = Number(selectElement.id.split("-")[1]);
@@ -186,8 +191,41 @@ function UpdateRosteringTableUIElements() {
     UpdateSessionClanBaseHeader();
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
+    UpdateUnrosterdPlayersTable();
+}
+function UpdateUnrosterdPlayersTable() {
+    // TODO: FIX THIS
+    return;
+    // 1st layer - slot
+    // 2nd layer - unselected players
+    let unSelectedPlayersInSelectElements = [[], [], [], [], [], [], [], [], [], []];
+    for (let slot = 0; slot < ALLSESSIONSLOTS.length; slot++) {
+        let selectElementsInSlot_BlueAndRedTeams = [];
+        for (let team = 0; team < ALLTEAMS.length; team++) {
+            for (let playerPosition = 0; playerPosition < cbRoster.Players[team][slot].length; playerPosition++) {
+                let selectElementID = team + "-" + slot + "-" + playerPosition;
+                selectElementsInSlot_BlueAndRedTeams.push(document.getElementById(selectElementID));
+            }
+        }
+        // Loop the select elements in slot
+        for (let selectElement of selectElementsInSlot_BlueAndRedTeams) {
+            // For each options in select element
+            for (let option of selectElement.options) {
+                // If option is not selected
+                if (!option.selected) {
+                    unSelectedPlayersInSelectElements[slot].push(option.value);
+                }
+            }
+        }
+        // Deduplicate unSelectedPlayersInSelectElements
+        unSelectedPlayersInSelectElements[slot] = unSelectedPlayersInSelectElements[slot].filter((value, index, self) => self.indexOf(value) === index);
+    }
+    console.log(unSelectedPlayersInSelectElements);
 }
 function UpdateAllRosteringTableCellsWithPlayerData() {
+    if (showExtraPlayerInfoInRosteringTable == false) {
+        return;
+    }
     var extraInfoCaller_HTMLTemplate = '<div class="extra-info extra-info-caller">CALLER</div>';
     var extraInfoEnterBtl_HTMLTemplate = '<div class="extra-info extra-info-startbtl">KEY</div>';
     var extraInfoStartBlueTeam_HTMLTemplate = '<div class="extra-info extra-info-bluteam">BLUE</div>';

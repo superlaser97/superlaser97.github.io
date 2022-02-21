@@ -133,6 +133,13 @@ table th#redTeam
   padding: 10px 0px;
 }
 
+table th#unrostered
+{
+  background-color: #5200a0;
+  font-size: 20px;
+  padding: 10px 0px;
+}
+
 table td
 {
   background-color: #ebebeb;
