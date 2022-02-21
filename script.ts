@@ -96,6 +96,7 @@ interface PlayerDetail
     PlayerType: PlayerTypes;
     Team: TeamTypes;
     EnterBattle: boolean;
+    SortieDone: boolean;
 }
 
 // ENUM for player types
@@ -118,7 +119,8 @@ enum PlayerRemarks
     NONE = "NONE",
     NOT_PARTICIPATING = "NOT PARTICIPATING",
     PLAYER_NOT_FOUND = "PLAYER NOT FOUND",
-    DUPLICATE_ENTRY = "DUPLICATE ENTRY"
+    DUPLICATE_ENTRY = "DUPLICATE ENTRY",
+    DID_NOT_DO_SORTIE = "DID NOT DO SORTIE"
 }
 
 // Static array that contains all player positions
@@ -627,13 +629,16 @@ function GenerateRosterData()
     cbRoster.PlayerSlotAssigments = [];
 
     // Add all players in playersOnboardArray to cbRosterData.PlayerSlotAssigments
-    // Except players the remarks contains not participating, are duplicates or not found
+    // Except players the remarks contains not participating, are duplicates, not found or did not do sortie
     for (let i = 0; i < playersOnboardArray.length; i++) 
     {
         let playerOnboard: PlayerOnboard = playersOnboardArray[i];
         if (playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.NOT_PARTICIPATING) == -1 &&
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DUPLICATE_ENTRY) == -1 &&
-            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1) {
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1 &&
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DID_NOT_DO_SORTIE) == -1
+            ) 
+            {
             let newPlayerSlotsAssignedData =
             {
                 IGN: playerOnboard.IGN,
@@ -835,12 +840,14 @@ function ParseInputPlayerDetailsString(inputString: string): void {
         let inputStringArray2: string[] = inputStringArray[i].split("\t");
 
         // Create a new PlayerDetail object
-        let newPlayerDetail: PlayerDetail = {
+        let newPlayerDetail: PlayerDetail = 
+        {
             IGN: inputStringArray2[0],
             Clan: inputStringArray2[1],
             PlayerType: inputStringArray2[2] == "CALLER" ? PlayerTypes.CALLER : PlayerTypes.PLAYER,
             Team: inputStringArray2[3] == "RED" ? TeamTypes.RED : TeamTypes.BLUE,
-            EnterBattle: inputStringArray2[4] == "YES" ? true : false
+            EnterBattle: inputStringArray2[4] == "YES" ? true : false,
+            SortieDone: inputStringArray2[5] == "YES" ? true : false
         };
 
         // Add the new PlayerDetail object to the inputPlayerDetailsArray
@@ -849,12 +856,14 @@ function ParseInputPlayerDetailsString(inputString: string): void {
 }
 
 // Function to create the playersOnboardArray
-function GeneratePlayersOnboardArray(): void {
+function GeneratePlayersOnboardArray(): void 
+{
     // Clear the playersOnboardArray
     playersOnboardArray = [];
 
     // Loop through the inputCBResponseArray
-    for (let i: number = 0; i < inputCBResponseArray.length; i++) {
+    for (let i: number = 0; i < inputCBResponseArray.length; i++) 
+    {
         let IGN: string = inputCBResponseArray[i].IGN;
         let clan = "";
         let playerType: PlayerTypes = PlayerTypes.UNKNOWN;
@@ -865,11 +874,13 @@ function GeneratePlayersOnboardArray(): void {
 
         // Check if playerIGN does not exist in inputPlayerDetailsArray
         // Ignore case when comparing
-        if (!inputPlayerDetailsArray.some(x => x.IGN.toLowerCase() == IGN.toLowerCase())) {
+        if (!inputPlayerDetailsArray.some(x => x.IGN.toLowerCase() == IGN.toLowerCase())) 
+        {
             // Add the player not found remark to the playerRemarks array
             playerRemarks.push(PlayerRemarks.PLAYER_NOT_FOUND);
         }
-        else {
+        else 
+        {
             // Get the player object from the inputPlayerDetailsArray
             // Ignore case when getting the object
             let player: PlayerDetail = inputPlayerDetailsArray.filter(x => x.IGN.toLowerCase() == IGN.toLowerCase())[0];
@@ -879,6 +890,11 @@ function GeneratePlayersOnboardArray(): void {
             playerType = player.PlayerType;
             team = player.Team;
             enterBattle = player.EnterBattle;
+            
+            if(player.SortieDone == false)
+            {
+                playerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
+            }
         }
 
         // Check if playerIGN appears more than once in inputCBResponseArray
@@ -899,7 +915,8 @@ function GeneratePlayersOnboardArray(): void {
         inputCBResponseArray[i].SUN_N_2 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[9]) : null;
 
         // Check if player does not have any days available
-        if (sessionSlotsSelected.length == 0) {
+        if (sessionSlotsSelected.length == 0) 
+        {
             // Add the no days available remark to the playerRemarks array
             playerRemarks.push(PlayerRemarks.NOT_PARTICIPATING);
         }
@@ -923,7 +940,8 @@ function GeneratePlayersOnboardArray(): void {
 }
 
 // Function to update the table with the playersOnboardArray
-function UpdateTableWithPlayersOnboardArray(): void {
+function UpdateTableWithPlayersOnboardArray(): void 
+{
     // Clear the table body
     ClearTableBody("playersOnBoard-table");
 
@@ -993,6 +1011,13 @@ function UpdateTableWithPlayersOnboardArray(): void {
         if (ItemAppearsInArray(PlayerRemarks.NOT_PARTICIPATING, playersOnboardArray[i].PlayerRemarks) == true) {
             // Add the rowData to the table
             AddRowToTable("playersOnBoard-table", rowData, "darkColoredTableRow");
+            continue;
+        }
+
+        // If player remarks contains DID_NOT_DO_SORTIE
+        if (ItemAppearsInArray(PlayerRemarks.DID_NOT_DO_SORTIE, playersOnboardArray[i].PlayerRemarks) == true) {
+            // Add the rowData to the table
+            AddRowToTable("playersOnBoard-table", rowData, "orangeColoredTableRow");
             continue;
         }
 

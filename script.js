@@ -86,6 +86,7 @@ var PlayerRemarks;
     PlayerRemarks["NOT_PARTICIPATING"] = "NOT PARTICIPATING";
     PlayerRemarks["PLAYER_NOT_FOUND"] = "PLAYER NOT FOUND";
     PlayerRemarks["DUPLICATE_ENTRY"] = "DUPLICATE ENTRY";
+    PlayerRemarks["DID_NOT_DO_SORTIE"] = "DID NOT DO SORTIE";
 })(PlayerRemarks || (PlayerRemarks = {}));
 // Static array that contains all player positions
 const ALLPLAYERPOSITIONS = [
@@ -404,12 +405,13 @@ function GenerateRosterData() {
     cbRoster.Players = [];
     cbRoster.PlayerSlotAssigments = [];
     // Add all players in playersOnboardArray to cbRosterData.PlayerSlotAssigments
-    // Except players the remarks contains not participating, are duplicates or not found
+    // Except players the remarks contains not participating, are duplicates, not found or did not do sortie
     for (let i = 0; i < playersOnboardArray.length; i++) {
         let playerOnboard = playersOnboardArray[i];
         if (playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.NOT_PARTICIPATING) == -1 &&
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DUPLICATE_ENTRY) == -1 &&
-            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1) {
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1 &&
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DID_NOT_DO_SORTIE) == -1) {
             let newPlayerSlotsAssignedData = {
                 IGN: playerOnboard.IGN,
                 SessionsAssigned: 0,
@@ -575,7 +577,8 @@ function ParseInputPlayerDetailsString(inputString) {
             Clan: inputStringArray2[1],
             PlayerType: inputStringArray2[2] == "CALLER" ? PlayerTypes.CALLER : PlayerTypes.PLAYER,
             Team: inputStringArray2[3] == "RED" ? TeamTypes.RED : TeamTypes.BLUE,
-            EnterBattle: inputStringArray2[4] == "YES" ? true : false
+            EnterBattle: inputStringArray2[4] == "YES" ? true : false,
+            SortieDone: inputStringArray2[5] == "YES" ? true : false
         };
         // Add the new PlayerDetail object to the inputPlayerDetailsArray
         inputPlayerDetailsArray.push(newPlayerDetail);
@@ -609,6 +612,9 @@ function GeneratePlayersOnboardArray() {
             playerType = player.PlayerType;
             team = player.Team;
             enterBattle = player.EnterBattle;
+            if (player.SortieDone == false) {
+                playerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
+            }
         }
         // Check if playerIGN appears more than once in inputCBResponseArray
         if (inputCBResponseArray.filter(x => x.IGN == IGN).length > 1) {
@@ -709,6 +715,12 @@ function UpdateTableWithPlayersOnboardArray() {
         if (ItemAppearsInArray(PlayerRemarks.NOT_PARTICIPATING, playersOnboardArray[i].PlayerRemarks) == true) {
             // Add the rowData to the table
             AddRowToTable("playersOnBoard-table", rowData, "darkColoredTableRow");
+            continue;
+        }
+        // If player remarks contains DID_NOT_DO_SORTIE
+        if (ItemAppearsInArray(PlayerRemarks.DID_NOT_DO_SORTIE, playersOnboardArray[i].PlayerRemarks) == true) {
+            // Add the rowData to the table
+            AddRowToTable("playersOnBoard-table", rowData, "orangeColoredTableRow");
             continue;
         }
         AddRowToTable("playersOnBoard-table", rowData);

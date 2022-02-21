@@ -166,8 +166,14 @@ table td.redColoredTableRow
 
 table td.darkColoredTableRow
 {
-  background-color: rgb(78, 78, 78);
+  background-color: rgb(104, 104, 104);
   color: white;
+}
+
+table td.orangeColoredTableRow
+{
+  background-color: rgb(255, 188, 101);
+  color: rgb(0, 0, 0);
 }
 
 select.tableSelect
