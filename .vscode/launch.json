@@ -15,6 +15,12 @@
             "request": "launch",
             "name": "Launch Chrome against localhost 2",
             "url": "file:///C:/Users/USER/Desktop/superlaser97.github.io/index.html",
+        },
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "TS",
+            "url": "file:///E:/_Stuff/Projects/superlaser97.github.io/index2.html",
         }
     ]
 }

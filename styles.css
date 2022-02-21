@@ -23,7 +23,6 @@ html
   top: 0;
   left: 0;
   right: 0;
-  width: 100%;
   background: var(--accent-color);
   line-height: 60px;
   padding: 10px 10px 10px 30px;
@@ -106,6 +105,7 @@ table
   color: white;
   text-align:center;
   padding: 10px 0px;
+  font-size: 12px;
 }
 
 table th
@@ -198,7 +198,7 @@ select.tableSelect option
   bottom: 10px;
 }
 
-.playersSlotsAssignedSection
+div#assignedSlotsTracker-div
 {
   width: 100%;
   background-color: rgb(255, 255, 255);
@@ -255,7 +255,13 @@ select.tableSelect option
   color: black;
 }
 
-.playerSlotContainer div#overfilled
+.playerSlotContainer div#not-rostered
+{
+  background-color: rgb(149, 0, 194);
+  color: rgb(255, 255, 255);
+}
+
+.playerSlotContainer div#over-rostered
 {
   background-color: rgb(202, 86, 86);
   color: rgb(255, 255, 255);
@@ -266,7 +272,7 @@ select.tableSelect option
   background-color: rgb(51, 51, 51);
 }
 
-.ClanBase_ColumnLabel#noBase
+.ClanBase_ColumnLabel.noBase
 {
   background-color: rgb(202, 202, 202);
   color: black;
@@ -275,7 +281,7 @@ select.tableSelect option
 .extra-info
 {
   display: inline-block;
-  font-size: 12px;
+  font-size: 10px;
   margin: 0px 5px 0 0;
   padding: 0px;
   font-weight: bold;

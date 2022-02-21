@@ -2,46 +2,47 @@
     <meta name="viewport" content="initial-scale=1.0">
     <html>
     <head>
-        <script src="scripts.js"></script>
+        <script src="script.js"></script>
 
         <link rel="stylesheet" href="styles.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Quantico:wght@700&family=Roboto&display=swap" rel="stylesheet">
     </head>
-    <body onload="OnLoad()">
+    <body onload="OnPageLoad()">
         <div class="TitleBar">Clan Battles Rostering System</div>
 
         <!-- Textbox to paste responses data -->
         <div class="splitContainer">
-            <textarea id="rawCBResponses-textarea"></textarea>
+            <textarea id="inputCBResponses-textarea"></textarea>
             <!-- Button to load csv file -->
-            <button id="loadRawCBResponses-Btn" onclick="OnLoadRawCBResponsesBtn_Click()">Load Raw CB Responses</button>
+            <button onclick="OnBtnClick_LoadCBResponses()">Load CB Responses</button>
         </div>
         <div class="splitContainer">
-            <textarea id="rawPlayerDetails-textarea"></textarea>
+            <textarea id="inputPlayerDetails-textarea"></textarea>
             <!-- Button to load csv file -->
-            <button id="loadRawPlayerDetails-Btn" onclick="OnLoadRawPlayerDetailsBtn_Click()">Load Raw Player Details</button>
+            <button onclick="OnBtnClick_LoadPlayerDetails()">Load Player Details</button>
         </div>
 
-        <h1 class="clickable_h1" onclick="ToggleTableVisibility('rawCBResponses-table')">Raw CB Responses ▼</h1>
+        <h1 class="clickable_h1" onclick="ToggleTableVisibility('cbResponses-table')">Raw CB Responses ▼</h1>
 
         <div style="display: none;">
             <!-- table that lists the responses -->
-            <table id="rawCBResponses-table">
+            <table id="cbResponses-table">
                 <!-- timestamp, in game name, Wed1, Wed2, Thu1, Thu2, Sat1, Sat2, Sun1, Sun2 -->
                 <thead>
                     <tr>
-                        <th>Timestamp</th>
                         <th>In Game Name</th>
-                        <th>Wed1</th>
-                        <th>Wed2</th>
-                        <th>Thu1</th>
-                        <th>Thu2</th>
-                        <th>Sat1</th>
-                        <th>Sat2</th>
-                        <th>Sun1</th>
-                        <th>Sun2</th>
+                        <th>WedA</th>
+                        <th>WedB</th>
+                        <th>ThuA</th>
+                        <th>ThuB</th>
+                        <th>SatA</th>
+                        <th>SatB</th>
+                        <th>SunMA</th>
+                        <th>SunMB</th>
+                        <th>SunNA</th>
+                        <th>SunNB</th>
                         <th>Max number of days</th>
                     </tr>
                 </thead>
@@ -73,7 +74,7 @@
         <br>
         <br>
 
-        <button id="generatePlayersOnBoard-Btn" onclick="OnGeneratePlayersOnBoardBtn_Click()">Generate Players OnBoard</button>
+        <button onclick="OnBtnClick_GeneratePlayersOnboard()">Generate Players OnBoard</button>
         <h1 class="clickable_h1" onclick="ToggleTableVisibility('playersOnBoard-table')">Players On Board ▼</h1>
         
         <div style="display: none;">
@@ -83,20 +84,22 @@
                 <thead>
                     <tr>
                         <th>IGN</th>
-                        <th>MaxNumSlots</th>
+                        <th>Max Games</th>
                         <th>Clan</th>
                         <th>Type</th>
                         <th>Team</th>
-                        <th>Can Start BTL</th>
+                        <th>Start BTL</th>
                         <th>Remarks</th>
-                        <th>N1A</th>
-                        <th>N1B</th>
-                        <th>N2A</th>
-                        <th>N2B</th>
-                        <th>N3A</th>
-                        <th>N3B</th>
-                        <th>N4A</th>
-                        <th>N4B</th>
+                        <th>WedA</th>
+                        <th>WedB</th>
+                        <th>ThuA</th>
+                        <th>ThuB</th>
+                        <th>SatA</th>
+                        <th>SatB</th>
+                        <th>SunMA</th>
+                        <th>SunMB</th>
+                        <th>SunNA</th>
+                        <th>SunNB</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,26 +110,29 @@
         <br>
         <br>
         
-        <button id="updateRosteringTable-Btn" onclick="OnGenerateRosteringTableBtn_Click()">Generate Rostering Table</button>
-        <button id="togglePlayerExtraInfo-Btn" onclick="OnToggleExtraPlayerInfoBtn_Click()">Toggle Extra Info</button>
+        <button onclick="OnBtnClick_GenerateRosteringTable()">Generate Rostering Table</button>
+        <button onclick="OnToggleExtraPlayerInfoBtn_Click()">Toggle Extra Info</button>
         <table id="rostering-table-blue">
             <thead>
-                <tr><th colspan="8" id="blueTeam">Blue Team Roster</th></tr>
+                <tr><th colspan="10" id="blueTeam">Blue Team Roster</th></tr>
                 <tr>
                     <th colspan="2">Wednesday Night</th>
                     <th colspan="2">Thuesday Night</th>
                     <th colspan="2">Saturday Night</th>
+                    <th colspan="2">Sunday Morning</th>
                     <th colspan="2">Sunday Night</th>
                 </tr>
                 <tr>
-                    <th class="ClanBase_ColumnLabel" id="N1A_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N1B_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N2A_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N2B_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N3A_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N3B_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N4A_Blue">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N4B_Blue">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-0">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-1">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-2">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-3">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-4">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-5">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-6">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-7">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-8">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="0-9">Clan Base</th>
                 </tr>
             </thead>
             <tbody>
@@ -134,22 +140,25 @@
         </table>
         <table id="rostering-table-red">
             <thead>
-                <tr><th colspan="8" id="redTeam">Red Team Roster</th></tr>
+                <tr><th colspan="10" id="redTeam">Red Team Roster</th></tr>
                 <tr>
                     <th colspan="2">Wednesday Night</th>
                     <th colspan="2">Thuesday Night</th>
                     <th colspan="2">Saturday Night</th>
+                    <th colspan="2">Sunday Morning</th>
                     <th colspan="2">Sunday Night</th>
                 </tr>
                 <tr>
-                    <th class="ClanBase_ColumnLabel" id="N1A_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N1B_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N2A_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N2B_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N3A_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N3B_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N4A_Red">Clan Base</th>
-                    <th class="ClanBase_ColumnLabel" id="N4B_Red">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-0">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-1">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-2">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-3">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-4">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-5">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-6">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-7">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-8">Clan Base</th>
+                    <th class="ClanBase_ColumnLabel" id="1-9">Clan Base</th>
                 </tr>
             </thead>
             <tbody>
@@ -160,14 +169,14 @@
         <div class="splitContainer">
             <textarea id="export-import-rosteringtable-textarea"></textarea>
             <!-- Button to load csv file -->
-            <button id="loadRawCBResponses-Btn" onclick="OnExportRosteringTableBtn_Click()">Export Rostering Table</button>
-            <button id="loadRawCBResponses-Btn" onclick="OnImportRosteringTableBtn_Click()">Import Rostering Table</button>
+            <button onclick="OnBtnClick_ExportRosterData()">Export Rostering Table</button>
+            <button onclick="OnBtnClick_ImportRosterData()">Import Rostering Table</button>
         </div>
 
         <!-- Container to display players and number of slots assigned -->
         <div class="bottomFloatingPanel">
-            <h1 class="clickable_h1" onclick="ToggleClassVisibility('playersSlotsAssignedSection')">Assigned Slots Tracker ▼</h1>
-            <div class="playersSlotsAssignedSection" style="display: none;">
+            <h1 class="clickable_h1" onclick="ToggleDivVisibility('assignedSlotsTracker-div')">Assigned Slots Tracker ▼</h1>
+            <div id="assignedSlotsTracker-div" style="display: none;">
             </div>
         </div>
 
