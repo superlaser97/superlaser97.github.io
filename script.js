@@ -218,6 +218,7 @@ function UpdateAllRosteringTableCellsWithPlayerData() {
     }
     var extraInfoCaller_HTMLTemplate = '<div class="extra-info extra-info-caller">CALLER</div>';
     var extraInfoEnterBtl_HTMLTemplate = '<div class="extra-info extra-info-startbtl">KEY</div>';
+    var extraInfoNoSortie_HTMLTemplate = '<div class="extra-info extra-info-nosortie">NO SORTIE</div>';
     var extraInfoStartBlueTeam_HTMLTemplate = '<div class="extra-info extra-info-bluteam">BLUE</div>';
     var extraInfoStartRedTeam_HTMLTemplate = '<div class="extra-info extra-info-redteam">RED</div>';
     for (let team = 0; team < cbRoster.Players.length; team++) {
@@ -242,6 +243,9 @@ function UpdateAllRosteringTableCellsWithPlayerData() {
                 }
                 // Get the parent of the select element
                 let parentElement = selectElement.parentElement;
+                if (selectedPlayer.SortieDone == false) {
+                    parentElement.prepend(CreateElementFromString(extraInfoNoSortie_HTMLTemplate));
+                }
                 if (selectedPlayer.PlayerType == PlayerTypes.CALLER) {
                     parentElement.prepend(CreateElementFromString(extraInfoCaller_HTMLTemplate));
                 }
@@ -405,13 +409,12 @@ function GenerateRosterData() {
     cbRoster.Players = [];
     cbRoster.PlayerSlotAssigments = [];
     // Add all players in playersOnboardArray to cbRosterData.PlayerSlotAssigments
-    // Except players the remarks contains not participating, are duplicates, not found or did not do sortie
+    // Except players the remarks contains not participating, are duplicates, not found
     for (let i = 0; i < playersOnboardArray.length; i++) {
         let playerOnboard = playersOnboardArray[i];
         if (playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.NOT_PARTICIPATING) == -1 &&
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DUPLICATE_ENTRY) == -1 &&
-            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1 &&
-            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DID_NOT_DO_SORTIE) == -1) {
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1) {
             let newPlayerSlotsAssignedData = {
                 IGN: playerOnboard.IGN,
                 SessionsAssigned: 0,
@@ -449,7 +452,8 @@ function GenerateRosterData() {
                 Clan: playerOnboard.Clan,
                 PlayerType: playerOnboard.PlayerType,
                 Team: playerOnboard.Team,
-                EnterBattle: playerOnboard.EnterBattle
+                EnterBattle: playerOnboard.EnterBattle,
+                SortieDone: playerOnboard.SortieDone
             });
         }
         let caller1_candidates = [];
@@ -465,7 +469,8 @@ function GenerateRosterData() {
             Clan: "X",
             PlayerType: PlayerTypes.UNKNOWN,
             Team: TeamTypes.UNKNOWN,
-            EnterBattle: false
+            EnterBattle: false,
+            SortieDone: false
         };
         caller1_candidates.push(emptyPlayer);
         caller2_candidates.push(emptyPlayer);
@@ -596,6 +601,7 @@ function GeneratePlayersOnboardArray() {
         let playerType = PlayerTypes.UNKNOWN;
         let team = TeamTypes.UNKNOWN;
         let enterBattle = false;
+        let sortieDone = false;
         let playerRemarks = [];
         let sessionSlotsSelected = [];
         // Check if playerIGN does not exist in inputPlayerDetailsArray
@@ -613,6 +619,7 @@ function GeneratePlayersOnboardArray() {
             playerType = player.PlayerType;
             team = player.Team;
             enterBattle = player.EnterBattle;
+            sortieDone = player.SortieDone;
             if (player.SortieDone == false) {
                 playerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
             }
@@ -646,7 +653,8 @@ function GeneratePlayersOnboardArray() {
             EnterBattle: enterBattle,
             SessionSlotsSelected: sessionSlotsSelected,
             MAX_SLOTS: inputCBResponseArray[i].MAX_SLOTS,
-            PlayerRemarks: playerRemarks
+            PlayerRemarks: playerRemarks,
+            SortieDone: sortieDone
         };
         // Push the new PlayerOnboard object to the playersOnboardArray
         playersOnboardArray.push(newPlayerOnboard);

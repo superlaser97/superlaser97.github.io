@@ -314,3 +314,8 @@ div#assignedSlotsTracker-div
 {
   color: rgb(151, 0, 0);
 }
+
+.extra-info.extra-info-nosortie
+{
+  color: rgb(0, 0, 0);
+}
