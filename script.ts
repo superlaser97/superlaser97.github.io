@@ -214,19 +214,7 @@ let showExtraPlayerInfoInRosteringTable = true;
 
 function OnPageLoad() 
 {
-    // Prompt if want to run test data
-    if (confirm("Do you want to run test data?")) {
-        let inputCBResponses_textarea: HTMLTextAreaElement = document.getElementById("inputCBResponses-textarea") as HTMLTextAreaElement;
-        inputCBResponses_textarea.textContent = sample_csv_inputCBResponses;
-
-        let inputPlayerDetails_textArea: HTMLTextAreaElement = document.getElementById("inputPlayerDetails-textarea") as HTMLTextAreaElement;
-        inputPlayerDetails_textArea.textContent = sample_csv_inputPlayerDetails;
-
-        OnBtnClick_LoadCBResponses();
-        OnBtnClick_LoadPlayerDetails();
-        OnBtnClick_GeneratePlayersOnboard();
-        OnBtnClick_GenerateRosteringTable();
-    }
+    
 }
 
 function OnBtnClick_LoadCBResponses() 
@@ -1455,7 +1443,16 @@ function CreateElementFromString(string: string): HTMLElement
 
 
 
-function Test()
+function LoadSampleData()
 {
-    console.log(cbRoster);
+    let inputCBResponses_textarea: HTMLTextAreaElement = document.getElementById("inputCBResponses-textarea") as HTMLTextAreaElement;
+    inputCBResponses_textarea.textContent = sample_csv_inputCBResponses;
+
+    let inputPlayerDetails_textArea: HTMLTextAreaElement = document.getElementById("inputPlayerDetails-textarea") as HTMLTextAreaElement;
+    inputPlayerDetails_textArea.textContent = sample_csv_inputPlayerDetails;
+
+    OnBtnClick_LoadCBResponses();
+    OnBtnClick_LoadPlayerDetails();
+    OnBtnClick_GeneratePlayersOnboard();
+    OnBtnClick_GenerateRosteringTable();
 }

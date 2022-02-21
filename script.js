@@ -124,17 +124,6 @@ let playersOnboardArray = [];
 let cbRoster = { Players: [], PlayerSlotAssigments: [] };
 let showExtraPlayerInfoInRosteringTable = true;
 function OnPageLoad() {
-    // Prompt if want to run test data
-    if (confirm("Do you want to run test data?")) {
-        let inputCBResponses_textarea = document.getElementById("inputCBResponses-textarea");
-        inputCBResponses_textarea.textContent = sample_csv_inputCBResponses;
-        let inputPlayerDetails_textArea = document.getElementById("inputPlayerDetails-textarea");
-        inputPlayerDetails_textArea.textContent = sample_csv_inputPlayerDetails;
-        OnBtnClick_LoadCBResponses();
-        OnBtnClick_LoadPlayerDetails();
-        OnBtnClick_GeneratePlayersOnboard();
-        OnBtnClick_GenerateRosteringTable();
-    }
 }
 function OnBtnClick_LoadCBResponses() {
     // Get the input string from the textarea
@@ -1074,7 +1063,14 @@ function GetDuplicateStrings(array) {
 function CreateElementFromString(string) {
     return new DOMParser().parseFromString(string, "text/html").body.firstChild;
 }
-function Test() {
-    console.log(cbRoster);
+function LoadSampleData() {
+    let inputCBResponses_textarea = document.getElementById("inputCBResponses-textarea");
+    inputCBResponses_textarea.textContent = sample_csv_inputCBResponses;
+    let inputPlayerDetails_textArea = document.getElementById("inputPlayerDetails-textarea");
+    inputPlayerDetails_textArea.textContent = sample_csv_inputPlayerDetails;
+    OnBtnClick_LoadCBResponses();
+    OnBtnClick_LoadPlayerDetails();
+    OnBtnClick_GeneratePlayersOnboard();
+    OnBtnClick_GenerateRosteringTable();
 }
 //# sourceMappingURL=script.js.map
