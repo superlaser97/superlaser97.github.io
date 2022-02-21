@@ -384,6 +384,8 @@ function UpdateTableWithRosterData() {
             for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) {
                 // Players available in player slot
                 let playersAvailable = cbRoster.Players[team][sessionSlot][playerPosition];
+                // Sort playersAvailable by their clan in alphabetical order
+                playersAvailable.sort((a, b) => { return a.Clan.localeCompare(b.Clan); });
                 let playersAvailable_clan = playersAvailable.map(player => player.Clan);
                 let playersAvailable_ign = playersAvailable.map(player => player.IGN);
                 let playersAvailable_clan_ign = [];
