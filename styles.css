@@ -133,6 +133,16 @@ table th#redTeam
   padding: 10px 0px;
 }
 
+table td input
+{
+  background-color: transparent;
+  border-color: transparent;
+  color: black;
+  font-size: 12px;
+  text-align: left;
+  width: 100%;
+}
+
 table td
 {
   background-color: #ebebeb;

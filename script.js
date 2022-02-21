@@ -1,72 +1,77 @@
 "use strict";
 //# sourceMappingURL=E:\_Stuff\Projects\superlaser97.github.io\script.js.map
 // Sample string for inputCBResponse
-const sample_csv_inputCBResponses = `Hingheru88	Available	Available	Available	Available	Available	Available			Available	Available	8
-AnotherLazyBoy	Available		Available		Available	Available	Available	Available	Available		7
-songinator	Available		Available		Available				Available		3
-swanno1	Available		Available		Available		Available		Available		4
-adityakool15	Available										1
-niklausmaximus	Available	Available	Available	Available					Available		5
-PunMasterWally	Available		Available						Available		2
-EyeDeeKayy		Available		Available		Available	Available	Available		Available	8
-StAnDin_WoLfY			Available		Available			Available	Available		4
-The_Crynek	Available		Available		Available	Available			Available		3
-Jeremy07	Available	Available	Available	Available		Available				Available	8
-Wolfcain	Available		Available		Available		Available	Available	Available		5
-Arrcadedus_1											0
-_Ducky_		Available		Available		Available				Available	4
-Spaceshiphaku		Available		Available					Available	Available	4
-Cascayd	Available	Available	Available	Available	Available	Available			Available	Available	6
-Strik3agle98		Available		Available	Available	Available			Available	Available	2
-OniichanYamate											0
-Wulffenhienze		Available		Available		Available					4
-Bob778_	Available		Available		Available					Available	3
-ronalchn	Available		Available		Available	Available	Available	Available	Available	Available	6
-Nilaos			Available								1
-BeardyBandit			Available						Available		2
-niklausmaximus			Available	Available						Available	6
-Jordysiu915		Available		Available		Available	Available				3
-Luc_defender	Available	Available	Available						Available	Available	3
-Bagpfbones78											0
-LiveOnEvil											0`;
+const sample_csv_inputCBResponses = `Tramapolean	Available		Available		Available	Available			Available		3
+    AnotherLazyBoy	Available		Available		Available		Available	Available	Available		6
+    Jeremy07	Available	Available	Available	Available		Available				Available	6
+    SyIvia	Available		Available		Available		Available		Available		2
+    niklausmaximus	Available	Available	Available	Available					Available		6
+    OniichanYamate		Available		Available	Available	Available			Available		4
+    Bagpfbones78	Available	Available	Available	Available				Available	Available	Available	6
+    Jimbo762au	Available				Available				Available		3
+    sl3epwalka	Available		Available		Available		Available				4
+    Hingheru88	Available	Available	Available	Available		Available			Available	Available	8
+    Seiron_	Available		Available		Available				Available		4
+    BeardyBandit	Available								Available		2
+    Cascayd	Available		Available		Available	Available			Available	Available	6
+    xDreadHeartz	Available	Available	Available	Available		Available			Available	Available	7
+    spaceshiphaku	Available	Available	Available	Available					Available	Available	6
+    Bob778_				Available		Available				Available	3
+    Songinator	Available		Available						Available		3
+    Wulffenheinze	Available	Available		Available	Available	Available			Available	Available	4
+    swanno1	Available		Available		Available				Available		4
+    LiveOnEvil	Available	Available	Available	Available	Available	Available			Available	Available	4
+    luc_defender	Available	Available			Available	Available			Available	Available	4
+    adityakool15					Available						1
+    ronalchn	Available								Available		2
+    jordysiu915		Available		Available		Available					2
+    Wolfcain			Available		Available		Available	Available	Available		5
+    EyeDeeKayy	Available		Available		Available	Available	Available	Available	Available		8
+    stoolz	Available		Available		Available		Available	Available	Available		6
+    9_9_destroyer	Available	Available	Available	Available	Available	Available			Available	Available	8
+    BlackDe47h	Available		Available		Available	Available	Available	Available	Available	Available	8
+    Arrcadedus_1					Available	Available					2
+    PunMasterWally	Available		Available						Available		3
+    Nilaos			Available								1
+    _Ducky_		Available		Available		Available	Available	Available		Available	6`;
 // Sample string for inputCBResponse
-const sample_csv_inputPlayerDetails = `Bagpfbones78	VKNGS	PLAYER	BLUE	
-Niklausmaximus	VKNGS	PLAYER	BLUE	YES
-spaceshiphaku	VKNGS	PLAYER	BLUE	YES
-The_Crynek	1AN-W	PLAYER	BLUE	
-_Ducky_	VKNGS	CALLER	BLUE	YES
-AnotherLazyBoy	VKNGS	CALLER	BLUE	YES
-sl3epwalka	VKNGS	PLAYER	BLUE	YES
-Wolfcain	AUSNZ	CALLER	BLUE	YES
-xDreadHeartz	VKNGS	PLAYER	BLUE	YES
-Bob778_	AUSNZ	CALLER	BLUE	YES
-Strik3agle98	TKR	PLAYER	BLUE	
-Moggytwo	AUSNZ	CALLER	BLUE	YES
-jordysiu915	VKNGS	PLAYER	BLUE	YES
-Snowball328	REPOI	PLAYER	BLUE	
-Cascayd	VKNGS	CALLER	RED	YES
-ronalchn	VKNGS	PLAYER	RED	YES
-Seiron	RAN_	PLAYER	RED	
-Jeremy07	VKNGS	PLAYER	RED	YES
-LiveOnEvil	1AN-W	PLAYER	RED	
-OniichanYamate	VKNGS	PLAYER	RED	YES
-adityakool15	RAN_	PLAYER	RED	
-Hingheru88	BOB	CALLER	RED	
-Wulffenheinze	BOB	PLAYER	RED	
-Arrcadedus_1	BOB	CALLER	RED	
-EyeDeeKayy	BOB	PLAYER	RED	
-PunMasterWally	BOB	CALLER	RED	
-Jimbo762au	AUSNZ	CALLER	RED	
-luc_defender	VKNGS	PLAYER	RED	
-SyIvia	AYNME	PLAYER	RED	
-stoolz	AUSNZ	CALLER	RED	
-swanno1	BOB	CALLER	RED	
-BlackDe47h	BOB	CALLER	RED	
-Tramapolean	VKNGS	PLAYER	RED	
-songinator	BOB	PLAYER	RED	
-BeardyBandit	BOB	CALLER	RED	
-9_9_destroyer	VKNGS	CALLER	RED	YES
-LiveOnEvil	VKNGS	PLAYER	BLUE	`;
+const sample_csv_inputPlayerDetails = `_Ducky_	VKNGS	CALLER	BLUE	YES	YES
+    9_9_destroyer	VKNGS	CALLER	RED	YES	YES
+    adityakool15	RAN_	PLAYER	RED		YES
+    AnotherLazyBoy	VKNGS	CALLER	BLUE	YES	YES
+    Arrcadedus_1	BOB	CALLER	RED	YES	YES
+    Bagpfbones78	VKNGS	CALLER	BLUE		YES
+    BeardyBandit	BOB	CALLER	RED	YES	YES
+    BlackDe47h	BOB	CALLER	RED	YES	YES
+    Bob778_	AUSNZ	CALLER	BLUE	YES	
+    Cascayd	VKNGS	CALLER	RED	YES	YES
+    EyeDeeKayy	BOB	PLAYER	RED	YES	YES
+    Hingheru88	BOB	CALLER	RED	YES	YES
+    Jeremy07	VKNGS	PLAYER	RED	YES	YES
+    Jimbo762au	AUSNZ	CALLER	RED		YES
+    jordysiu915	VKNGS	PLAYER	BLUE	YES	
+    LiveOnEvil	VKNGS	PLAYER	RED		YES
+    luc_defender	VKNGS	PLAYER	RED		
+    Moggytwo	AUSNZ	CALLER	BLUE	YES	YES
+    Niklausmaximus	VKNGS	PLAYER	BLUE	YES	YES
+    OniichanYamate	VKNGS	PLAYER	RED	YES	YES
+    PunMasterWally	BOB	CALLER	RED	YES	YES
+    ronalchn	VKNGS	PLAYER	RED	YES	YES
+    Seiron_	RAN_	PLAYER	RED		YES
+    sl3epwalka	VKNGS	PLAYER	BLUE	YES	YES
+    Snowball328	REPOI	PLAYER	BLUE		
+    songinator	BOB	PLAYER	RED	YES	YES
+    spaceshiphaku	VKNGS	PLAYER	BLUE	YES	YES
+    stoolz	AUSNZ	CALLER	RED		YES
+    Strik3agle98	TKR	PLAYER	BLUE		
+    swanno1	BOB	CALLER	RED	YES	YES
+    SyIvia	AYNME	PLAYER	RED		YES
+    The_Crynek	REPOI	PLAYER	BLUE		
+    Tramapolean	VKNGS	PLAYER	RED		YES
+    Wolfcain	AUSNZ	CALLER	BLUE	YES	YES
+    Wulffenheinze	BOB	PLAYER	RED	YES	
+    xDreadHeartz	VKNGS	PLAYER	BLUE	YES	YES
+    Nilaos	1AN-E	PLAYER	RED		YES`;
 // ENUM for player types
 var PlayerTypes;
 (function (PlayerTypes) {
@@ -174,6 +179,25 @@ function OnSelectElementChanged(selectElement) {
         }
     }
     UpdateRosteringTableUIElements();
+}
+function OnCellClicked(cell) {
+    // Get the select element
+    let selectElement = cell.getElementsByTagName("select")[0];
+    // Get the textbox element
+    let textboxElement = cell.getElementsByTagName("input")[0];
+    // If select element display is none
+    if (selectElement.style.display === "none") {
+        // Show the select element
+        selectElement.style.display = "block";
+        // Hide the textbox element
+        textboxElement.style.display = "none";
+    }
+    else {
+        // Hide the select element
+        selectElement.style.display = "none";
+        // Show the textbox element
+        textboxElement.style.display = "block";
+    }
 }
 function UpdateRosteringTableUIElements() {
     UpdateTableWithRosterData();
@@ -400,11 +424,12 @@ function UpdateTableWithRosterData() {
                 let selectElement = CreateSelectElement(playersAvailable_clan_ign, selectedPlayer_clan_ign, selectElementID, "tableSelect");
                 // Create a textebox element
                 let textboxElement = CreateTextboxElement("overrideTextbox");
+                textboxElement.style.display = "none";
                 // Add the select element to the array
                 elementsToAdd.push([selectElement, textboxElement]);
             }
             // Add the select elements to the table row
-            AddRowToTableAnyData(rosterIDs[team], elementsToAdd);
+            AddRowToTableAnyData_ForRosteringTable(rosterIDs[team], elementsToAdd);
         }
     }
 }
@@ -794,7 +819,7 @@ function ItemAppearsMoreThanOnceInArray(item, array) {
 // Takes in an array of select elements to be added to the row
 // Takes in an array of IDs of the cells to be added to the row
 // Takes in a class name (optional)
-function AddRowToTableAnyData(tableId, rowData, cellIDs = [], rowClass = "") {
+function AddRowToTableAnyData_ForRosteringTable(tableId, rowData, cellIDs = [], rowClass = "") {
     // Get the table
     let table = document.getElementById(tableId);
     // Get the table body
@@ -811,14 +836,14 @@ function AddRowToTableAnyData(tableId, rowData, cellIDs = [], rowClass = "") {
         // Create a new cell
         let newCell = document.createElement("td");
         // TODO: ENABLE THIS
-        //for(let j = 0; j < rowData[i].length; j++)
-        //{
-        //    newCell.appendChild(rowData[i][j]);
-        //}
-        newCell.appendChild(rowData[i][0]);
+        for (let j = 0; j < rowData[i].length; j++) {
+            newCell.appendChild(rowData[i][j]);
+        }
         if (cellIDs.length > 0) {
             newCell.id = cellIDs[i];
         }
+        // Cell on click event
+        newCell.oncontextmenu = function () { OnCellClicked(newCell); };
         // Append the cell to the row
         newRow.appendChild(newCell);
     }
