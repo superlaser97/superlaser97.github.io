@@ -507,6 +507,7 @@ function UpdateTableWithPlayerDetails() {
         rowData.push(playerDetail.PlayerType);
         rowData.push(playerDetail.Team);
         rowData.push(playerDetail.EnterBattle ? "YES" : "");
+        rowData.push(playerDetail.SortieDone ? "YES" : "");
         AddRowToTable("playerDetails-table", rowData);
     }
 }
