@@ -379,7 +379,7 @@ function UpdateTableWithRosterData() {
         // Loop the playerPositions
         for (let playerPosition = 0; playerPosition < ALLPLAYERPOSITIONS.length; playerPosition++) {
             // Select elements for the table row
-            let selectElements = [];
+            let elementsToAdd = [];
             // Loop the number of sessions
             for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) {
                 // Players available in player slot
@@ -398,11 +398,13 @@ function UpdateTableWithRosterData() {
                 let selectElementID = team + "-" + sessionSlot + "-" + playerPosition;
                 // Create a select element
                 let selectElement = CreateSelectElement(playersAvailable_clan_ign, selectedPlayer_clan_ign, selectElementID, "tableSelect");
+                // Create a textebox element
+                let textboxElement = CreateTextboxElement("overrideTextbox");
                 // Add the select element to the array
-                selectElements.push(selectElement);
+                elementsToAdd.push([selectElement, textboxElement]);
             }
             // Add the select elements to the table row
-            AddRowToTableAnyData(rosterIDs[team], selectElements);
+            AddRowToTableAnyData(rosterIDs[team], elementsToAdd);
         }
     }
 }
@@ -425,6 +427,8 @@ function GenerateRosterData() {
             cbRoster.PlayerSlotAssigments.push(newPlayerSlotsAssignedData);
         }
     }
+    // Sort the cbRosterData.PlayerSlotAssigments by the player IGN
+    cbRoster.PlayerSlotAssigments.sort((a, b) => { return a.IGN.localeCompare(b.IGN); });
     for (let team = 0; team < 2; team++) {
         cbRoster.Players[team] = [];
         // Initialize blue team and red team players arrays
@@ -806,7 +810,12 @@ function AddRowToTableAnyData(tableId, rowData, cellIDs = [], rowClass = "") {
     for (let i = 0; i < rowData.length; i++) {
         // Create a new cell
         let newCell = document.createElement("td");
-        newCell.appendChild(rowData[i]);
+        // TODO: ENABLE THIS
+        //for(let j = 0; j < rowData[i].length; j++)
+        //{
+        //    newCell.appendChild(rowData[i][j]);
+        //}
+        newCell.appendChild(rowData[i][0]);
         if (cellIDs.length > 0) {
             newCell.id = cellIDs[i];
         }
@@ -859,6 +868,19 @@ function AddRowToTable(tableID, rowData, classToAdd = "") {
     }
     // Add the row to the table body
     table.tBodies[0].appendChild(row);
+}
+// Function that creates a textbox element
+// Takes in the class of the textbox
+// Returns the textbox element
+function CreateTextboxElement(className) {
+    // Create a new textbox
+    let textbox = document.createElement("input");
+    // Set the type of the textbox to text
+    textbox.type = "text";
+    // Set the class of the textbox
+    textbox.classList.add(className);
+    // Return the textbox
+    return textbox;
 }
 // Function that creates a select element
 // Takes in a list of string to be added to the select element

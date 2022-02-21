@@ -594,7 +594,7 @@ function UpdateTableWithRosterData()
         for (let playerPosition = 0; playerPosition < ALLPLAYERPOSITIONS.length; playerPosition++) 
         {
             // Select elements for the table row
-            let selectElements: HTMLSelectElement[] = [];
+            let elementsToAdd: HTMLElement[][] = [];
 
             // Loop the number of sessions
             for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) 
@@ -622,12 +622,15 @@ function UpdateTableWithRosterData()
                 // Create a select element
                 let selectElement: HTMLSelectElement = CreateSelectElement(playersAvailable_clan_ign, selectedPlayer_clan_ign, selectElementID, "tableSelect");
 
+                // Create a textebox element
+                let textboxElement: HTMLInputElement = CreateTextboxElement("overrideTextbox");
+
                 // Add the select element to the array
-                selectElements.push(selectElement);
+                elementsToAdd.push([selectElement, textboxElement]);
             }
 
             // Add the select elements to the table row
-            AddRowToTableAnyData(rosterIDs[team], selectElements);
+            AddRowToTableAnyData(rosterIDs[team], elementsToAdd);
         }
     }
 }
@@ -658,6 +661,9 @@ function GenerateRosterData()
             cbRoster.PlayerSlotAssigments.push(newPlayerSlotsAssignedData);
         }
     }
+
+    // Sort the cbRosterData.PlayerSlotAssigments by the player IGN
+    cbRoster.PlayerSlotAssigments.sort((a, b) => { return a.IGN.localeCompare(b.IGN); });
 
     for(let team = 0; team < 2; team++)
     {
@@ -1104,7 +1110,7 @@ function ItemAppearsMoreThanOnceInArray(item: any, array: any[]): boolean {
 // Takes in an array of select elements to be added to the row
 // Takes in an array of IDs of the cells to be added to the row
 // Takes in a class name (optional)
-function AddRowToTableAnyData(tableId: string, rowData: any[], cellIDs: string[] = [], rowClass: string = ""): void 
+function AddRowToTableAnyData(tableId: string, rowData: any[][], cellIDs: string[] = [], rowClass: string = ""): void 
 {
     // Get the table
     let table: HTMLTableElement = document.getElementById(tableId) as HTMLTableElement;
@@ -1128,7 +1134,12 @@ function AddRowToTableAnyData(tableId: string, rowData: any[], cellIDs: string[]
         // Create a new cell
         let newCell: HTMLTableCellElement = document.createElement("td");
 
-        newCell.appendChild(rowData[i]);
+        // TODO: ENABLE THIS
+        //for(let j = 0; j < rowData[i].length; j++)
+        //{
+        //    newCell.appendChild(rowData[i][j]);
+        //}
+        newCell.appendChild(rowData[i][0]);
 
         if(cellIDs.length > 0)
         {
@@ -1196,6 +1207,25 @@ function AddRowToTable(tableID: string, rowData: string[], classToAdd: string = 
 
     // Add the row to the table body
     table.tBodies[0].appendChild(row);
+}
+
+
+// Function that creates a textbox element
+// Takes in the class of the textbox
+// Returns the textbox element
+function CreateTextboxElement(className: string): HTMLInputElement 
+{
+    // Create a new textbox
+    let textbox: HTMLInputElement = document.createElement("input");
+
+    // Set the type of the textbox to text
+    textbox.type = "text";
+
+    // Set the class of the textbox
+    textbox.classList.add(className);
+
+    // Return the textbox
+    return textbox;
 }
 
 
