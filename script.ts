@@ -1099,7 +1099,8 @@ function GeneratePlayersOnboardArray(): void
     }
 
     // sort the playersOnboardArray by the IGN
-    playersOnboardArray.sort(function (a, b) {
+    playersOnboardArray.sort(function (a, b) 
+    {
         if (a.IGN < b.IGN) { return -1; }
         if (a.IGN > b.IGN) { return 1; }
         return 0;
