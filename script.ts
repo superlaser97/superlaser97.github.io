@@ -522,7 +522,7 @@ function UpdateAllRosteringTableCellsWithPlayerData()
                 // Get the parent of the select element
                 let parentElement: HTMLElement = selectElement.parentElement;
 
-                if(selectedPlayer.SortieDone == false)
+                if(selectedPlayer.SortieDone == false && selectedPlayer.IGN === "None")
                 {
                     parentElement.prepend(CreateElementFromString(extraInfoNoSortie_HTMLTemplate));
                 }
