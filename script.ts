@@ -431,49 +431,6 @@ function UpdateRosteringTableUIElements()
     UpdateSessionClanBaseHeader();
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
-    UpdateUnrosterdPlayersTable();
-}
-
-function UpdateUnrosterdPlayersTable()
-{
-    // TODO: FIX THIS
-    return;
-    // 1st layer - slot
-    // 2nd layer - unselected players
-    let unSelectedPlayersInSelectElements: string[][] = [[], [], [], [], [], [], [], [], [], []];
-
-    for(let slot = 0; slot < ALLSESSIONSLOTS.length; slot++)
-    {
-        let selectElementsInSlot_BlueAndRedTeams: HTMLSelectElement[] = [];
-
-        for(let team = 0; team < ALLTEAMS.length; team++)
-        {
-            for(let playerPosition = 0; playerPosition < cbRoster.Players[team][slot].length; playerPosition++)
-            {
-                let selectElementID = team + "-" + slot + "-" + playerPosition;
-                selectElementsInSlot_BlueAndRedTeams.push(document.getElementById(selectElementID) as HTMLSelectElement);
-            }
-        }
-
-        // Loop the select elements in slot
-        for(let selectElement of selectElementsInSlot_BlueAndRedTeams)
-        {
-            // For each options in select element
-            for(let option of selectElement.options)
-            {
-                // If option is not selected
-                if(!option.selected)
-                {
-                    unSelectedPlayersInSelectElements[slot].push(option.value);
-                }
-            }
-        }
-
-        // Deduplicate unSelectedPlayersInSelectElements
-        unSelectedPlayersInSelectElements[slot] = unSelectedPlayersInSelectElements[slot].filter((value, index, self) => self.indexOf(value) === index);
-    }
-
-    console.log(unSelectedPlayersInSelectElements);
 }
 
 function UpdateAllRosteringTableCellsWithPlayerData()
@@ -549,11 +506,11 @@ function UpdateAllRosteringTableCellsWithPlayerData()
 
 function UpdateRosteringTableCellColors()
 {
-    for(let slot = 0; slot < ALLSESSIONSLOTS.length; slot++)
+    for(let slot = 0; slot < cbRoster.Players.length; slot++)
     {
         let selectElementsInSlot_BlueAndRedTeams: HTMLSelectElement[] = [];
 
-        for(let team = 0; team < ALLTEAMS.length; team++)
+        for(let team = 0; team < cbRoster.Players[team].length; team++)
         {
             for(let playerPosition = 0; playerPosition < cbRoster.Players[team][slot].length; playerPosition++)
             {
@@ -720,7 +677,7 @@ function UpdateTableWithRosterData()
     let rosterIDs: string[] = ["rostering-table-blue", "rostering-table-red"];
 
     // Loop the teams
-    for (let team = 0; team < ALLTEAMS.length; team++)
+    for (let team = 0; team < cbRoster.Players.length; team++)
     {
         // Loop the playerPositions
         for (let playerPosition = 0; playerPosition < ALLPLAYERPOSITIONS.length; playerPosition++) 
@@ -729,7 +686,7 @@ function UpdateTableWithRosterData()
             let elementsToAdd: HTMLElement[][] = [];
 
             // Loop the number of sessions
-            for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) 
+            for (let sessionSlot = 0; sessionSlot < cbRoster.Players[team].length; sessionSlot++) 
             {
                 // Players available in player slot
                 let playersAvailable: PlayerInSlot[] = cbRoster.Players[team][sessionSlot][playerPosition];
@@ -808,7 +765,7 @@ function GenerateRosterData()
     {
         cbRoster.Players[team] = [];
         // Initialize blue team and red team players arrays
-        for (let i = 0; i < ALLSESSIONSLOTS.length; i++)
+        for (let i = 0; i < cbRoster.Players[team].length; i++)
         {
             // Initialize 7 arrays for each session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
             cbRoster.Players[team][i] = [[], [], [], [], [], [], []];
