@@ -159,7 +159,15 @@ const ALLSESSIONSLOTS: string[] =
 const ALLTEAMS: string[] =
     [
         "BLUE",
-        "RED"
+        "RED",
+        "CASUAL"
+    ];
+
+const ALLTEAMS_PLAYERCOUNT: number[] =
+    [
+        7,
+        7,
+        2
     ];
 
 interface PlayerOnboard 
@@ -178,12 +186,10 @@ interface PlayerOnboard
 // Struct that stores Rostering data
 interface CBRoster 
 {
-    // Zero Layer - Team Type (Red or Blue)
+    // Zero Layer - team
     // First layer - Session (Wed1, Wed2, Thu1, Thu2, Sat1, Sat2, SunM1, SunM2, SunN1, SunN2)
     // Second layer - Position in Session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
     // Third layer - Pool of players (AnotherLazyBoy, Bob778_, Cascayd etc.)
-    
-    // Fixed length: BlueTeamPlayers[2][10][7][?]
     Players: PlayerInSlot[][][][];
 
     PlayerSlotAssigments: PlayerSlotAssigment[];
@@ -431,49 +437,6 @@ function UpdateRosteringTableUIElements()
     UpdateSessionClanBaseHeader();
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
-    UpdateUnrosterdPlayersTable();
-}
-
-function UpdateUnrosterdPlayersTable()
-{
-    // TODO: FIX THIS
-    return;
-    // 1st layer - slot
-    // 2nd layer - unselected players
-    let unSelectedPlayersInSelectElements: string[][] = [[], [], [], [], [], [], [], [], [], []];
-
-    for(let slot = 0; slot < ALLSESSIONSLOTS.length; slot++)
-    {
-        let selectElementsInSlot_BlueAndRedTeams: HTMLSelectElement[] = [];
-
-        for(let team = 0; team < ALLTEAMS.length; team++)
-        {
-            for(let playerPosition = 0; playerPosition < cbRoster.Players[team][slot].length; playerPosition++)
-            {
-                let selectElementID = team + "-" + slot + "-" + playerPosition;
-                selectElementsInSlot_BlueAndRedTeams.push(document.getElementById(selectElementID) as HTMLSelectElement);
-            }
-        }
-
-        // Loop the select elements in slot
-        for(let selectElement of selectElementsInSlot_BlueAndRedTeams)
-        {
-            // For each options in select element
-            for(let option of selectElement.options)
-            {
-                // If option is not selected
-                if(!option.selected)
-                {
-                    unSelectedPlayersInSelectElements[slot].push(option.value);
-                }
-            }
-        }
-
-        // Deduplicate unSelectedPlayersInSelectElements
-        unSelectedPlayersInSelectElements[slot] = unSelectedPlayersInSelectElements[slot].filter((value, index, self) => self.indexOf(value) === index);
-    }
-
-    console.log(unSelectedPlayersInSelectElements);
 }
 
 function UpdateAllRosteringTableCellsWithPlayerData()
@@ -603,6 +566,11 @@ function UpdateSessionClanBaseHeader()
 {
     for(let team = 0; team < cbRoster.Players.length; team++)
     {
+        if(team > 1)
+        {
+            return;
+        }
+
         for(let session = 0; session < cbRoster.Players[team].length; session++)
         {
             // Clan base label header element id
@@ -710,14 +678,16 @@ function UpdateAssignedSlotsTrackerWithRosterData()
 
 function UpdateTableWithRosterData() 
 {
+    let rosteringTableIDs: string[] = ["rostering-table-blue", "rostering-table-red", "rostering-table-casual"];
+
     // Clear the table body
-    let rosterTable_blue: HTMLTableElement = document.getElementById("rostering-table-blue") as HTMLTableElement;
-    let rosterTable_red: HTMLTableElement = document.getElementById("rostering-table-red") as HTMLTableElement;
+    let rosterTable_blue: HTMLTableElement = document.getElementById(rosteringTableIDs[0]) as HTMLTableElement;
+    let rosterTable_red: HTMLTableElement = document.getElementById(rosteringTableIDs[1]) as HTMLTableElement;
+    let rosterTable_casual: HTMLTableElement = document.getElementById(rosteringTableIDs[2]) as HTMLTableElement;
 
     rosterTable_blue.tBodies[0].innerHTML = "";
     rosterTable_red.tBodies[0].innerHTML = "";
-
-    let rosterIDs: string[] = ["rostering-table-blue", "rostering-table-red"];
+    rosterTable_casual.tBodies[0].innerHTML = "";
 
     // Loop the teams
     for (let team = 0; team < ALLTEAMS.length; team++)
@@ -731,6 +701,11 @@ function UpdateTableWithRosterData()
             // Loop the number of sessions
             for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) 
             {
+                if(playerPosition >= ALLTEAMS_PLAYERCOUNT[team])
+                {
+                    continue;
+                }
+
                 // Players available in player slot
                 let playersAvailable: PlayerInSlot[] = cbRoster.Players[team][sessionSlot][playerPosition];
 
@@ -769,7 +744,7 @@ function UpdateTableWithRosterData()
                 classToAddToCell = callerCellClass;
             }
             // Add the select elements to the table row
-            AddRowToTableAnyData_ForRosteringTable(rosterIDs[team], elementsToAdd, classToAddToCell);
+            AddRowToTableAnyData_ForRosteringTable(rosteringTableIDs[team], elementsToAdd, classToAddToCell);
         }
     }
 }
@@ -804,14 +779,15 @@ function GenerateRosterData()
     // Sort the cbRosterData.PlayerSlotAssigments by the player IGN
     cbRoster.PlayerSlotAssigments.sort((a, b) => { return a.IGN.localeCompare(b.IGN); });
 
-    for(let team = 0; team < 2; team++)
+    for(let team = 0; team < ALLTEAMS.length; team++)
     {
         cbRoster.Players[team] = [];
-        // Initialize blue team and red team players arrays
-        for (let i = 0; i < ALLSESSIONSLOTS.length; i++)
+        for (let session = 0; session < ALLSESSIONSLOTS.length; session++)
         {
-            // Initialize 7 arrays for each session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
-            cbRoster.Players[team][i] = [[], [], [], [], [], [], []];
+            // Initialize blue team, red team and casual team players arrays
+            cbRoster.Players[team][session] = [];
+            cbRoster.Players[team][session] = [];
+            cbRoster.Players[team][session] = [];
         }
     }
 
@@ -885,17 +861,14 @@ function GenerateRosterData()
         player4_candidates = PushArray(player4_candidates, availablePlayers.filter(x => x.PlayerType == PlayerTypes.CALLER || x.PlayerType == PlayerTypes.PLAYER));
         player5_candidates = PushArray(player5_candidates, availablePlayers.filter(x => x.PlayerType == PlayerTypes.CALLER || x.PlayerType == PlayerTypes.PLAYER));
 
-        // if any of the arrays are undefined, set them to empty array
+        let allPlayerCandidates: PlayerInSlot[][] = [caller1_candidates, caller2_candidates, player1_candidates, player2_candidates, player3_candidates, player4_candidates, player5_candidates];
 
-        for(let team = 0; team < 2; team++)
+        for(let team = 0; team < ALLTEAMS.length; team++)
         {
-            cbRoster.Players[team][sessionSlot][0] = JSON.parse(JSON.stringify(caller1_candidates));
-            cbRoster.Players[team][sessionSlot][1] = JSON.parse(JSON.stringify(caller2_candidates));
-            cbRoster.Players[team][sessionSlot][2] = JSON.parse(JSON.stringify(player1_candidates));
-            cbRoster.Players[team][sessionSlot][3] = JSON.parse(JSON.stringify(player2_candidates));
-            cbRoster.Players[team][sessionSlot][4] = JSON.parse(JSON.stringify(player3_candidates));
-            cbRoster.Players[team][sessionSlot][5] = JSON.parse(JSON.stringify(player4_candidates));
-            cbRoster.Players[team][sessionSlot][6] = JSON.parse(JSON.stringify(player5_candidates));
+            for(let memberCount = 0; memberCount < ALLTEAMS_PLAYERCOUNT[team]; memberCount++)
+            {
+                cbRoster.Players[team][sessionSlot][memberCount] = JSON.parse(JSON.stringify(allPlayerCandidates[memberCount]));
+            }
         }
     }
 }
