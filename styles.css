@@ -253,8 +253,9 @@ div#assignedSlotsTracker-div
   margin: 5px;
   padding: 0px 0px 0px 15px;
   color: white;
-  height: 30px;
-  line-height: 30px;
+  height: 25px;
+  font-size: 15px;
+  line-height: 25px;
   background-color: rgb(41, 41, 41);
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-high);
@@ -267,8 +268,6 @@ div#assignedSlotsTracker-div
   padding: 0px 10px 0px 10px;
   text-align: center;
   float: right;
-  height: 30px;
-  line-height: 30px;
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-high);
 }
