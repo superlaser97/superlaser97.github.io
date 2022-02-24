@@ -389,15 +389,6 @@ div#assignedSlotsTracker-div
   margin: 40px 0 20px 0;
 }
 
-.unrosteredPlayers_Session
-{
-  width: 100%;
-  font-size: 20px;
-  color: white;
-  text-align: center;
-  margin: 40px 0 20px 0;
-}
-
 .unrosteredPlayers_List
 {
   width: calc(100% - 200px);
