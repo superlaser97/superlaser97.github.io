@@ -72,6 +72,8 @@ Wolfcain	AUSNZ	CALLER	BLUE	YES	YES
 Wulffenheinze	BOB	PLAYER	RED	YES	
 xDreadHeartz	VKNGS	PLAYER	BLUE	YES	YES
 Nilaos	1AN-E	PLAYER	RED		YES`;
+// Sample string to load seleced players
+const sample_selected_players = `{"SelectedPlayers":[[["AnotherLazyBoy","Cascayd","niklausmaximus","sl3epwalka","Bagpfbones78","xDreadHeartz","PunMasterWally"],["None","None","None","None","None","None","None"],["AnotherLazyBoy","Wolfcain","niklausmaximus","sl3epwalka","xDreadHeartz","spaceshiphaku","EyeDeeKayy"],["_Ducky_","Bagpfbones78","LiveOnEvil","niklausmaximus","xDreadHeartz","spaceshiphaku","9_9_destroyer"],["None","None","None","None","None","None","None"],["None","None","None","None","None","None","None"],["AnotherLazyBoy","_Ducky_","9_9_destroyer","Wolfcain","EyeDeeKayy","sl3epwalka","SyIvia"],["_Ducky_","BlackDe47h","Wolfcain","AnotherLazyBoy","Bagpfbones78","EyeDeeKayy","9_9_destroyer"],["AnotherLazyBoy","Cascayd","Bagpfbones78","niklausmaximus","spaceshiphaku","xDreadHeartz","BeardyBandit"],["None","None","None","None","None","None","None"]],[["Hingheru88","BlackDe47h","Jimbo762au","Songinator","ronalchn","BeardyBandit","Tramapolean"],["_Ducky_","9_9_destroyer","niklausmaximus","Hingheru88","Jeremy07","xDreadHeartz","spaceshiphaku"],["swanno1","Hingheru88","Songinator","Nilaos","Seiron_","stoolz","PunMasterWally"],["None","None","None","None","None","None","None"],["Cascayd","BlackDe47h","adityakool15","swanno1","Arrcadedus_1","sl3epwalka","EyeDeeKayy"],["Hingheru88","9_9_destroyer","xDreadHeartz","EyeDeeKayy","Arrcadedus_1","Tramapolean","BlackDe47h"],["None","None","None","None","None","None","None"],["None","None","None","None","None","None","None"],["9_9_destroyer","stoolz","swanno1","Hingheru88","BlackDe47h","EyeDeeKayy","ronalchn"],["_Ducky_","BlackDe47h","xDreadHeartz","Bagpfbones78","LiveOnEvil","spaceshiphaku","luc_defender"]],[["None","None"],["None","None"],["None","None"],["None","None"],["Jimbo762au","AnotherLazyBoy"],["Bob778_","_Ducky_"],["None","None"],["None","None"],["None","None"],["None","None"]]]}`;
 // ENUM for player types
 var PlayerTypes;
 (function (PlayerTypes) {
@@ -206,6 +208,52 @@ function OnCellClicked(cell) {
         selectElement.style.display = "none";
         // Show the textbox element
         textboxElement.style.display = "block";
+    }
+}
+function ShowUnrosteredPlayers(sessionIndex) {
+    let unrosteredPlayerPanel = document.getElementById("unrosteredPlayersPanel");
+    if (!unrosteredPlayerPanel) {
+        console.log("unrosteredPlayerPanel is null");
+        return;
+    }
+    unrosteredPlayerPanel.style.display = "block";
+    let unrosteredPlayers_List = unrosteredPlayerPanel.getElementsByClassName("unrosteredPlayers_List")[0];
+    if (!unrosteredPlayers_List) {
+        console.log("unrosteredPlayers_List is null");
+        return;
+    }
+    unrosteredPlayers_List = unrosteredPlayers_List;
+    unrosteredPlayers_List.innerHTML = "";
+    // Get players that are not selected from a specific session
+    let unrosteredPlayers = [];
+    let sessionIndexNumber = Number(sessionIndex);
+    // Loop cbRoster.Players
+    for (let team = 0; team < cbRoster.Players.length; team++) {
+        let sessionTarget = cbRoster.Players[team][sessionIndexNumber];
+        for (let playerCandidates = 0; playerCandidates < sessionTarget.length; playerCandidates++) {
+            let playerCandidatesInSlot = sessionTarget[playerCandidates];
+            // For each player in slot
+            for (let j = 0; j < playerCandidatesInSlot.length; j++) {
+                let playerCandidate = playerCandidatesInSlot[j];
+                if (!playerCandidate.Selected && playerCandidate.IGN !== "None") {
+                    unrosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                }
+            }
+        }
+    }
+    // Deduplicate unrostered players
+    unrosteredPlayers = unrosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
+    let elementsToInsert = [];
+    // For each unrostered player
+    for (let i = 0; i < unrosteredPlayers.length; i++) {
+        let elementTemplate = `<div class="unrosteredPlayer">[CLAN] PLAYER</div>`;
+        elementTemplate = elementTemplate.replace("[CLAN]", unrosteredPlayers[i].split(" ")[0]);
+        elementTemplate = elementTemplate.replace("PLAYER", unrosteredPlayers[i].split(" ")[1]);
+        elementsToInsert.push(CreateElementFromString(elementTemplate));
+    }
+    // foreach element in elementsToInsert
+    for (let i = 0; i < elementsToInsert.length; i++) {
+        unrosteredPlayers_List.appendChild(elementsToInsert[i]);
     }
 }
 function ImportRosterDataFromTextbox() {
@@ -827,6 +875,12 @@ function UpdateTableWithPlayersOnboardArray() {
         AddRowToTable("playersOnBoard-table", rowData);
     }
 }
+function SetDivDisplayToNone(panelToUnhide) {
+    // Get the div by the panelToUnhide (id)
+    let divToUnhide = document.getElementById(panelToUnhide);
+    // Set the div display to none
+    divToUnhide.style.display = "none";
+}
 // *********** UTILITY FUNCTIONS ***********
 // Function that finds an item in the array
 // Takes in an array
@@ -1193,9 +1247,12 @@ function LoadSampleData() {
     inputCBResponses_textarea.textContent = sample_csv_inputCBResponses;
     let inputPlayerDetails_textArea = document.getElementById("inputPlayerDetails-textarea");
     inputPlayerDetails_textArea.textContent = sample_csv_inputPlayerDetails;
+    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
+    roster_textarea.textContent = sample_selected_players;
     OnBtnClick_LoadCBResponses();
     OnBtnClick_LoadPlayerDetails();
     OnBtnClick_GeneratePlayersOnboard();
     OnBtnClick_GenerateRosteringTable();
+    OnBtnClick_ImportRosterData();
 }
 //# sourceMappingURL=script.js.map

@@ -9,7 +9,15 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body onload="OnPageLoad()">
-        <div class="TitleBar">Clan Battles Rostering System v1.2</div>
+        <div class="overlayBackground" id="unrosteredPlayersPanel" style="display: none;">
+            <div class="overlayCloseBtn" onclick="SetDivDisplayToNone('unrosteredPlayersPanel')">Close</div>
+            <div class="unrosteredPlayers_Title">Unrostered Players</div>
+            <div class="unrosteredPlayers_Session">Wednesday Watch 1</div>
+            <div class="unrosteredPlayers_List">
+            </div>
+        </div>
+
+        <div class="TitleBar">Clan Battles Rostering System v1.3</div>
 
         <!-- Textbox to paste responses data -->
         <div class="splitContainer">
@@ -189,6 +197,19 @@
             </thead>
             <tbody>
             </tbody>
+        </table>
+        <h1>Unrostered Players</h1>
+        <table id="unrosteredPlayersBtnTable">
+            <th><button onClick="ShowUnrosteredPlayers('0')">Wed 1</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('1')">Wed 2</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('2')">Thu 1</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('3')">Thu 2</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('4')">Sat 1</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('5')">Sat 2</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('6')">SunM 1</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('7')">SunM 2</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('8')">SunN 1</button></th>
+            <th><button onClick="ShowUnrosteredPlayers('9')">SunN 2</button></th>
         </table>
 
         <h1>Import Export Rostering Table</h1>
