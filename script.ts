@@ -369,7 +369,8 @@ function ShowUnrosteredPlayers(sessionIndex: string): void
     unrosteredPlayers_List.innerHTML = "";
 
     // Get players that are not selected from a specific session
-    let unrosteredPlayers: string[] = [];
+    let rosteredPlayers: string[] = [];
+    let playersInSession: string[] = []
 
     let sessionIndexNumber: number = Number(sessionIndex);
     
@@ -386,17 +387,27 @@ function ShowUnrosteredPlayers(sessionIndex: string): void
             for (let j = 0; j < playerCandidatesInSlot.length; j++)
             {
                 let playerCandidate: PlayerInSlot = playerCandidatesInSlot[j];
-                if (!playerCandidate.Selected && playerCandidate.IGN !== "None")
+
+                playersInSession.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                if (playerCandidate.Selected)
                 {
-                    unrosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                    rosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
                 }
             }
         }
     }
 
-    // Deduplicate unrostered players
-    unrosteredPlayers = unrosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
-    
+    // Deduplicate rostered players
+    rosteredPlayers = rosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
+    // Deduplicate all players in session
+    playersInSession = playersInSession.filter((value, index, self) => self.indexOf(value) === index);
+
+    // remove "None" from playersInSession
+    playersInSession.splice(playersInSession.indexOf("[X] None"), 1);
+
+    // Remove players from playerInSession that appears in rosteredPlayers
+    // And save them in unrosteredPlayers
+    let unrosteredPlayers: string[] = playersInSession.filter(x => !rosteredPlayers.includes(x));
 
     let elementsToInsert: HTMLElement[] = [];
     // For each unrostered player

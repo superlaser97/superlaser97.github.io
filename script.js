@@ -225,7 +225,8 @@ function ShowUnrosteredPlayers(sessionIndex) {
     unrosteredPlayers_List = unrosteredPlayers_List;
     unrosteredPlayers_List.innerHTML = "";
     // Get players that are not selected from a specific session
-    let unrosteredPlayers = [];
+    let rosteredPlayers = [];
+    let playersInSession = [];
     let sessionIndexNumber = Number(sessionIndex);
     // Loop cbRoster.Players
     for (let team = 0; team < cbRoster.Players.length; team++) {
@@ -235,14 +236,22 @@ function ShowUnrosteredPlayers(sessionIndex) {
             // For each player in slot
             for (let j = 0; j < playerCandidatesInSlot.length; j++) {
                 let playerCandidate = playerCandidatesInSlot[j];
-                if (!playerCandidate.Selected && playerCandidate.IGN !== "None") {
-                    unrosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                playersInSession.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                if (playerCandidate.Selected) {
+                    rosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
                 }
             }
         }
     }
-    // Deduplicate unrostered players
-    unrosteredPlayers = unrosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
+    // Deduplicate rostered players
+    rosteredPlayers = rosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
+    // Deduplicate all players in session
+    playersInSession = playersInSession.filter((value, index, self) => self.indexOf(value) === index);
+    // remove "None" from playersInSession
+    playersInSession.splice(playersInSession.indexOf("[X] None"), 1);
+    // Remove players from playerInSession that appears in rosteredPlayers
+    // And save them in unrosteredPlayers
+    let unrosteredPlayers = playersInSession.filter(x => !rosteredPlayers.includes(x));
     let elementsToInsert = [];
     // For each unrostered player
     for (let i = 0; i < unrosteredPlayers.length; i++) {
