@@ -1,79 +1,5 @@
 "use strict";
 //# sourceMappingURL=E:\_Stuff\Projects\superlaser97.github.io\script.js.map
-// Sample string for inputCBResponse
-const sample_csv_inputCBResponses = `Tramapolean	Available		Available		Available	Available			Available		3
-AnotherLazyBoy	Available		Available		Available		Available	Available	Available		6
-Jeremy07	Available	Available	Available	Available		Available				Available	6
-SyIvia	Available		Available		Available		Available		Available		2
-niklausmaximus	Available	Available	Available	Available					Available		6
-OniichanYamate		Available		Available	Available	Available			Available		4
-Bagpfbones78	Available	Available	Available	Available				Available	Available	Available	6
-Jimbo762au	Available				Available				Available		3
-sl3epwalka	Available		Available		Available		Available				4
-Hingheru88	Available	Available	Available	Available		Available			Available	Available	8
-Seiron_	Available		Available		Available				Available		4
-BeardyBandit	Available								Available		2
-Cascayd	Available		Available		Available	Available			Available	Available	6
-xDreadHeartz	Available	Available	Available	Available		Available			Available	Available	7
-spaceshiphaku	Available	Available	Available	Available					Available	Available	6
-Bob778_				Available		Available				Available	3
-Songinator	Available		Available						Available		3
-Wulffenheinze	Available	Available		Available	Available	Available			Available	Available	4
-swanno1	Available		Available		Available				Available		4
-LiveOnEvil	Available	Available	Available	Available	Available	Available			Available	Available	4
-luc_defender	Available	Available			Available	Available			Available	Available	4
-adityakool15					Available						1
-ronalchn	Available								Available		2
-jordysiu915		Available		Available		Available					2
-Wolfcain			Available		Available		Available	Available	Available		5
-EyeDeeKayy	Available		Available		Available	Available	Available	Available	Available		8
-stoolz	Available		Available		Available		Available	Available	Available		6
-9_9_destroyer	Available	Available	Available	Available	Available	Available			Available	Available	8
-BlackDe47h	Available		Available		Available	Available	Available	Available	Available	Available	8
-Arrcadedus_1					Available	Available					2
-PunMasterWally	Available		Available						Available		3
-Nilaos			Available								1
-_Ducky_		Available		Available		Available	Available	Available		Available	6`;
-// Sample string for inputCBResponse
-const sample_csv_inputPlayerDetails = `_Ducky_	VKNGS	CALLER	BLUE	YES	YES
-9_9_destroyer	VKNGS	CALLER	RED	YES	YES
-adityakool15	RAN_	PLAYER	RED		YES
-AnotherLazyBoy	VKNGS	CALLER	BLUE	YES	YES
-Arrcadedus_1	BOB	CALLER	RED	YES	YES
-Bagpfbones78	VKNGS	CALLER	BLUE		YES
-BeardyBandit	BOB	CALLER	RED	YES	YES
-BlackDe47h	BOB	CALLER	RED	YES	YES
-Bob778_	AUSNZ	CALLER	BLUE	YES	
-Cascayd	VKNGS	CALLER	RED	YES	YES
-EyeDeeKayy	BOB	PLAYER	RED	YES	YES
-Hingheru88	BOB	CALLER	RED	YES	YES
-Jeremy07	VKNGS	PLAYER	RED	YES	YES
-Jimbo762au	AUSNZ	CALLER	RED		YES
-jordysiu915	VKNGS	PLAYER	BLUE	YES	
-LiveOnEvil	VKNGS	PLAYER	RED		YES
-luc_defender	VKNGS	PLAYER	RED		
-Moggytwo	AUSNZ	CALLER	BLUE	YES	YES
-Niklausmaximus	VKNGS	PLAYER	BLUE	YES	YES
-OniichanYamate	VKNGS	PLAYER	RED	YES	YES
-PunMasterWally	BOB	CALLER	RED	YES	YES
-ronalchn	VKNGS	PLAYER	RED	YES	YES
-Seiron_	RAN_	PLAYER	RED		YES
-sl3epwalka	VKNGS	PLAYER	BLUE	YES	YES
-Snowball328	REPOI	PLAYER	BLUE		
-songinator	BOB	PLAYER	RED	YES	YES
-spaceshiphaku	VKNGS	PLAYER	BLUE	YES	YES
-stoolz	AUSNZ	CALLER	RED		YES
-Strik3agle98	TKR	PLAYER	BLUE		
-swanno1	BOB	CALLER	RED	YES	YES
-SyIvia	AYNME	PLAYER	RED		YES
-The_Crynek	REPOI	PLAYER	BLUE		
-Tramapolean	VKNGS	PLAYER	RED		YES
-Wolfcain	AUSNZ	CALLER	BLUE	YES	YES
-Wulffenheinze	BOB	PLAYER	RED	YES	
-xDreadHeartz	VKNGS	PLAYER	BLUE	YES	YES
-Nilaos	1AN-E	PLAYER	RED		YES`;
-// Sample string to load seleced players
-const sample_selected_players = `{"SelectedPlayers":[[["AnotherLazyBoy","Cascayd","niklausmaximus","sl3epwalka","Bagpfbones78","xDreadHeartz","PunMasterWally"],["None","None","None","None","None","None","None"],["AnotherLazyBoy","Wolfcain","niklausmaximus","sl3epwalka","xDreadHeartz","spaceshiphaku","EyeDeeKayy"],["_Ducky_","Bagpfbones78","LiveOnEvil","niklausmaximus","xDreadHeartz","spaceshiphaku","9_9_destroyer"],["None","None","None","None","None","None","None"],["None","None","None","None","None","None","None"],["AnotherLazyBoy","_Ducky_","9_9_destroyer","Wolfcain","EyeDeeKayy","sl3epwalka","SyIvia"],["_Ducky_","BlackDe47h","Wolfcain","AnotherLazyBoy","Bagpfbones78","EyeDeeKayy","9_9_destroyer"],["AnotherLazyBoy","Cascayd","Bagpfbones78","niklausmaximus","spaceshiphaku","xDreadHeartz","BeardyBandit"],["None","None","None","None","None","None","None"]],[["Hingheru88","BlackDe47h","Jimbo762au","Songinator","ronalchn","BeardyBandit","Tramapolean"],["_Ducky_","9_9_destroyer","niklausmaximus","Hingheru88","Jeremy07","xDreadHeartz","spaceshiphaku"],["swanno1","Hingheru88","Songinator","Nilaos","Seiron_","stoolz","PunMasterWally"],["None","None","None","None","None","None","None"],["Cascayd","BlackDe47h","adityakool15","swanno1","Arrcadedus_1","sl3epwalka","EyeDeeKayy"],["Hingheru88","9_9_destroyer","xDreadHeartz","EyeDeeKayy","Arrcadedus_1","Tramapolean","BlackDe47h"],["None","None","None","None","None","None","None"],["None","None","None","None","None","None","None"],["9_9_destroyer","stoolz","swanno1","Hingheru88","BlackDe47h","EyeDeeKayy","ronalchn"],["_Ducky_","BlackDe47h","xDreadHeartz","Bagpfbones78","LiveOnEvil","spaceshiphaku","luc_defender"]],[["None","None"],["None","None"],["None","None"],["None","None"],["Jimbo762au","AnotherLazyBoy"],["Bob778_","_Ducky_"],["None","None"],["None","None"],["None","None"],["None","None"]]]}`;
 // ENUM for player types
 var PlayerTypes;
 (function (PlayerTypes) {
@@ -138,18 +64,23 @@ let playersOnboardArray = [];
 let cbRoster = { Players: [], PlayerSlotAssigments: [] };
 let showExtraPlayerInfoInRosteringTable = true;
 function OnPageLoad() {
+    TryLoadDataFromLastSession();
 }
 function OnBtnClick_LoadCBResponses() {
     // Get the input string from the textarea
     let textArea = document.getElementById("inputCBResponses-textarea");
     ParseInputCBResponseString(textArea.value);
     UpdateTableWithCBResponses();
+    // Save the data to local storage
+    localStorage.setItem("inputCBResponses", textArea.value);
 }
 function OnBtnClick_LoadPlayerDetails() {
     // Get the input string from the textarea
     let textArea = document.getElementById("inputPlayerDetails-textarea");
     ParseInputPlayerDetailsString(textArea.value);
     UpdateTableWithPlayerDetails();
+    // Save the data to local storage
+    localStorage.setItem("inputPlayerDetails", textArea.value);
 }
 function OnBtnClick_GeneratePlayersOnboard() {
     GeneratePlayersOnboardArray();
@@ -167,9 +98,6 @@ function OnBtnClick_ImportRosterData() {
     }
     ImportRosterDataFromTextbox();
     UpdateRosteringTableUIElements();
-}
-function OnBtnClick_ExportRosterData() {
-    ExportRosterDataToTextbox();
 }
 function OnBtnClick_ToggleExtraInfo() {
     showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
@@ -190,6 +118,7 @@ function OnSelectElementChanged(selectElement) {
         }
     }
     UpdateRosteringTableUIElements();
+    ExportRosterDataToTextbox();
 }
 function OnCellClicked(cell) {
     // Get the select element
@@ -209,6 +138,12 @@ function OnCellClicked(cell) {
         // Show the textbox element
         textboxElement.style.display = "block";
     }
+}
+function OnBtnClick_Reset() {
+    // Clear local storage
+    localStorage.clear();
+    // Refresh the page
+    location.reload();
 }
 function ShowUnrosteredPlayers(sessionIndex) {
     let unrosteredPlayerPanel = document.getElementById("unrosteredPlayersPanel");
@@ -322,6 +257,7 @@ function ExportRosterDataToTextbox() {
         }
     }
     roster_textarea.value = JSON.stringify(backupCBRoster);
+    localStorage.setItem("selectedPlayers", roster_textarea.value);
 }
 function UpdateRosteringTableUIElements() {
     UpdateTableWithRosterData();
@@ -1251,17 +1187,34 @@ function GetDuplicateStrings(array) {
 function CreateElementFromString(string) {
     return new DOMParser().parseFromString(string, "text/html").body.firstChild;
 }
-function LoadSampleData() {
-    let inputCBResponses_textarea = document.getElementById("inputCBResponses-textarea");
-    inputCBResponses_textarea.textContent = sample_csv_inputCBResponses;
-    let inputPlayerDetails_textArea = document.getElementById("inputPlayerDetails-textarea");
-    inputPlayerDetails_textArea.textContent = sample_csv_inputPlayerDetails;
-    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
-    roster_textarea.textContent = sample_selected_players;
-    OnBtnClick_LoadCBResponses();
-    OnBtnClick_LoadPlayerDetails();
+function TryLoadDataFromLastSession() {
+    // Get the data from the local storage
+    let inputCBResponses = localStorage.getItem("inputCBResponses");
+    if (inputCBResponses != null) {
+        inputCBResponses = inputCBResponses;
+        let inputCBResponses_textarea = document.getElementById("inputCBResponses-textarea");
+        inputCBResponses_textarea.textContent = inputCBResponses;
+        OnBtnClick_LoadCBResponses();
+    }
+    // Get the data from the local storage
+    let inputPlayerDetails = localStorage.getItem("inputPlayerDetails");
+    if (inputPlayerDetails != null) {
+        inputPlayerDetails = inputPlayerDetails;
+        let inputPlayerDetails_textArea = document.getElementById("inputPlayerDetails-textarea");
+        inputPlayerDetails_textArea.textContent = inputPlayerDetails;
+        OnBtnClick_LoadPlayerDetails();
+    }
+    if (inputCBResponses == null || inputPlayerDetails == null) {
+        return;
+    }
     OnBtnClick_GeneratePlayersOnboard();
     OnBtnClick_GenerateRosteringTable();
-    OnBtnClick_ImportRosterData();
+    // Get the data from the local storage
+    let selectedPlayers = localStorage.getItem("selectedPlayers");
+    if (selectedPlayers != null) {
+        let exportImport_textArea = document.getElementById("export-import-rosteringtable-textarea");
+        exportImport_textArea.textContent = selectedPlayers;
+        OnBtnClick_ImportRosterData();
+    }
 }
 //# sourceMappingURL=script.js.map

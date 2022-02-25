@@ -31,6 +31,17 @@ html
   box-shadow: var(--def-shadow);
 }
 
+#ResetBtn
+{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  color: var(--accent-color);
+  font-weight: bold;
+  width: 100px;
+}
+
 h1
 {
   padding-left: 10px;
