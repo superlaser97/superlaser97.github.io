@@ -295,6 +295,13 @@ div#assignedSlotsTracker-div
   background-color: rgb(51, 51, 51);
 }
 
+.Timeslot_Label
+{
+  background-color: transparent;
+  color: black;
+  font-weight: bold;
+}
+
 .ClanBase_ColumnLabel.noBase
 {
   background-color: rgb(202, 202, 202);
@@ -305,7 +312,7 @@ div#assignedSlotsTracker-div
 {
   background-color: transparent;
   border-color: transparent;
-  color: rgb(255, 76, 76);
+  color: rgb(0, 0, 0);
   font-weight: bold;
   text-align: center;
   width: 100%;
