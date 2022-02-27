@@ -444,3 +444,21 @@ div#assignedSlotsTracker-div
   width: 100%;
   margin: 0;
 }
+
+#tooltipContainer
+{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: rgb(255, 255, 255);
+  z-index: 99998;
+  text-align: center;
+  margin: 20px 200px 0 200px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.685);
+  background-clip: padding-box; /* this has been added */
+  border-radius: var(--rounded-border-radius-high);
+  box-shadow: var(--def-shadow);
+  backdrop-filter: blur(5px);
+}

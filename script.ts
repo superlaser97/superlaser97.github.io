@@ -26,6 +26,7 @@ interface PlayerDetail
     Team: TeamTypes;
     EnterBattle: boolean;
     SortieDone: boolean;
+    Remarks: string;
 }
 
 // ENUM for player types
@@ -241,6 +242,50 @@ function OnSelectElementChanged(selectElement: HTMLSelectElement)
 
     UpdateRosteringTableUIElements();
     ExportRosterDataToTextbox();
+}
+
+function OnSelectElementHovered(selectElement: HTMLSelectElement)
+{
+    // Get the selected value of the select element
+    let selectedValue: string = selectElement.value;
+    selectedValue = selectedValue.replace(/\[.*\] /g, "");
+
+    if(selectedValue === "None")
+    {
+        return;
+    }
+
+    // Get the player detail that IGN matches the selected value
+    // Selected value contains the clan tag, so we need to remove it
+    let playerDetail = inputPlayerDetailsArray.find(x => x.IGN.toLowerCase() === selectedValue.toLowerCase());
+    if(playerDetail === undefined)
+    {
+        console.log("Player detail not found for IGN: " + selectedValue);
+        return;
+    }
+
+    playerDetail = playerDetail as PlayerDetail;
+
+    if(playerDetail.Remarks === "")
+    {
+        return;
+    }
+
+    // Get the hover element
+    let hoverElement: HTMLDivElement = document.getElementById("tooltipContainer") as HTMLDivElement;
+
+    // Replace line break in playerDetail.remarks with <br>
+    let playerDetailRemarks: string = playerDetail.Remarks.replace("\n", "<br>");
+
+    hoverElement.innerHTML = playerDetailRemarks;
+    hoverElement.style.display = "block";
+}
+
+function OnSelectElementUnhovered()
+{
+    // Get the hover element
+    let hoverElement: HTMLDivElement = document.getElementById("tooltipContainer") as HTMLDivElement;
+    hoverElement.style.display = "none";
 }
 
 function OnCellClicked(cell: HTMLTableCellElement)
@@ -974,27 +1019,23 @@ function ParseInputCBResponseString(inputString: string): void {
 }
 
 // Function to parse the input csv string into inputPlayerDetailsArray
-function ParseInputPlayerDetailsString(inputString: string): void {
-    // Clear the inputPlayerDetailsArray
-    inputPlayerDetailsArray = [];
-
-    // Split the string into an array of strings
-    let inputStringArray: string[] = inputString.split("\n");
+function ParseInputPlayerDetailsString(inputString: string): void 
+{
+    let inputStringArray = CSVToArray(inputString, "\t");
 
     // Loop through the array of strings
-    for (let i: number = 0; i < inputStringArray.length; i++) {
-        // Split the string into an array of strings
-        let inputStringArray2: string[] = inputStringArray[i].split("\t");
-
+    for (let i: number = 0; i < inputStringArray.length; i++) 
+    {
         // Create a new PlayerDetail object
         let newPlayerDetail: PlayerDetail = 
         {
-            IGN: inputStringArray2[0],
-            Clan: inputStringArray2[1],
-            PlayerType: inputStringArray2[2] == "CALLER" ? PlayerTypes.CALLER : PlayerTypes.PLAYER,
-            Team: inputStringArray2[3] == "RED" ? TeamTypes.RED : TeamTypes.BLUE,
-            EnterBattle: inputStringArray2[4] == "YES" ? true : false,
-            SortieDone: inputStringArray2[5] == "YES" ? true : false
+            IGN: inputStringArray[i][0],
+            Clan: inputStringArray[i][1],
+            PlayerType: inputStringArray[i][2] == "CALLER" ? PlayerTypes.CALLER : PlayerTypes.PLAYER,
+            Team: inputStringArray[i][3] == "RED" ? TeamTypes.RED : TeamTypes.BLUE,
+            EnterBattle: inputStringArray[i][4] == "YES" ? true : false,
+            SortieDone: inputStringArray[i][5] == "YES" ? true : false,
+            Remarks: inputStringArray[i][6]
         };
 
         // Add the new PlayerDetail object to the inputPlayerDetailsArray
@@ -1409,6 +1450,12 @@ function CreateSelectElement(list: string[], optionToSelect: string, id: string,
     // Add the on change function
     selectElement.onchange = function() { OnSelectElementChanged(selectElement); };
 
+    // Add the on hover function
+    selectElement.onmouseover = function() { OnSelectElementHovered(selectElement); };
+
+    // Add the unhover function
+    selectElement.onmouseout = function() { OnSelectElementUnhovered(); };
+
     // Return the select element
     return selectElement;
 }
@@ -1647,6 +1694,90 @@ function CreateElementFromString(string: string): HTMLElement
 {
     return new DOMParser().parseFromString(string, "text/html").body.firstChild as HTMLElement;
 }
+
+function CSVToArray(strData: string, strDelimiter: string): string[][] 
+{
+    // Check to see if the delimiter is defined. If not,
+    // then default to comma.
+    strDelimiter = (strDelimiter || ",");
+  
+    // Create a regular expression to parse the CSV values.
+    var objPattern = new RegExp(
+      (
+        // Delimiters.
+        "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+  
+        // Quoted fields.
+        "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+  
+        // Standard fields.
+        "([^\"\\" + strDelimiter + "\\r\\n]*))"
+      ),
+      "gi"
+    );
+  
+  
+    // Create an array to hold our data. Give the array
+    // a default empty first row.
+    let arrData: string[][] = [[]];
+  
+    // Create an array to hold our individual pattern
+    // matching groups.
+    var arrMatches = null;
+  
+  
+    // Keep looping over the regular expression matches
+    // until we can no longer find a match.
+    while (arrMatches = objPattern.exec(strData)) {
+  
+      // Get the delimiter that was found.
+      var strMatchedDelimiter = arrMatches[1];
+  
+      // Check to see if the given delimiter has a length
+      // (is not the start of string) and if it matches
+      // field delimiter. If id does not, then we know
+      // that this delimiter is a row delimiter.
+      if (
+        strMatchedDelimiter.length &&
+        strMatchedDelimiter !== strDelimiter
+      ) {
+  
+        // Since we have reached a new row of data,
+        // add an empty row to our data array.
+        arrData.push([]);
+  
+      }
+  
+      var strMatchedValue;
+  
+      // Now that we have our delimiter out of the way,
+      // let's check to see which kind of value we
+      // captured (quoted or unquoted).
+      if (arrMatches[2]) {
+  
+        // We found a quoted value. When we capture
+        // this value, unescape any double quotes.
+        strMatchedValue = arrMatches[2].replace(
+          new RegExp("\"\"", "g"),
+          "\""
+        );
+  
+      } else {
+  
+        // We found a non-quoted value.
+        strMatchedValue = arrMatches[3];
+  
+      }
+  
+  
+      // Now that we have our value string, let's add
+      // it to the data array.
+      arrData[arrData.length - 1].push(strMatchedValue);
+    }
+  
+    // Return the parsed data.
+    return (arrData);
+  }
 
 
 
