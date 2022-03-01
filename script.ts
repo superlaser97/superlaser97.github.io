@@ -1140,13 +1140,8 @@ function GeneratePlayersOnboardArray(): void
         playersOnboardArray.push(newPlayerOnboard);
     }
 
-    // sort the playersOnboardArray by the IGN
-    playersOnboardArray.sort(function (a, b) 
-    {
-        if (a.IGN < b.IGN) { return -1; }
-        if (a.IGN > b.IGN) { return 1; }
-        return 0;
-    });
+    // sort the playersOnboardArray by the IGN ignoring case
+    playersOnboardArray.sort((a, b) => a.IGN.toLowerCase() > b.IGN.toLowerCase() ? 1 : -1);
 }
 
 // Function to update the table with the playersOnboardArray
