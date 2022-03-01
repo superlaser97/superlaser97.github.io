@@ -477,3 +477,8 @@ div#assignedSlotsTracker-div
 {
   cursor: pointer;
 }
+
+select:hover
+{
+  cursor: pointer;
+}
