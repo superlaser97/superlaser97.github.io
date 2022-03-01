@@ -421,7 +421,6 @@ function UpdateSessionClanBaseHeader() {
     }
 }
 function UpdateAssignedSlotsTrackerWithRosterData() {
-    var playerSlotDivaTemplate = '<div class="playerSlotContainer">IGN <div id="IDNAME">CURRSLOTSASSIGNED / MAXSLOTS</div></div>';
     // Clear the Assigned Slots Tracker div
     let assignedSlotsTracker_div = document.getElementById("assignedSlotsTracker-div");
     assignedSlotsTracker_div.innerHTML = "";
@@ -429,6 +428,8 @@ function UpdateAssignedSlotsTrackerWithRosterData() {
     for (let playerIndex = 0; playerIndex < cbRoster.PlayerSlotAssigments.length; playerIndex++) {
         // Player IGN
         let playerIGN = cbRoster.PlayerSlotAssigments[playerIndex].IGN;
+        let playerClan = cbRoster.PlayerSlotAssigments[playerIndex].Clan;
+        let playerIGNwithClan = "[" + playerClan + "] " + playerIGN;
         let playerMaxSessionsToAssign = cbRoster.PlayerSlotAssigments[playerIndex].MaxSessionsToAssign;
         let playerNumOfTimesAssigned = 0;
         // Get list of players in roster that matches the playerIGN
@@ -450,12 +451,19 @@ function UpdateAssignedSlotsTrackerWithRosterData() {
         if (playerNumOfTimesAssigned > playerMaxSessionsToAssign) {
             idName = "over-rostered";
         }
-        var tempPlayerSlotDiv = playerSlotDivaTemplate;
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("IDNAME", idName);
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("IGN", playerIGN);
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("CURRSLOTSASSIGNED", playerNumOfTimesAssigned.toString());
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("MAXSLOTS", playerMaxSessionsToAssign.toString());
-        assignedSlotsTracker_div.innerHTML += tempPlayerSlotDiv;
+        // New playerSlotContainer element
+        let playerSlotContainer = document.createElement("div");
+        playerSlotContainer.innerText = playerIGN;
+        playerSlotContainer.classList.add("playerSlotContainer");
+        playerSlotContainer.onclick = () => { OnPlayerSlotContainerClicked(playerIGNwithClan); };
+        // New inner div element
+        let innerDiv = document.createElement("div");
+        innerDiv.id = idName;
+        innerDiv.innerText = playerNumOfTimesAssigned.toString() + "/" + playerMaxSessionsToAssign.toString();
+        // Append inner div to playerSlotContainer
+        playerSlotContainer.appendChild(innerDiv);
+        // Append playerSlotContainer to assignedSlotsTracker_div
+        assignedSlotsTracker_div.appendChild(playerSlotContainer);
     }
 }
 function UpdateTableWithRosterData() {
@@ -523,6 +531,7 @@ function GenerateRosterData() {
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1) {
             let newPlayerSlotsAssignedData = {
                 IGN: playerOnboard.IGN,
+                Clan: playerOnboard.Clan,
                 SessionsAssigned: 0,
                 MaxSessionsToAssign: playerOnboard.MAX_SLOTS
             };
@@ -726,7 +735,7 @@ function GeneratePlayersOnboardArray() {
             }
         }
         // Check if playerIGN appears more than once in inputCBResponseArray
-        if (inputCBResponseArray.filter(x => x.IGN == IGN).length > 1) {
+        if (inputCBResponseArray.filter(x => x.IGN.toLowerCase() == IGN.toLowerCase()).length > 1) {
             // Add the duplicate entry remark to the playerRemarks array
             playerRemarks.push(PlayerRemarks.DUPLICATE_ENTRY);
         }
@@ -851,6 +860,24 @@ function SetDivDisplayToNone(panelToUnhide) {
     let divToUnhide = document.getElementById(panelToUnhide);
     // Set the div display to none
     divToUnhide.style.display = "none";
+}
+function OnPlayerSlotContainerClicked(playerIGNWithClan) {
+    // Get all select elements that has class tableSelect
+    let tableSelectElements = document.getElementsByClassName("tableSelect");
+    // Loop through the tableSelectElements
+    for (let i = 0; i < tableSelectElements.length; i++) {
+        let tableSelectElement = tableSelectElements[i];
+        // If "purpleBackground" class is present
+        if (tableSelectElement.classList.contains("purpleBackground") == true) {
+            // Remove the "purpleBackground" class
+            tableSelectElement.classList.remove("purpleBackground");
+        }
+        // If selected option is the same as the playerIGNWithClan
+        if (tableSelectElement.value == playerIGNWithClan) {
+            // Add the "purpleBackground" class
+            tableSelectElement.classList.add("purpleBackground");
+        }
+    }
 }
 // *********** UTILITY FUNCTIONS ***********
 // Function that finds an item in the array

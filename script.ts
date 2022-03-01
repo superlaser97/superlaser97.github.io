@@ -144,6 +144,7 @@ interface PlayerInSlot
 interface PlayerSlotAssigment 
 {
     IGN: string;
+    Clan: string;
     MaxSessionsToAssign: number;
 }
 
@@ -685,8 +686,6 @@ function UpdateSessionClanBaseHeader()
 
 function UpdateAssignedSlotsTrackerWithRosterData()
 {
-    var playerSlotDivaTemplate = '<div class="playerSlotContainer">IGN <div id="IDNAME">CURRSLOTSASSIGNED / MAXSLOTS</div></div>';
-
     // Clear the Assigned Slots Tracker div
     let assignedSlotsTracker_div: HTMLDivElement = document.getElementById("assignedSlotsTracker-div") as HTMLDivElement;
     assignedSlotsTracker_div.innerHTML = "";
@@ -696,6 +695,8 @@ function UpdateAssignedSlotsTrackerWithRosterData()
     {
         // Player IGN
         let playerIGN: string = cbRoster.PlayerSlotAssigments[playerIndex].IGN;
+        let playerClan: string = cbRoster.PlayerSlotAssigments[playerIndex].Clan;
+        let playerIGNwithClan: string = "[" + playerClan + "] " + playerIGN;
         let playerMaxSessionsToAssign: number = cbRoster.PlayerSlotAssigments[playerIndex].MaxSessionsToAssign;
         let playerNumOfTimesAssigned: number = 0;
 
@@ -728,13 +729,22 @@ function UpdateAssignedSlotsTrackerWithRosterData()
             idName = "over-rostered"
         }
 
-        var tempPlayerSlotDiv = playerSlotDivaTemplate;
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("IDNAME", idName);
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("IGN", playerIGN);
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("CURRSLOTSASSIGNED", playerNumOfTimesAssigned.toString());
-        tempPlayerSlotDiv = tempPlayerSlotDiv.replace("MAXSLOTS", playerMaxSessionsToAssign.toString());
+        // New playerSlotContainer element
+        let playerSlotContainer: HTMLDivElement = document.createElement("div");
+        playerSlotContainer.innerText = playerIGN;
+        playerSlotContainer.classList.add("playerSlotContainer");
+        playerSlotContainer.onclick = () => { OnPlayerSlotContainerClicked(playerIGNwithClan); };
+        
+        // New inner div element
+        let innerDiv: HTMLDivElement = document.createElement("div");
+        innerDiv.id = idName;
+        innerDiv.innerText = playerNumOfTimesAssigned.toString() + "/" + playerMaxSessionsToAssign.toString();
 
-        assignedSlotsTracker_div.innerHTML += tempPlayerSlotDiv;
+        // Append inner div to playerSlotContainer
+        playerSlotContainer.appendChild(innerDiv);
+
+        // Append playerSlotContainer to assignedSlotsTracker_div
+        assignedSlotsTracker_div.appendChild(playerSlotContainer);
     }
 }
 
@@ -830,6 +840,7 @@ function GenerateRosterData()
             let newPlayerSlotsAssignedData =
             {
                 IGN: playerOnboard.IGN,
+                Clan: playerOnboard.Clan,
                 SessionsAssigned: 0,
                 MaxSessionsToAssign: playerOnboard.MAX_SLOTS
             };
@@ -1088,7 +1099,7 @@ function GeneratePlayersOnboardArray(): void
         }
 
         // Check if playerIGN appears more than once in inputCBResponseArray
-        if (inputCBResponseArray.filter(x => x.IGN == IGN).length > 1) {
+        if (inputCBResponseArray.filter(x => x.IGN.toLowerCase() == IGN.toLowerCase()).length > 1) {
             // Add the duplicate entry remark to the playerRemarks array
             playerRemarks.push(PlayerRemarks.DUPLICATE_ENTRY);
         }
@@ -1231,6 +1242,32 @@ function SetDivDisplayToNone(panelToUnhide: string): void
 
     // Set the div display to none
     divToUnhide.style.display = "none";
+}
+
+function OnPlayerSlotContainerClicked(playerIGNWithClan: string): void
+{
+    // Get all select elements that has class tableSelect
+    let tableSelectElements = document.getElementsByClassName("tableSelect");
+
+    // Loop through the tableSelectElements
+    for (let i: number = 0; i < tableSelectElements.length; i++) 
+    {
+        let tableSelectElement: HTMLSelectElement = <HTMLSelectElement>tableSelectElements[i];
+        
+        // If "purpleBackground" class is present
+        if (tableSelectElement.classList.contains("purpleBackground") == true)
+        {
+            // Remove the "purpleBackground" class
+            tableSelectElement.classList.remove("purpleBackground");
+        }
+
+        // If selected option is the same as the playerIGNWithClan
+        if (tableSelectElement.value == playerIGNWithClan)
+        {
+            // Add the "purpleBackground" class
+            tableSelectElement.classList.add("purpleBackground");
+        }
+    }
 }
 
 

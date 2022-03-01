@@ -462,3 +462,18 @@ div#assignedSlotsTracker-div
   box-shadow: var(--def-shadow);
   backdrop-filter: blur(5px);
 }
+
+.tableSelect.purpleBackground
+{
+  background-color: rgb(185, 19, 197);
+  color: rgb(255, 255, 255);
+  background-clip: padding-box; /* this has been added */
+  border-radius: var(--rounded-border-radius-high);
+  box-shadow: var(--def-shadow);
+  padding: 3px;
+}
+
+.playerSlotContainer:hover
+{
+  cursor: pointer;
+}
