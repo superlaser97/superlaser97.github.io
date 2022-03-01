@@ -470,7 +470,7 @@ div#assignedSlotsTracker-div
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-high);
   box-shadow: var(--def-shadow);
-  padding: 3px;
+  padding: 5px;
 }
 
 .playerSlotContainer:hover

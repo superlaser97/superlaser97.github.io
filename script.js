@@ -301,7 +301,7 @@ function UpdateAllRosteringTableCellsWithPlayerData() {
         return;
     }
     var extraInfoCaller_HTMLTemplate = '<div class="extra-info extra-info-caller">CALLER</div>';
-    var extraInfoEnterBtl_HTMLTemplate = '<div class="extra-info extra-info-startbtl">KEY</div>';
+    var extraInfoEnterBtl_HTMLTemplate = '<div class="extra-info extra-info-startbtl">BTL</div>';
     var extraInfoNoSortie_HTMLTemplate = '<div class="extra-info extra-info-nosortie">NO SORTIE</div>';
     var extraInfoStartBlueTeam_HTMLTemplate = '<div class="extra-info extra-info-bluteam">BLUE</div>';
     var extraInfoStartRedTeam_HTMLTemplate = '<div class="extra-info extra-info-redteam">RED</div>';
