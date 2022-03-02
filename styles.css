@@ -242,11 +242,12 @@ select.tableSelect option
 div#assignedSlotsTracker-div
 {
   width: 100%;
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.281);
   padding: 15px;
   width: calc(100% - 40px);
   overflow: auto;
   background-clip: padding-box; /* this has been added */
+  backdrop-filter: blur(5px);
   border-radius: var(--rounded-border-radius-high);
   box-shadow: var(--def-shadow);
 }

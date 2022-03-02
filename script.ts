@@ -1250,10 +1250,12 @@ function OnPlayerSlotContainerClicked(playerIGNWithClan: string): void
         let tableSelectElement: HTMLSelectElement = <HTMLSelectElement>tableSelectElements[i];
         
         // If "purpleBackground" class is present
-        if (tableSelectElement.classList.contains("purpleBackground") == true)
+        if (tableSelectElement.classList.contains("purpleBackground") == true && tableSelectElement.classList.contains("animate__animated") == true)
         {
             // Remove the "purpleBackground" class
             tableSelectElement.classList.remove("purpleBackground");
+            tableSelectElement.classList.remove("animate__animated");
+            tableSelectElement.classList.remove("animate__rubberBand");
         }
 
         // If selected option is the same as the playerIGNWithClan
@@ -1261,6 +1263,8 @@ function OnPlayerSlotContainerClicked(playerIGNWithClan: string): void
         {
             // Add the "purpleBackground" class
             tableSelectElement.classList.add("purpleBackground");
+            tableSelectElement.classList.add("animate__animated");
+            tableSelectElement.classList.add("animate__rubberBand");
         }
     }
 }
