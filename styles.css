@@ -220,6 +220,7 @@ select.tableSelect
   text-align: left;
   appearance: none;
   width: 100%;
+  padding: 5px;
 }
 
 select.tableSelect:focus
@@ -242,7 +243,7 @@ select.tableSelect option
 div#assignedSlotsTracker-div
 {
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.281);
+  background-color: rgba(255, 255, 255, 0.753);
   padding: 15px;
   width: calc(100% - 40px);
   overflow: auto;
@@ -477,7 +478,6 @@ div#assignedSlotsTracker-div
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-high);
   box-shadow: var(--def-shadow);
-  padding: 5px;
 }
 
 .playerSlotContainer:hover
@@ -488,4 +488,10 @@ div#assignedSlotsTracker-div
 select:hover
 {
   cursor: pointer;
+}
+
+.animate__animated
+{
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
 }

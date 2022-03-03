@@ -455,7 +455,7 @@ function UpdateAssignedSlotsTrackerWithRosterData() {
         let playerSlotContainer = document.createElement("div");
         playerSlotContainer.innerText = playerIGN;
         playerSlotContainer.classList.add("playerSlotContainer");
-        playerSlotContainer.onclick = () => { OnPlayerSlotContainerClicked(playerIGNwithClan); };
+        playerSlotContainer.onclick = () => { HighlightAllSelectElementsWithPlayer(playerIGNwithClan); };
         // New inner div element
         let innerDiv = document.createElement("div");
         innerDiv.id = idName;
@@ -853,25 +853,25 @@ function SetDivDisplayToNone(panelToUnhide) {
     // Set the div display to none
     divToUnhide.style.display = "none";
 }
-function OnPlayerSlotContainerClicked(playerIGNWithClan) {
+function HighlightAllSelectElementsWithPlayer(playerIGNWithClan) {
     // Get all select elements that has class tableSelect
     let tableSelectElements = document.getElementsByClassName("tableSelect");
     // Loop through the tableSelectElements
     for (let i = 0; i < tableSelectElements.length; i++) {
         let tableSelectElement = tableSelectElements[i];
         // If "purpleBackground" class is present
-        if (tableSelectElement.classList.contains("purpleBackground") == true && tableSelectElement.classList.contains("animate__animated") == true) {
+        if (tableSelectElement.classList.contains("purpleBackground") == true /*&& tableSelectElement.classList.contains("animate__animated") == true*/) {
             // Remove the "purpleBackground" class
             tableSelectElement.classList.remove("purpleBackground");
-            tableSelectElement.classList.remove("animate__animated");
-            tableSelectElement.classList.remove("animate__rubberBand");
+            //tableSelectElement.classList.remove("animate__animated");
+            //tableSelectElement.classList.remove("animate__rubberBand");
         }
         // If selected option is the same as the playerIGNWithClan
-        if (tableSelectElement.value == playerIGNWithClan) {
+        if (tableSelectElement.value == playerIGNWithClan && playerIGNWithClan !== "[X] None") {
             // Add the "purpleBackground" class
             tableSelectElement.classList.add("purpleBackground");
-            tableSelectElement.classList.add("animate__animated");
-            tableSelectElement.classList.add("animate__rubberBand");
+            //tableSelectElement.classList.add("animate__animated");
+            //tableSelectElement.classList.add("animate__rubberBand");
         }
     }
 }
@@ -1040,9 +1040,17 @@ function CreateSelectElement(list, optionToSelect, id, classToAdd = "") {
     // Set the selected option
     selectElement.value = optionToSelect;
     // Add the on change function
-    selectElement.onchange = function () { OnSelectElementChanged(selectElement); };
+    selectElement.onchange = function () {
+        OnSelectElementChanged(selectElement);
+        HighlightAllSelectElementsWithPlayer(selectElement.selectedOptions[0].value);
+    };
     // Add the on hover function
-    selectElement.onmouseover = function () { OnSelectElementHovered(selectElement); };
+    selectElement.onmouseover = function () {
+        OnSelectElementHovered(selectElement);
+    };
+    selectElement.onclick = function () {
+        HighlightAllSelectElementsWithPlayer(optionToSelect);
+    };
     // Add the unhover function
     selectElement.onmouseout = function () { OnSelectElementUnhovered(); };
     // Return the select element

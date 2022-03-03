@@ -733,7 +733,7 @@ function UpdateAssignedSlotsTrackerWithRosterData()
         let playerSlotContainer: HTMLDivElement = document.createElement("div");
         playerSlotContainer.innerText = playerIGN;
         playerSlotContainer.classList.add("playerSlotContainer");
-        playerSlotContainer.onclick = () => { OnPlayerSlotContainerClicked(playerIGNwithClan); };
+        playerSlotContainer.onclick = () => { HighlightAllSelectElementsWithPlayer(playerIGNwithClan); };
         
         // New inner div element
         let innerDiv: HTMLDivElement = document.createElement("div");
@@ -1239,7 +1239,7 @@ function SetDivDisplayToNone(panelToUnhide: string): void
     divToUnhide.style.display = "none";
 }
 
-function OnPlayerSlotContainerClicked(playerIGNWithClan: string): void
+function HighlightAllSelectElementsWithPlayer(playerIGNWithClan: string): void
 {
     // Get all select elements that has class tableSelect
     let tableSelectElements = document.getElementsByClassName("tableSelect");
@@ -1250,21 +1250,21 @@ function OnPlayerSlotContainerClicked(playerIGNWithClan: string): void
         let tableSelectElement: HTMLSelectElement = <HTMLSelectElement>tableSelectElements[i];
         
         // If "purpleBackground" class is present
-        if (tableSelectElement.classList.contains("purpleBackground") == true && tableSelectElement.classList.contains("animate__animated") == true)
+        if (tableSelectElement.classList.contains("purpleBackground") == true /*&& tableSelectElement.classList.contains("animate__animated") == true*/)
         {
             // Remove the "purpleBackground" class
             tableSelectElement.classList.remove("purpleBackground");
-            tableSelectElement.classList.remove("animate__animated");
-            tableSelectElement.classList.remove("animate__rubberBand");
+            //tableSelectElement.classList.remove("animate__animated");
+            //tableSelectElement.classList.remove("animate__rubberBand");
         }
 
         // If selected option is the same as the playerIGNWithClan
-        if (tableSelectElement.value == playerIGNWithClan)
+        if (tableSelectElement.value == playerIGNWithClan && playerIGNWithClan !== "[X] None")
         {
             // Add the "purpleBackground" class
             tableSelectElement.classList.add("purpleBackground");
-            tableSelectElement.classList.add("animate__animated");
-            tableSelectElement.classList.add("animate__rubberBand");
+            //tableSelectElement.classList.add("animate__animated");
+            //tableSelectElement.classList.add("animate__rubberBand");
         }
     }
 }
@@ -1484,10 +1484,22 @@ function CreateSelectElement(list: string[], optionToSelect: string, id: string,
     selectElement.value = optionToSelect;
 
     // Add the on change function
-    selectElement.onchange = function() { OnSelectElementChanged(selectElement); };
+    selectElement.onchange = function() 
+    {
+        OnSelectElementChanged(selectElement); 
+        HighlightAllSelectElementsWithPlayer(selectElement.selectedOptions[0].value);
+    };
 
     // Add the on hover function
-    selectElement.onmouseover = function() { OnSelectElementHovered(selectElement); };
+    selectElement.onmouseover = function() 
+    { 
+        OnSelectElementHovered(selectElement); 
+    };
+
+    selectElement.onclick = function()
+    {
+        HighlightAllSelectElementsWithPlayer(optionToSelect);
+    }
 
     // Add the unhover function
     selectElement.onmouseout = function() { OnSelectElementUnhovered(); };
