@@ -1254,8 +1254,8 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan: string): void
         {
             // Remove the "purpleBackground" class
             tableSelectElement.classList.remove("purpleBackground");
-            //tableSelectElement.classList.remove("animate__animated");
-            //tableSelectElement.classList.remove("animate__heartBeat");
+            tableSelectElement.classList.remove("animate__animated");
+            tableSelectElement.classList.remove("animate__heartBeat");
         }
 
         // If selected option is the same as the playerIGNWithClan
@@ -1263,8 +1263,8 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan: string): void
         {
             // Add the "purpleBackground" class
             tableSelectElement.classList.add("purpleBackground");
-            //tableSelectElement.classList.add("animate__animated");
-            //tableSelectElement.classList.add("animate__heartBeat");
+            tableSelectElement.classList.add("animate__animated");
+            tableSelectElement.classList.add("animate__heartBeat");
         }
     }
 }
@@ -1487,7 +1487,7 @@ function CreateSelectElement(list: string[], optionToSelect: string, id: string,
     selectElement.onchange = function() 
     {
         OnSelectElementChanged(selectElement); 
-        HighlightAllSelectElementsWithPlayer(selectElement.selectedOptions[0].value);
+        //HighlightAllSelectElementsWithPlayer(selectElement.selectedOptions[0].value);
     };
 
     // Add the on hover function
