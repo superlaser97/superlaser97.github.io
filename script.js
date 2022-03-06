@@ -860,18 +860,18 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan) {
     for (let i = 0; i < tableSelectElements.length; i++) {
         let tableSelectElement = tableSelectElements[i];
         // If "purpleBackground" class is present
-        if (tableSelectElement.classList.contains("purpleBackground") == true /*&& tableSelectElement.classList.contains("animate__animated") == true*/) {
+        if (tableSelectElement.classList.contains("purpleBackground") == true) {
             // Remove the "purpleBackground" class
             tableSelectElement.classList.remove("purpleBackground");
             //tableSelectElement.classList.remove("animate__animated");
-            //tableSelectElement.classList.remove("animate__rubberBand");
+            //tableSelectElement.classList.remove("animate__heartBeat");
         }
         // If selected option is the same as the playerIGNWithClan
         if (tableSelectElement.value == playerIGNWithClan && playerIGNWithClan !== "[X] None") {
             // Add the "purpleBackground" class
             tableSelectElement.classList.add("purpleBackground");
             //tableSelectElement.classList.add("animate__animated");
-            //tableSelectElement.classList.add("animate__rubberBand");
+            //tableSelectElement.classList.add("animate__heartBeat");
         }
     }
 }
@@ -1049,7 +1049,7 @@ function CreateSelectElement(list, optionToSelect, id, classToAdd = "") {
         OnSelectElementHovered(selectElement);
     };
     selectElement.onclick = function () {
-        HighlightAllSelectElementsWithPlayer(optionToSelect);
+        //HighlightAllSelectElementsWithPlayer(optionToSelect);
     };
     // Add the unhover function
     selectElement.onmouseout = function () { OnSelectElementUnhovered(); };
