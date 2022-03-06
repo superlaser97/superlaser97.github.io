@@ -626,6 +626,7 @@ function UpdateTableWithPlayerDetails() {
         rowData.push(playerDetail.PlayerType);
         rowData.push(playerDetail.Team);
         rowData.push(playerDetail.EnterBattle ? "YES" : "");
+        rowData.push(playerDetail.ShipProfessency);
         rowData.push(playerDetail.SortieDone ? "YES" : "");
         AddRowToTable("playerDetails-table", rowData);
     }
@@ -694,7 +695,8 @@ function ParseInputPlayerDetailsString(inputString) {
             Team: inputStringArray[i][3] == "RED" ? TeamTypes.RED : TeamTypes.BLUE,
             EnterBattle: inputStringArray[i][4] == "YES" ? true : false,
             SortieDone: inputStringArray[i][5] == "YES" ? true : false,
-            Remarks: inputStringArray[i][6]
+            ShipProfessency: inputStringArray[i][6],
+            Remarks: inputStringArray[i][7]
         };
         // Add the new PlayerDetail object to the inputPlayerDetailsArray
         inputPlayerDetailsArray.push(newPlayerDetail);
@@ -712,6 +714,7 @@ function GeneratePlayersOnboardArray() {
         let team = TeamTypes.UNKNOWN;
         let enterBattle = false;
         let sortieDone = false;
+        let shipProfessency = "";
         let playerRemarks = [];
         let sessionSlotsSelected = [];
         // Check if playerIGN does not exist in inputPlayerDetailsArray
@@ -730,6 +733,7 @@ function GeneratePlayersOnboardArray() {
             team = player.Team;
             enterBattle = player.EnterBattle;
             sortieDone = player.SortieDone;
+            shipProfessency = player.ShipProfessency;
             if (player.SortieDone == false) {
                 playerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
             }
@@ -764,6 +768,7 @@ function GeneratePlayersOnboardArray() {
             SessionSlotsSelected: sessionSlotsSelected,
             MAX_SLOTS: inputCBResponseArray[i].MAX_SLOTS,
             PlayerRemarks: playerRemarks,
+            ShipProfessency: shipProfessency,
             SortieDone: sortieDone
         };
         // Push the new PlayerOnboard object to the playersOnboardArray
@@ -784,6 +789,7 @@ function UpdateTableWithPlayersOnboardArray() {
         let PlayerType = playersOnboardArray[i].PlayerType == PlayerTypes.CALLER ? "CALLER" : "PLAYER";
         let Team = playersOnboardArray[i].Team == TeamTypes.RED ? "RED" : "BLUE";
         let EnterBattle = playersOnboardArray[i].EnterBattle == true ? "YES" : "";
+        let ShipProfessency = playersOnboardArray[i].ShipProfessency;
         let Clan = playersOnboardArray[i].Clan;
         let Remarks = "";
         let MAX_SLOTS = playersOnboardArray[i].MAX_SLOTS.toString();
@@ -815,6 +821,7 @@ function UpdateTableWithPlayersOnboardArray() {
         rowData.push(Team);
         rowData.push(EnterBattle);
         rowData.push(Remarks);
+        rowData.push(ShipProfessency);
         rowData.push(ResponseData_WED_1);
         rowData.push(ResponseData_WED_2);
         rowData.push(ResponseData_THU_1);
