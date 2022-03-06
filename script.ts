@@ -555,7 +555,8 @@ function UpdateAllRosteringTableCellsWithPlayerData()
 
                 if(selectedPlayer.ShipProfessency !== "")
                 {
-                    extraInfoShipProf_HTMLTemplate = extraInfoShipProf_HTMLTemplate.replace("XXX", selectedPlayer.ShipProfessency);
+                    let extraInfoShipProf = extraInfoShipProf_HTMLTemplate
+                    extraInfoShipProf = extraInfoShipProf_HTMLTemplate.replace("XXX", selectedPlayer.ShipProfessency);
                     parentElement.prepend(CreateElementFromString(extraInfoShipProf_HTMLTemplate));
                 }
                 if(selectedPlayer.SortieDone == false && selectedPlayer.IGN !== "None")
