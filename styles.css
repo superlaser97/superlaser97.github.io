@@ -341,7 +341,7 @@ div#assignedSlotsTracker-div
 .extra-info
 {
   display: inline-block;
-  font-size: 10px;
+  font-size: 12px;
   margin: 0px 5px 0 0;
   padding: 0px;
   font-weight: bold;
@@ -371,6 +371,13 @@ div#assignedSlotsTracker-div
 
 .extra-info.extra-info-nosortie
 {
+  color: rgb(68, 68, 68);
+}
+
+.extra-info.extra-info-shipprof
+{
+  display: block;
+  text-align: left;
   color: rgb(0, 0, 0);
 }
 

@@ -305,6 +305,7 @@ function UpdateAllRosteringTableCellsWithPlayerData() {
     var extraInfoNoSortie_HTMLTemplate = '<div class="extra-info extra-info-nosortie">NO SORTIE</div>';
     var extraInfoStartBlueTeam_HTMLTemplate = '<div class="extra-info extra-info-bluteam">BLUE</div>';
     var extraInfoStartRedTeam_HTMLTemplate = '<div class="extra-info extra-info-redteam">RED</div>';
+    var extraInfoShipProf_HTMLTemplate = '<div class="extra-info extra-info-shipprof">XXX</div>';
     for (let team = 0; team < cbRoster.Players.length; team++) {
         for (let session = 0; session < cbRoster.Players[team].length; session++) {
             for (let playerSlot = 0; playerSlot < cbRoster.Players[team][session].length; playerSlot++) {
@@ -327,7 +328,11 @@ function UpdateAllRosteringTableCellsWithPlayerData() {
                 }
                 // Get the parent of the select element
                 let parentElement = selectElement.parentElement;
-                if (selectedPlayer.SortieDone == false && selectedPlayer.IGN === "None") {
+                if (selectedPlayer.ShipProfessency !== "") {
+                    extraInfoShipProf_HTMLTemplate = extraInfoShipProf_HTMLTemplate.replace("XXX", selectedPlayer.ShipProfessency);
+                    parentElement.prepend(CreateElementFromString(extraInfoShipProf_HTMLTemplate));
+                }
+                if (selectedPlayer.SortieDone == false && selectedPlayer.IGN !== "None") {
                     parentElement.prepend(CreateElementFromString(extraInfoNoSortie_HTMLTemplate));
                 }
                 if (selectedPlayer.PlayerType == PlayerTypes.CALLER) {
@@ -571,7 +576,8 @@ function GenerateRosterData() {
                 PlayerType: playerOnboard.PlayerType,
                 Team: playerOnboard.Team,
                 EnterBattle: playerOnboard.EnterBattle,
-                SortieDone: playerOnboard.SortieDone
+                SortieDone: playerOnboard.SortieDone,
+                ShipProfessency: playerOnboard.ShipProfessency
             });
         }
         let caller1_candidates = [];
@@ -588,7 +594,8 @@ function GenerateRosterData() {
             PlayerType: PlayerTypes.UNKNOWN,
             Team: TeamTypes.UNKNOWN,
             EnterBattle: false,
-            SortieDone: false
+            SortieDone: false,
+            ShipProfessency: ""
         };
         caller1_candidates.push(emptyPlayer);
         caller2_candidates.push(emptyPlayer);
