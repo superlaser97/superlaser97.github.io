@@ -1255,6 +1255,20 @@ function UpdateTableWithPlayersOnboardArray(): void
     }
 }
 
+function CloseCustomSelectWindow()
+{
+    let selectMenu: HTMLDivElement = <HTMLDivElement>document.getElementById("CustomSelectWindow");
+
+    let selectOverlayParent = selectMenu.parentElement;
+    if(selectOverlayParent != null)
+    {
+        selectOverlayParent.style.display = "none";
+    }
+    
+    // Disable document scroll
+    document.body.style.overflow = 'auto';
+}
+
 function SetDivDisplayToNone(panelToUnhide: string): void
 {
     // Get the div by the panelToUnhide (id)
@@ -1337,7 +1351,11 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
     // Set the select menu position
 
     // Unhide the select menu
-    selectMenu.style.display = "block";
+    let selectOverlayParent = selectMenu.parentElement;
+    if(selectOverlayParent != null)
+    {
+        selectOverlayParent.style.display = "block";
+    }
 
     // Clear the select menu
     selectMenu.innerHTML = "";
@@ -1427,7 +1445,11 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
 
         if(selectOverlay != null)
         {
-            selectOverlay.style.display = "none";
+            let selectOverlayParent = selectOverlay.parentElement;
+            if(selectOverlayParent != null)
+            {
+                selectOverlayParent.style.display = "none";
+            }
         }
 
         OnSelectElementChanged(originalSelectElement); 

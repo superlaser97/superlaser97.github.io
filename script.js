@@ -866,6 +866,15 @@ function UpdateTableWithPlayersOnboardArray() {
         AddRowToTable("playersOnBoard-table", rowData);
     }
 }
+function CloseCustomSelectWindow() {
+    let selectMenu = document.getElementById("CustomSelectWindow");
+    let selectOverlayParent = selectMenu.parentElement;
+    if (selectOverlayParent != null) {
+        selectOverlayParent.style.display = "none";
+    }
+    // Disable document scroll
+    document.body.style.overflow = 'auto';
+}
 function SetDivDisplayToNone(panelToUnhide) {
     // Get the div by the panelToUnhide (id)
     let divToUnhide = document.getElementById(panelToUnhide);
@@ -922,7 +931,10 @@ function OpenCustomSelectMenu(selectElement) {
     }
     // Set the select menu position
     // Unhide the select menu
-    selectMenu.style.display = "block";
+    let selectOverlayParent = selectMenu.parentElement;
+    if (selectOverlayParent != null) {
+        selectOverlayParent.style.display = "block";
+    }
     // Clear the select menu
     selectMenu.innerHTML = "";
     // Get the select menu options
@@ -981,7 +993,10 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
         // Hide the select menu
         let selectOverlay = document.getElementById("CustomSelectWindow");
         if (selectOverlay != null) {
-            selectOverlay.style.display = "none";
+            let selectOverlayParent = selectOverlay.parentElement;
+            if (selectOverlayParent != null) {
+                selectOverlayParent.style.display = "none";
+            }
         }
         OnSelectElementChanged(originalSelectElement);
     };
