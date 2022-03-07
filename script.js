@@ -898,7 +898,29 @@ function OpenCustomSelectMenu(selectElement) {
     // Disable document scroll
     document.body.style.overflow = 'hidden';
     // Get the select menu
-    let selectMenu = document.getElementById("selectOverlay");
+    let selectMenu = document.getElementById("CustomSelectWindow");
+    // Get select element global position relative to the screen
+    let selectElement_topPos = selectElement.getBoundingClientRect().top;
+    let selectElement_leftPos = selectElement.getBoundingClientRect().left;
+    // Get width and height of display
+    let displayWidth = window.innerWidth;
+    let displayHeight = window.innerHeight;
+    console.log("selectElement_topPos: " + selectElement_topPos);
+    console.log("selectElement_leftPos: " + selectElement_leftPos);
+    if (displayWidth - selectElement_leftPos < 250) {
+        selectMenu.style.left = (selectElement_leftPos - 150) + "px";
+    }
+    else {
+        selectMenu.style.left = (selectElement_leftPos) + "px";
+    }
+    selectMenu.style.top = (selectElement_topPos + 25) + "px";
+    if (displayHeight - selectElement_topPos < 350) {
+        selectMenu.style.top = (selectElement_topPos - 300) + "px";
+    }
+    else {
+        selectMenu.style.bottom = (selectElement_topPos) + "px";
+    }
+    // Set the select menu position
     // Unhide the select menu
     selectMenu.style.display = "block";
     // Clear the select menu
@@ -915,21 +937,10 @@ function OpenCustomSelectMenu(selectElement) {
         if (selectElement.value == selectOptions[i].value) {
             selected = true;
         }
-        // Get the option value
-        let optionValue = selectOptions[i].value;
-        // Remove the player ign from option value
-        // Get the string between the brackets
-        let playerClan = optionValue.substring(optionValue.indexOf("[") + 1, optionValue.indexOf("]"));
-        console.log(playerClan);
-        if (currentClan != playerClan || currentClan == "") {
-            let clanLabel = document.createElement("div");
-            clanLabel.classList.add("clanLabel");
-            clanLabel.innerHTML = playerClan;
-            selectMenu.append(clanLabel);
-        }
-        currentClan = playerClan;
         selectMenu.appendChild(CreateCustomSelectMenuOption(selectElement, selectOptions[i].value, selected));
     }
+    // Set the select menu scroll position to the top
+    selectMenu.scrollTop = 0;
 }
 function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, selected) {
     // Create a div element
@@ -966,16 +977,16 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
     }
     // Div on click event
     divElement.onclick = function () {
+        // Enable document scroll
+        document.body.style.overflow = 'auto';
         // Set originalSelectElement value to the playerIGNAndClan
         originalSelectElement.value = playerIGNAndClan;
         // Hide the select menu
-        let selectOverlay = document.getElementById("selectOverlay");
+        let selectOverlay = document.getElementById("CustomSelectWindow");
         if (selectOverlay != null) {
             selectOverlay.style.display = "none";
         }
         OnSelectElementChanged(originalSelectElement);
-        // Enable document scroll
-        document.body.style.overflow = 'auto';
     };
     // Get player IGN from playerIGNAndClan
     let playerIGN = playerIGNAndClan.split("] ")[1];
@@ -989,39 +1000,52 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
     playerNameIGNLabel.innerHTML = playerIGNAndClan;
     divElement.appendChild(playerNameIGNLabel);
     //divElement.appendChild(document.createElement("br"));
-    if (player.PlayerType == PlayerTypes.CALLER) {
+    /*
+    if(player.PlayerType == PlayerTypes.CALLER)
+    {
         let callerLabel = document.createElement("div");
         callerLabel.classList.add("caller");
         callerLabel.innerHTML = "CALLER ";
         divElement.append(callerLabel);
     }
-    if (player.Team == TeamTypes.BLUE) {
+
+    if(player.Team == TeamTypes.BLUE)
+    {
         let blueTeamLabel = document.createElement("div");
         blueTeamLabel.classList.add("blueteam");
         blueTeamLabel.innerHTML = "BLUE";
         divElement.append(blueTeamLabel);
     }
-    if (player.Team == TeamTypes.RED) {
+
+    if(player.Team == TeamTypes.RED)
+    {
         let redTeamLabel = document.createElement("div");
         redTeamLabel.classList.add("redteam");
         redTeamLabel.innerHTML = "RED";
         divElement.append(redTeamLabel);
     }
-    if (player.EnterBattle == true) {
+
+    if(player.EnterBattle == true)
+    {
         let enterBtlLabel = document.createElement("div");
         enterBtlLabel.classList.add("startbtl");
         enterBtlLabel.innerHTML = "BTL";
         divElement.append(enterBtlLabel);
     }
+
     divElement.appendChild(document.createElement("br"));
+
     let shipProfessencyLabel = document.createElement("div");
-    if (player.ShipProfessency != "") {
-        shipProfessencyLabel.innerHTML = player.ShipProfessency;
+    if(player.ShipProfessency != "")
+    {
+        shipProfessencyLabel.innerHTML = player.ShipProfessency
     }
-    else {
+    else
+    {
         shipProfessencyLabel.innerHTML = "N/A";
     }
     divElement.append(shipProfessencyLabel);
+
     /*
 
     divElement.appendChild(document.createElement("br"));

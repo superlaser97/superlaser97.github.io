@@ -1300,7 +1300,41 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
     document.body.style.overflow = 'hidden';
 
     // Get the select menu
-    let selectMenu: HTMLDivElement = <HTMLDivElement>document.getElementById("selectOverlay");
+    let selectMenu: HTMLDivElement = <HTMLDivElement>document.getElementById("CustomSelectWindow");
+
+    // Get select element global position relative to the screen
+    let selectElement_topPos = selectElement.getBoundingClientRect().top;
+    let selectElement_leftPos = selectElement.getBoundingClientRect().left;
+
+    // Get width and height of display
+    let displayWidth = window.innerWidth;
+    let displayHeight = window.innerHeight;
+
+    console.log("selectElement_topPos: " + selectElement_topPos);
+    console.log("selectElement_leftPos: " + selectElement_leftPos);
+
+    if(displayWidth - selectElement_leftPos < 250)
+    {
+        selectMenu.style.left = (selectElement_leftPos - 150) + "px";
+    }
+    else
+    {
+        selectMenu.style.left = (selectElement_leftPos) + "px";
+    }
+
+    selectMenu.style.top = (selectElement_topPos + 25) + "px";
+
+    
+    if(displayHeight - selectElement_topPos < 350)
+    {
+        selectMenu.style.top = (selectElement_topPos - 300) + "px";
+    }
+    else
+    {
+        selectMenu.style.bottom = (selectElement_topPos) + "px";
+    }
+    
+    // Set the select menu position
 
     // Unhide the select menu
     selectMenu.style.display = "block";
@@ -1326,27 +1360,11 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
         {
             selected = true;
         }
-
-        // Get the option value
-        let optionValue: string = selectOptions[i].value;
-
-        // Remove the player ign from option value
-
-        // Get the string between the brackets
-        let playerClan: string = optionValue.substring(optionValue.indexOf("[") + 1, optionValue.indexOf("]"));
-        console.log(playerClan);
-
-        if(currentClan != playerClan || currentClan == "")
-        {
-            let clanLabel = document.createElement("div");
-            clanLabel.classList.add("clanLabel");
-            clanLabel.innerHTML = playerClan;
-            selectMenu.append(clanLabel);
-        }
-
-        currentClan = playerClan;
         selectMenu.appendChild(CreateCustomSelectMenuOption(selectElement, selectOptions[i].value, selected));
     }
+
+    // Set the select menu scroll position to the top
+    selectMenu.scrollTop = 0;
 }
 
 function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, playerIGNAndClan: string, selected: boolean): HTMLDivElement
@@ -1402,22 +1420,21 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
     // Div on click event
     divElement.onclick = function()
     {
+        // Enable document scroll
+        document.body.style.overflow = 'auto';
+
         // Set originalSelectElement value to the playerIGNAndClan
         originalSelectElement.value = playerIGNAndClan;
 
         // Hide the select menu
-        let selectOverlay = document.getElementById("selectOverlay");
+        let selectOverlay = document.getElementById("CustomSelectWindow");
 
         if(selectOverlay != null)
         {
             selectOverlay.style.display = "none";
         }
 
-        
         OnSelectElementChanged(originalSelectElement); 
-
-        // Enable document scroll
-        document.body.style.overflow = 'auto';
     }
 
     // Get player IGN from playerIGNAndClan
@@ -1437,7 +1454,7 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
     divElement.appendChild(playerNameIGNLabel);
 
     //divElement.appendChild(document.createElement("br"));
-
+    /*
     if(player.PlayerType == PlayerTypes.CALLER)
     {
         let callerLabel = document.createElement("div");
@@ -1501,7 +1518,6 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
 
     divElement.append(remarksLabel);
     */
-
     return divElement;
 }
 

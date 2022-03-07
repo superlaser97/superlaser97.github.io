@@ -21,6 +21,7 @@ html
   --rounded-border-radius-high: 20px;
   --def-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   --hover-shadow: 0 14px 28px rgb(0,0,0,0.12), 0 10px 10px rgba(0,0,0,0.22);
+  --thick-shadow: 0 15px 34px rgba(0, 0, 0, 0.691), 0 15px 12px rgba(0, 0, 0, 0.698);
 }
 
 .TitleBar
@@ -391,7 +392,7 @@ div#assignedSlotsTracker-div
   background-color: rgba(0, 0, 0, 0.767);
   z-index: 99999;
   backdrop-filter: blur(5px);
-  text-align: center;
+  padding: 20px;
   overflow: scroll;
 }
 
@@ -399,7 +400,7 @@ div#assignedSlotsTracker-div
 {
   position: fixed;
   top: 10px;
-  right: 10px;
+  right: 30px;
   padding: 5px 15px;
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
@@ -499,51 +500,55 @@ select:hover
   cursor: pointer;
 }
 
+#CustomSelectWindow
+{
+  position: fixed;
+  height: 300px;
+  background-color: rgb(255, 255, 255);
+  z-index: 99999;
+  width: 250px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  box-shadow: var(--thick-shadow);
+}
+
 .overlay_selectItem
 {
   display: inline-block;
   background-color: white;
   color:rgb(41, 41, 41);
   width: 250px;
-  margin: 7px;
-  background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius-high);
-  box-shadow: var(--def-shadow);
   text-align: left;
-  padding: 20px;
+  padding: 5px 10px;
   cursor: pointer;
+  margin: 1px 0px;
+  box-shadow: var(--def-shadow);
   font-weight: bold;
-}
-
-.overlayBackground div.clanLabel
-{
-  color: rgb(255, 255, 255);
-  font-size: 30px;
-  font-weight: bold;
-  margin: 20px;
 }
 
 .overlay_selectItem.currently_selected
 {
-  background-color: rgb(238, 255, 183);
+  background-color: rgb(111, 238, 210);
 }
 
 .overlay_selectItem.selected_elsewhere
 {
-  background-color: rgba(180, 180, 180, 0.609);
+  background-color: rgb(214, 214, 214);
 }
 
 .overlay_selectItem h1
 {
   padding: 0;
   margin: 0;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .overlay_selectItem div
 {
   display: inline-block;
-  margin: 0 5px;
-  font-size: 15px;
+  margin: 0 2px;
+  font-size: 10px;
 }
 
 .overlay_selectItem div.caller
