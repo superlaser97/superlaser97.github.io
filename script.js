@@ -98,6 +98,7 @@ function OnBtnClick_ImportRosterData() {
     }
     ImportRosterDataFromTextbox();
     UpdateRosteringTableUIElements();
+    ExportRosterDataToTextbox();
 }
 function OnBtnClick_ToggleExtraInfo() {
     showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
@@ -331,7 +332,7 @@ function UpdateAllRosteringTableCellsWithPlayerData() {
                 if (selectedPlayer.ShipProfessency !== "") {
                     let extraInfoShipProf = extraInfoShipProf_HTMLTemplate;
                     extraInfoShipProf = extraInfoShipProf_HTMLTemplate.replace("XXX", selectedPlayer.ShipProfessency);
-                    parentElement.prepend(CreateElementFromString(extraInfoShipProf_HTMLTemplate));
+                    parentElement.prepend(CreateElementFromString(extraInfoShipProf));
                 }
                 if (selectedPlayer.SortieDone == false && selectedPlayer.IGN !== "None") {
                     parentElement.prepend(CreateElementFromString(extraInfoNoSortie_HTMLTemplate));
@@ -723,6 +724,7 @@ function GeneratePlayersOnboardArray() {
         let enterBattle = false;
         let sortieDone = false;
         let shipProfessency = "";
+        let remarks = "";
         let playerRemarks = [];
         let sessionSlotsSelected = [];
         // Check if playerIGN does not exist in inputPlayerDetailsArray
@@ -742,6 +744,7 @@ function GeneratePlayersOnboardArray() {
             enterBattle = player.EnterBattle;
             sortieDone = player.SortieDone;
             shipProfessency = player.ShipProfessency;
+            remarks = player.Remarks;
             if (player.SortieDone == false) {
                 playerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
             }
@@ -776,6 +779,7 @@ function GeneratePlayersOnboardArray() {
             SessionSlotsSelected: sessionSlotsSelected,
             MAX_SLOTS: inputCBResponseArray[i].MAX_SLOTS,
             PlayerRemarks: playerRemarks,
+            Remarks: remarks,
             ShipProfessency: shipProfessency,
             SortieDone: sortieDone
         };
@@ -889,6 +893,136 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan) {
             tableSelectElement.classList.add("animate__heartBeat");
         }
     }
+}
+function OpenCustomSelectMenu(selectElement) {
+    // Get the select menu
+    let selectMenu = document.getElementById("selectOverlay");
+    // Unhide the select menu
+    selectMenu.style.display = "block";
+    // Clear the select menu
+    selectMenu.innerHTML = "";
+    // Get the select menu options
+    let selectOptions = selectElement.options;
+    // Loop through the select options
+    for (let i = 0; i < selectOptions.length; i++) {
+        if (selectOptions[i].value == "[X] None") {
+            continue;
+        }
+        let selected = false;
+        if (selectElement.value == selectOptions[i].value) {
+            selected = true;
+        }
+        selectMenu.appendChild(CreateCustomSelectMenuOption(selectElement, selectOptions[i].value, selected));
+    }
+}
+function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, selected) {
+    // Create a div element
+    let divElement = document.createElement("div");
+    divElement.classList.add("overlay_selectItem");
+    divElement.id = playerIGNAndClan;
+    let sessionSlot = originalSelectElement.id.split("-")[1];
+    // Get all select elements
+    let selectElements = document.getElementsByClassName("tableSelect");
+    if (selectElements.length == 0) {
+        console.log("No select elements found");
+        return divElement;
+    }
+    let selectedValuesFromTheSameSession = [];
+    // Loop through the select elements
+    for (let i = 0; i < selectElements.length; i++) {
+        let selectElement = selectElements[i];
+        // Get the select element id
+        let selectElementID = selectElements[i].id;
+        // If select element is not from the same session slot
+        if (selectElementID.split("-")[1] != sessionSlot) {
+            continue;
+        }
+        // Get the select element value and add it to the selectedValuesFromTheSameSession array
+        selectedValuesFromTheSameSession.push(selectElement.value);
+    }
+    // If playerIGNAndClan is found in the selectedValuesFromTheSameSession array
+    if (ItemAppearsInArray(playerIGNAndClan, selectedValuesFromTheSameSession) == true) {
+        divElement.classList.add("selected_elsewhere");
+    }
+    if (selected == true) {
+        divElement.classList.remove("selected_elsewhere");
+        divElement.classList.add("currently_selected");
+    }
+    // Div on click event
+    divElement.onclick = function () {
+        // Set originalSelectElement value to the playerIGNAndClan
+        originalSelectElement.value = playerIGNAndClan;
+        // Hide the select menu
+        let selectOverlay = document.getElementById("selectOverlay");
+        if (selectOverlay != null) {
+            selectOverlay.style.display = "none";
+        }
+        OnSelectElementChanged(originalSelectElement);
+    };
+    // Get player IGN from playerIGNAndClan
+    let playerIGN = playerIGNAndClan.split("] ")[1];
+    // Get player from playerOnboardArray
+    let player = playersOnboardArray.find(player => player.IGN == playerIGN);
+    if (player == undefined) {
+        console.log("Player not found");
+        return divElement;
+    }
+    let playerNameIGNLabel = document.createElement("h1");
+    playerNameIGNLabel.innerHTML = playerIGNAndClan;
+    divElement.appendChild(playerNameIGNLabel);
+    divElement.appendChild(document.createElement("br"));
+    if (player.PlayerType == PlayerTypes.CALLER) {
+        let callerLabel = document.createElement("div");
+        callerLabel.classList.add("caller");
+        callerLabel.innerHTML = "CALLER ";
+        divElement.append(callerLabel);
+    }
+    if (player.Team == TeamTypes.BLUE) {
+        let blueTeamLabel = document.createElement("div");
+        blueTeamLabel.classList.add("blueteam");
+        blueTeamLabel.innerHTML = "BLUE";
+        divElement.append(blueTeamLabel);
+    }
+    if (player.Team == TeamTypes.RED) {
+        let redTeamLabel = document.createElement("div");
+        redTeamLabel.classList.add("redteam");
+        redTeamLabel.innerHTML = "RED";
+        divElement.append(redTeamLabel);
+    }
+    if (player.EnterBattle == true) {
+        let enterBtlLabel = document.createElement("div");
+        enterBtlLabel.classList.add("startbtl");
+        enterBtlLabel.innerHTML = "BTL";
+        divElement.append(enterBtlLabel);
+    }
+    divElement.appendChild(document.createElement("br"));
+    let shipProfessencyLabel = document.createElement("div");
+    if (player.ShipProfessency != "") {
+        shipProfessencyLabel.innerHTML = player.ShipProfessency;
+    }
+    else {
+        shipProfessencyLabel.innerHTML = "N/A";
+    }
+    divElement.append(shipProfessencyLabel);
+    /*
+
+    divElement.appendChild(document.createElement("br"));
+    divElement.appendChild(document.createElement("br"));
+
+    let remarksLabel = document.createElement("div");
+
+    if(player.Remarks != "")
+    {
+        remarksLabel.innerHTML = player.Remarks;
+    }
+    else
+    {
+        remarksLabel.innerHTML = "N/A";
+    }
+
+    divElement.append(remarksLabel);
+    */
+    return divElement;
 }
 // *********** UTILITY FUNCTIONS ***********
 // Function that finds an item in the array
@@ -1065,6 +1199,11 @@ function CreateSelectElement(list, optionToSelect, id, classToAdd = "") {
     };
     selectElement.onclick = function () {
         //HighlightAllSelectElementsWithPlayer(optionToSelect);
+        OpenCustomSelectMenu(selectElement);
+    };
+    // Prevent select element from expanding
+    selectElement.onmousedown = function () {
+        return false;
     };
     // Add the unhover function
     selectElement.onmouseout = function () { OnSelectElementUnhovered(); };

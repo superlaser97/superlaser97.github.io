@@ -391,6 +391,8 @@ div#assignedSlotsTracker-div
   background-color: rgba(0, 0, 0, 0.767);
   z-index: 99999;
   backdrop-filter: blur(5px);
+  text-align: center;
+  overflow: scroll;
 }
 
 .overlayCloseBtn
@@ -495,4 +497,72 @@ div#assignedSlotsTracker-div
 select:hover
 {
   cursor: pointer;
+}
+
+.overlay_selectItem
+{
+  display: inline-block;
+  background-color: white;
+  color:rgb(41, 41, 41);
+  width: 250px;
+  margin: 10px;
+  background-clip: padding-box; /* this has been added */
+  border-radius: var(--rounded-border-radius-high);
+  box-shadow: var(--def-shadow);
+  text-align: left;
+  padding: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.overlay_selectItem.currently_selected
+{
+  background-color: rgb(238, 255, 183);
+}
+
+.overlay_selectItem.selected_elsewhere
+{
+  background-color: rgb(126, 126, 126);
+}
+
+.overlay_selectItem h1
+{
+  padding: 0;
+  margin: 0;
+}
+
+.overlay_selectItem div
+{
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.overlay_selectItem div.caller
+{
+  color: rgb(0, 165, 63);
+}
+
+.overlay_selectItem div.startbtl
+{
+  color: rgb(148, 158, 0);
+}
+
+.overlay_selectItem div.blueteam
+{
+  color: rgb(0, 66, 172);
+}
+
+.overlay_selectItem div.redteam
+{
+  color: rgb(151, 0, 0);
+}
+
+.overlay_selectItem div.nosortie
+{
+  color: rgb(68, 68, 68);
+}
+
+.overlay_selectItem div.shipprof
+{
+  color: rgb(0, 0, 0);
 }
