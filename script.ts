@@ -1350,10 +1350,6 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
     // Loop through the select options
     for (let i: number = 0; i < selectOptions.length; i++)
     {
-        if(selectOptions[i].value == "[X] None")
-        {
-            continue;
-        }
         let selected = false;
 
         if(selectElement.value == selectOptions[i].value)
@@ -1443,17 +1439,12 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
     // Get player from playerOnboardArray
     let player = playersOnboardArray.find(player => player.IGN == playerIGN);
 
-    if(player == undefined)
-    {
-        console.log("Player not found");
-        return divElement;
-    }
-
     let playerNameIGNLabel = document.createElement("h1");
     playerNameIGNLabel.innerHTML = playerIGNAndClan;
     divElement.appendChild(playerNameIGNLabel);
 
     //divElement.appendChild(document.createElement("br"));
+    
     /*
     if(player.PlayerType == PlayerTypes.CALLER)
     {
@@ -1500,7 +1491,6 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
     }
     divElement.append(shipProfessencyLabel);
 
-    /*
 
     divElement.appendChild(document.createElement("br"));
     divElement.appendChild(document.createElement("br"));

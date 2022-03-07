@@ -930,9 +930,6 @@ function OpenCustomSelectMenu(selectElement) {
     let currentClan = "";
     // Loop through the select options
     for (let i = 0; i < selectOptions.length; i++) {
-        if (selectOptions[i].value == "[X] None") {
-            continue;
-        }
         let selected = false;
         if (selectElement.value == selectOptions[i].value) {
             selected = true;
@@ -992,10 +989,6 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
     let playerIGN = playerIGNAndClan.split("] ")[1];
     // Get player from playerOnboardArray
     let player = playersOnboardArray.find(player => player.IGN == playerIGN);
-    if (player == undefined) {
-        console.log("Player not found");
-        return divElement;
-    }
     let playerNameIGNLabel = document.createElement("h1");
     playerNameIGNLabel.innerHTML = playerIGNAndClan;
     divElement.appendChild(playerNameIGNLabel);
@@ -1046,7 +1039,6 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
     }
     divElement.append(shipProfessencyLabel);
 
-    /*
 
     divElement.appendChild(document.createElement("br"));
     divElement.appendChild(document.createElement("br"));
