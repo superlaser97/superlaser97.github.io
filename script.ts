@@ -1296,6 +1296,9 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan: string): void
 
 function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
 {
+    // Disable document scroll
+    document.body.style.overflow = 'hidden';
+
     // Get the select menu
     let selectMenu: HTMLDivElement = <HTMLDivElement>document.getElementById("selectOverlay");
 
@@ -1307,6 +1310,8 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
 
     // Get the select menu options
     let selectOptions: HTMLCollectionOf<HTMLOptionElement> = selectElement.options;
+
+    let currentClan = "";
 
     // Loop through the select options
     for (let i: number = 0; i < selectOptions.length; i++)
@@ -1321,6 +1326,25 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
         {
             selected = true;
         }
+
+        // Get the option value
+        let optionValue: string = selectOptions[i].value;
+
+        // Remove the player ign from option value
+
+        // Get the string between the brackets
+        let playerClan: string = optionValue.substring(optionValue.indexOf("[") + 1, optionValue.indexOf("]"));
+        console.log(playerClan);
+
+        if(currentClan != playerClan || currentClan == "")
+        {
+            let clanLabel = document.createElement("div");
+            clanLabel.classList.add("clanLabel");
+            clanLabel.innerHTML = playerClan;
+            selectMenu.append(clanLabel);
+        }
+
+        currentClan = playerClan;
         selectMenu.appendChild(CreateCustomSelectMenuOption(selectElement, selectOptions[i].value, selected));
     }
 }
@@ -1391,6 +1415,9 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
 
         
         OnSelectElementChanged(originalSelectElement); 
+
+        // Enable document scroll
+        document.body.style.overflow = 'auto';
     }
 
     // Get player IGN from playerIGNAndClan
@@ -1409,7 +1436,7 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
     playerNameIGNLabel.innerHTML = playerIGNAndClan;
     divElement.appendChild(playerNameIGNLabel);
 
-    divElement.appendChild(document.createElement("br"));
+    //divElement.appendChild(document.createElement("br"));
 
     if(player.PlayerType == PlayerTypes.CALLER)
     {

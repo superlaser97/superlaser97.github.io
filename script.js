@@ -895,6 +895,8 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan) {
     }
 }
 function OpenCustomSelectMenu(selectElement) {
+    // Disable document scroll
+    document.body.style.overflow = 'hidden';
     // Get the select menu
     let selectMenu = document.getElementById("selectOverlay");
     // Unhide the select menu
@@ -903,6 +905,7 @@ function OpenCustomSelectMenu(selectElement) {
     selectMenu.innerHTML = "";
     // Get the select menu options
     let selectOptions = selectElement.options;
+    let currentClan = "";
     // Loop through the select options
     for (let i = 0; i < selectOptions.length; i++) {
         if (selectOptions[i].value == "[X] None") {
@@ -912,6 +915,19 @@ function OpenCustomSelectMenu(selectElement) {
         if (selectElement.value == selectOptions[i].value) {
             selected = true;
         }
+        // Get the option value
+        let optionValue = selectOptions[i].value;
+        // Remove the player ign from option value
+        // Get the string between the brackets
+        let playerClan = optionValue.substring(optionValue.indexOf("[") + 1, optionValue.indexOf("]"));
+        console.log(playerClan);
+        if (currentClan != playerClan || currentClan == "") {
+            let clanLabel = document.createElement("div");
+            clanLabel.classList.add("clanLabel");
+            clanLabel.innerHTML = playerClan;
+            selectMenu.append(clanLabel);
+        }
+        currentClan = playerClan;
         selectMenu.appendChild(CreateCustomSelectMenuOption(selectElement, selectOptions[i].value, selected));
     }
 }
@@ -958,6 +974,8 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
             selectOverlay.style.display = "none";
         }
         OnSelectElementChanged(originalSelectElement);
+        // Enable document scroll
+        document.body.style.overflow = 'auto';
     };
     // Get player IGN from playerIGNAndClan
     let playerIGN = playerIGNAndClan.split("] ")[1];
@@ -970,7 +988,7 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
     let playerNameIGNLabel = document.createElement("h1");
     playerNameIGNLabel.innerHTML = playerIGNAndClan;
     divElement.appendChild(playerNameIGNLabel);
-    divElement.appendChild(document.createElement("br"));
+    //divElement.appendChild(document.createElement("br"));
     if (player.PlayerType == PlayerTypes.CALLER) {
         let callerLabel = document.createElement("div");
         callerLabel.classList.add("caller");

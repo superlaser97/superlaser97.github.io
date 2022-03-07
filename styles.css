@@ -505,7 +505,7 @@ select:hover
   background-color: white;
   color:rgb(41, 41, 41);
   width: 250px;
-  margin: 10px;
+  margin: 7px;
   background-clip: padding-box; /* this has been added */
   border-radius: var(--rounded-border-radius-high);
   box-shadow: var(--def-shadow);
@@ -515,6 +515,14 @@ select:hover
   font-weight: bold;
 }
 
+.overlayBackground div.clanLabel
+{
+  color: rgb(255, 255, 255);
+  font-size: 30px;
+  font-weight: bold;
+  margin: 20px;
+}
+
 .overlay_selectItem.currently_selected
 {
   background-color: rgb(238, 255, 183);
@@ -522,7 +530,7 @@ select:hover
 
 .overlay_selectItem.selected_elsewhere
 {
-  background-color: rgb(126, 126, 126);
+  background-color: rgba(180, 180, 180, 0.609);
 }
 
 .overlay_selectItem h1
@@ -535,6 +543,7 @@ select:hover
 {
   display: inline-block;
   margin: 0 5px;
+  font-size: 15px;
 }
 
 .overlay_selectItem div.caller
