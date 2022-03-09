@@ -873,7 +873,7 @@ function CloseCustomSelectWindow() {
         selectOverlayParent.style.display = "none";
     }
     // Disable document scroll
-    document.body.style.overflow = 'auto';
+    //document.body.style.overflow = 'auto';
 }
 function SetDivDisplayToNone(panelToUnhide) {
     // Get the div by the panelToUnhide (id)
@@ -905,7 +905,7 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan) {
 }
 function OpenCustomSelectMenu(selectElement) {
     // Disable document scroll
-    document.body.style.overflow = 'hidden';
+    //document.body.style.overflow = 'hidden';
     // Get the select menu
     let selectMenu = document.getElementById("CustomSelectWindow");
     // Get select element global position relative to the screen
@@ -987,7 +987,7 @@ function CreateCustomSelectMenuOption(originalSelectElement, playerIGNAndClan, s
     // Div on click event
     divElement.onclick = function () {
         // Enable document scroll
-        document.body.style.overflow = 'auto';
+        //document.body.style.overflow = 'auto';
         // Set originalSelectElement value to the playerIGNAndClan
         originalSelectElement.value = playerIGNAndClan;
         // Hide the select menu

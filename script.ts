@@ -1266,7 +1266,7 @@ function CloseCustomSelectWindow()
     }
     
     // Disable document scroll
-    document.body.style.overflow = 'auto';
+    //document.body.style.overflow = 'auto';
 }
 
 function SetDivDisplayToNone(panelToUnhide: string): void
@@ -1311,7 +1311,7 @@ function HighlightAllSelectElementsWithPlayer(playerIGNWithClan: string): void
 function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
 {
     // Disable document scroll
-    document.body.style.overflow = 'hidden';
+    //document.body.style.overflow = 'hidden';
 
     // Get the select menu
     let selectMenu: HTMLDivElement = <HTMLDivElement>document.getElementById("CustomSelectWindow");
@@ -1435,7 +1435,7 @@ function CreateCustomSelectMenuOption(originalSelectElement: HTMLSelectElement, 
     divElement.onclick = function()
     {
         // Enable document scroll
-        document.body.style.overflow = 'auto';
+        //document.body.style.overflow = 'auto';
 
         // Set originalSelectElement value to the playerIGNAndClan
         originalSelectElement.value = playerIGNAndClan;
