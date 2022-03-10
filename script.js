@@ -536,11 +536,20 @@ function GenerateRosterData() {
         if (playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.NOT_PARTICIPATING) == -1 &&
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DUPLICATE_ENTRY) == -1 &&
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1) {
+            let numOfWatchesAvail = playerOnboard.SessionSlotsSelected.length;
+            let maxWatchesRequested = playerOnboard.MAX_SLOTS;
+            let numOfWatchesToGive = 0;
+            if (numOfWatchesAvail < maxWatchesRequested) {
+                numOfWatchesToGive = numOfWatchesAvail;
+            }
+            else {
+                numOfWatchesToGive = maxWatchesRequested;
+            }
             let newPlayerSlotsAssignedData = {
                 IGN: playerOnboard.IGN,
                 Clan: playerOnboard.Clan,
                 SessionsAssigned: 0,
-                MaxSessionsToAssign: playerOnboard.MAX_SLOTS
+                MaxSessionsToAssign: numOfWatchesToGive
             };
             cbRoster.PlayerSlotAssigments.push(newPlayerSlotsAssignedData);
         }
