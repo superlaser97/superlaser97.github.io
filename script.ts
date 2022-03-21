@@ -51,7 +51,8 @@ enum PlayerRemarks
     NOT_PARTICIPATING = "NOT PARTICIPATING",
     PLAYER_NOT_FOUND = "PLAYER NOT FOUND",
     DUPLICATE_ENTRY = "DUPLICATE ENTRY",
-    DID_NOT_DO_SORTIE = "DID NOT DO SORTIE"
+    DID_NOT_DO_SORTIE = "DID NOT DO SORTIE",
+    DID_NOT_SUBMIT = "DID NOT SUBMIT",
 }
 
 // Static array that contains all player positions
@@ -1091,88 +1092,83 @@ function GeneratePlayersOnboardArray(): void
     playersOnboardArray = [];
 
     // Loop through the inputCBResponseArray
-    for (let i: number = 0; i < inputCBResponseArray.length; i++) 
+    for (let i = 0; i < inputCBResponseArray.length; i++)
     {
-        let IGN: string = inputCBResponseArray[i].IGN;
-        let clan = "";
-        let playerType: PlayerTypes = PlayerTypes.UNKNOWN;
-        let team: TeamTypes = TeamTypes.UNKNOWN;
-        let enterBattle = false;
-        let sortieDone = false;
-        let shipProfessency = "";
-        let remarks = "";
-        let playerRemarks: PlayerRemarks[] = [];
-        let sessionSlotsSelected: string[] = [];
-
-        // Check if playerIGN does not exist in inputPlayerDetailsArray
-        // Ignore case when comparing
-        if (!inputPlayerDetailsArray.some(x => x.IGN.toLowerCase() == IGN.toLowerCase())) 
+        // If player ign is not found in inputplayerdetailsarray, add it to the playersOnboardArray with PLAYER_NOT_FOUND remark
+        if (inputPlayerDetailsArray.findIndex(x => x.IGN == inputCBResponseArray[i].IGN) == -1)
         {
-            // Add the player not found remark to the playerRemarks array
-            playerRemarks.push(PlayerRemarks.PLAYER_NOT_FOUND);
-        }
-        else 
-        {
-            // Get the player object from the inputPlayerDetailsArray
-            // Ignore case when getting the object
-            let player: PlayerDetail = inputPlayerDetailsArray.filter(x => x.IGN.toLowerCase() == IGN.toLowerCase())[0];
-
-            // Set the clan, playerType, team and enterBattle
-            clan = player.Clan;
-            playerType = player.PlayerType;
-            team = player.Team;
-            enterBattle = player.EnterBattle;
-            sortieDone = player.SortieDone;
-            shipProfessency = player.ShipProfessency;
-            remarks = player.Remarks;
-            
-            if(player.SortieDone == false)
+            let newPlayerOnboard: PlayerOnboard = 
             {
-                playerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
-            }
+                IGN: inputCBResponseArray[i].IGN,
+                Clan: "",
+                PlayerType: PlayerTypes.UNKNOWN,
+                Team: TeamTypes.UNKNOWN,
+                EnterBattle: false,
+                SortieDone: false,
+                ShipProfessency: "",
+                Remarks: "",
+                PlayerRemarks: [PlayerRemarks.PLAYER_NOT_FOUND],
+                SessionSlotsSelected: [],
+                MAX_SLOTS: 0
+            };
+
+            // Add the new PlayerOnboard object to the playersOnboardArray
+            playersOnboardArray.push(newPlayerOnboard);
         }
+    }
 
-        // Check if playerIGN appears more than once in inputCBResponseArray
-        if (inputCBResponseArray.filter(x => x.IGN.toLowerCase() == IGN.toLowerCase()).length > 1) {
-            // Add the duplicate entry remark to the playerRemarks array
-            playerRemarks.push(PlayerRemarks.DUPLICATE_ENTRY);
-        }
-
-        inputCBResponseArray[i].WED_1 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[0]) : null;
-        inputCBResponseArray[i].WED_2 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[1]) : null;
-        inputCBResponseArray[i].THU_1 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[2]) : null;
-        inputCBResponseArray[i].THU_2 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[3]) : null;
-        inputCBResponseArray[i].SAT_1 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[4]) : null;
-        inputCBResponseArray[i].SAT_2 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[5]) : null;
-        inputCBResponseArray[i].SUN_M_1 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[6]) : null;
-        inputCBResponseArray[i].SUN_M_2 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[7]) : null;
-        inputCBResponseArray[i].SUN_N_1 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[8]) : null;
-        inputCBResponseArray[i].SUN_N_2 ? sessionSlotsSelected.push(ALLSESSIONSLOTS[9]) : null;
-
-        // Check if player does not have any days available
-        if (sessionSlotsSelected.length == 0) 
-        {
-            // Add the no days available remark to the playerRemarks array
-            playerRemarks.push(PlayerRemarks.NOT_PARTICIPATING);
-        }
-
+    // Loop through the inputPlayerDetailsArray
+    for (let i = 0; i < inputPlayerDetailsArray.length; i++)
+    {
         // Create a new PlayerOnboard object
-        let newPlayerOnboard: PlayerOnboard =
-        {
-            IGN: IGN,
-            Clan: clan,
-            PlayerType: playerType,
-            Team: team,
-            EnterBattle: enterBattle,
-            SessionSlotsSelected: sessionSlotsSelected,
-            MAX_SLOTS: inputCBResponseArray[i].MAX_SLOTS,
-            PlayerRemarks: playerRemarks,
-            Remarks: remarks,
-            ShipProfessency: shipProfessency,
-            SortieDone: sortieDone
-        }
+        let newPlayerOnboard: PlayerOnboard = {
+            IGN: inputPlayerDetailsArray[i].IGN,
+            Clan: inputPlayerDetailsArray[i].Clan,
+            PlayerType: inputPlayerDetailsArray[i].PlayerType,
+            Team: inputPlayerDetailsArray[i].Team,
+            EnterBattle: inputPlayerDetailsArray[i].EnterBattle,
+            ShipProfessency: inputPlayerDetailsArray[i].ShipProfessency,
+            SortieDone: inputPlayerDetailsArray[i].SortieDone,
+            Remarks: inputPlayerDetailsArray[i].Remarks,
+            PlayerRemarks: [],
+            SessionSlotsSelected: [],
+            MAX_SLOTS: 0
+        };
 
-        // Push the new PlayerOnboard object to the playersOnboardArray
+        let currInputCBResponse = inputCBResponseArray.find(x => x.IGN.toLowerCase() == newPlayerOnboard.IGN.toLowerCase());
+        if(currInputCBResponse != undefined) 
+        {
+            currInputCBResponse = currInputCBResponse as CBResponse;
+
+            // If the same IGN appears more than once in inputcbResponseArray
+            if(inputCBResponseArray.filter(x => x.IGN.toLowerCase() == newPlayerOnboard.IGN.toLowerCase()).length > 1) 
+            {
+                newPlayerOnboard.PlayerRemarks.push(PlayerRemarks.DUPLICATE_ENTRY);
+            }
+            
+            if(newPlayerOnboard.SortieDone == false)
+            {
+                newPlayerOnboard.PlayerRemarks.push(PlayerRemarks.DID_NOT_DO_SORTIE);
+            }
+
+            newPlayerOnboard.MAX_SLOTS = currInputCBResponse.MAX_SLOTS;
+    
+            currInputCBResponse.WED_1 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[0]) : null;
+            currInputCBResponse.WED_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[1]) : null;
+            currInputCBResponse.THU_1 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[2]) : null;
+            currInputCBResponse.THU_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[3]) : null;
+            currInputCBResponse.SAT_1 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[4]) : null;
+            currInputCBResponse.SAT_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[5]) : null;
+            currInputCBResponse.SUN_M_1 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[6]) : null;
+            currInputCBResponse.SUN_M_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[7]) : null;
+            currInputCBResponse.SUN_N_1 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[8]) : null;
+            currInputCBResponse.SUN_N_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[9]) : null;
+        }
+        else
+        {
+            newPlayerOnboard.PlayerRemarks.push(PlayerRemarks.DID_NOT_SUBMIT);
+        }
+        
         playersOnboardArray.push(newPlayerOnboard);
     }
 
@@ -1251,7 +1247,8 @@ function UpdateTableWithPlayersOnboardArray(): void
         }
 
         // If player remarks contains NOT_PARTICIPATING
-        if (ItemAppearsInArray(PlayerRemarks.NOT_PARTICIPATING, playersOnboardArray[i].PlayerRemarks) == true) {
+        if (ItemAppearsInArray(PlayerRemarks.NOT_PARTICIPATING, playersOnboardArray[i].PlayerRemarks) == true ||
+        ItemAppearsInArray(PlayerRemarks.DID_NOT_SUBMIT, playersOnboardArray[i].PlayerRemarks) == true) {
             // Add the rowData to the table
             AddRowToTable("playersOnBoard-table", rowData, "darkColoredTableRow");
             continue;
