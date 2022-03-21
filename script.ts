@@ -848,8 +848,8 @@ function GenerateRosterData()
         let playerOnboard: PlayerOnboard = playersOnboardArray[i];
         if (playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.NOT_PARTICIPATING) == -1 &&
             playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DUPLICATE_ENTRY) == -1 &&
-            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1
-            ) 
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.PLAYER_NOT_FOUND) == -1 &&
+            playerOnboard.PlayerRemarks.indexOf(PlayerRemarks.DID_NOT_SUBMIT) == -1)
         {
             let numOfWatchesAvail = playerOnboard.SessionSlotsSelected.length;
             let maxWatchesRequested = playerOnboard.MAX_SLOTS;
@@ -1163,6 +1163,11 @@ function GeneratePlayersOnboardArray(): void
             currInputCBResponse.SUN_M_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[7]) : null;
             currInputCBResponse.SUN_N_1 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[8]) : null;
             currInputCBResponse.SUN_N_2 ? newPlayerOnboard.SessionSlotsSelected.push(ALLSESSIONSLOTS[9]) : null;
+
+            if(newPlayerOnboard.SessionSlotsSelected.length == 0 || newPlayerOnboard.MAX_SLOTS == 0)
+            {
+                newPlayerOnboard.PlayerRemarks.push(PlayerRemarks.NOT_PARTICIPATING);
+            }
         }
         else
         {
