@@ -177,60 +177,52 @@ function OnBtnClick_Reset() {
     // Refresh the page
     location.reload();
 }
-function ShowUnrosteredPlayers(sessionIndex) {
-    let unrosteredPlayerPanel = document.getElementById("unrosteredPlayersPanel");
-    if (!unrosteredPlayerPanel) {
-        console.log("unrosteredPlayerPanel is null");
+function UpdateUnrosteredPlayers() {
+    let unrosteredPlayersTable = document.getElementById("unrosteredPlayersTable");
+    if (!unrosteredPlayersTable) {
+        console.log("unrosteredPlayersTable is null");
         return;
     }
-    unrosteredPlayerPanel.style.display = "block";
-    let unrosteredPlayers_List = unrosteredPlayerPanel.getElementsByClassName("unrosteredPlayers_List")[0];
-    if (!unrosteredPlayers_List) {
-        console.log("unrosteredPlayers_List is null");
-        return;
-    }
-    unrosteredPlayers_List = unrosteredPlayers_List;
-    unrosteredPlayers_List.innerHTML = "";
+    unrosteredPlayersTable.innerHTML = "";
+    let unrosteredPlayers = [];
     // Get players that are not selected from a specific session
     let rosteredPlayers = [];
     let playersInSession = [];
-    let sessionIndexNumber = Number(sessionIndex);
-    // Loop cbRoster.Players
-    for (let team = 0; team < cbRoster.Players.length; team++) {
-        let sessionTarget = cbRoster.Players[team][sessionIndexNumber];
-        for (let playerCandidates = 0; playerCandidates < sessionTarget.length; playerCandidates++) {
-            let playerCandidatesInSlot = sessionTarget[playerCandidates];
-            // For each player in slot
-            for (let j = 0; j < playerCandidatesInSlot.length; j++) {
-                let playerCandidate = playerCandidatesInSlot[j];
-                playersInSession.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
-                if (playerCandidate.Selected) {
-                    rosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+    for (let sessionIndex = 0; sessionIndex < 10; sessionIndex++) {
+        // Loop cbRoster.Players
+        for (let team = 0; team < cbRoster.Players.length; team++) {
+            let sessionTarget = cbRoster.Players[team][sessionIndex];
+            for (let playerCandidates = 0; playerCandidates < sessionTarget.length; playerCandidates++) {
+                let playerCandidatesInSlot = sessionTarget[playerCandidates];
+                // For each player in slot
+                for (let j = 0; j < playerCandidatesInSlot.length; j++) {
+                    let playerCandidate = playerCandidatesInSlot[j];
+                    playersInSession.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                    if (playerCandidate.Selected) {
+                        rosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
+                    }
                 }
             }
         }
+        // Deduplicate rostered players
+        rosteredPlayers = rosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
+        // Deduplicate all players in session
+        playersInSession = playersInSession.filter((value, index, self) => self.indexOf(value) === index);
+        // remove "None" from playersInSession
+        playersInSession.splice(playersInSession.indexOf("[X] None"), 1);
+        // Remove players from playerInSession that appears in rosteredPlayers
+        // And save them in unrosteredPlayers
+        let unrosteredPlayersInSession = playersInSession.filter(x => !rosteredPlayers.includes(x));
+        // Foreach unrosteredPlayersInSession, contatenate them to unrosteredPlayersInSession_string
+        let unrosteredPlayersInSession_string = "";
+        for (let unrosteredPlayerIndex = 0; unrosteredPlayerIndex < unrosteredPlayersInSession.length; unrosteredPlayerIndex++) {
+            unrosteredPlayersInSession_string += unrosteredPlayersInSession[unrosteredPlayerIndex] + "<br>";
+            // Regex remove clan tag from unrosteredPlayersInSession_string
+            unrosteredPlayersInSession_string = unrosteredPlayersInSession_string.replace(/\[.*\] /g, "");
+        }
+        unrosteredPlayers.push(unrosteredPlayersInSession_string);
     }
-    // Deduplicate rostered players
-    rosteredPlayers = rosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
-    // Deduplicate all players in session
-    playersInSession = playersInSession.filter((value, index, self) => self.indexOf(value) === index);
-    // remove "None" from playersInSession
-    playersInSession.splice(playersInSession.indexOf("[X] None"), 1);
-    // Remove players from playerInSession that appears in rosteredPlayers
-    // And save them in unrosteredPlayers
-    let unrosteredPlayers = playersInSession.filter(x => !rosteredPlayers.includes(x));
-    let elementsToInsert = [];
-    // For each unrostered player
-    for (let i = 0; i < unrosteredPlayers.length; i++) {
-        let elementTemplate = `<div class="unrosteredPlayer">[CLAN] PLAYER</div>`;
-        elementTemplate = elementTemplate.replace("[CLAN]", unrosteredPlayers[i].split(" ")[0]);
-        elementTemplate = elementTemplate.replace("PLAYER", unrosteredPlayers[i].split(" ")[1]);
-        elementsToInsert.push(CreateElementFromString(elementTemplate));
-    }
-    // foreach element in elementsToInsert
-    for (let i = 0; i < elementsToInsert.length; i++) {
-        unrosteredPlayers_List.appendChild(elementsToInsert[i]);
-    }
+    AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
 }
 function ImportRosterDataFromTextbox() {
     let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
@@ -297,6 +289,7 @@ function UpdateRosteringTableUIElements() {
     UpdateSessionClanBaseHeader();
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
+    UpdateUnrosteredPlayers();
 }
 function UpdateAllRosteringTableCellsWithPlayerData() {
     if (showExtraPlayerInfoInRosteringTable == false) {

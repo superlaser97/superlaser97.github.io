@@ -430,51 +430,18 @@ div#assignedSlotsTracker-div
   cursor: pointer;
 }
 
-.unrosteredPlayers_Title
-{
-  width: 100%;
-  font-size: 40px;
-  color: white;
-  text-align: center;
-  margin: 40px 0 20px 0;
-}
-
-.unrosteredPlayers_List
-{
-  width: calc(100% - 200px);
-  margin: 20px 100px;
-  padding: 10px 0px;
-}
-
-.unrosteredPlayer
-{
-  float: left;
-  display: block;
-  margin: 10px;
-  padding: 10px;
-  background-color: rgb(255, 255, 255);
-  background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius-high);
-  box-shadow: var(--def-shadow);
-}
-
-#unrosteredPlayersBtnTable
+#unrosteredPlayersTable
 {
   width: 100%;
   margin: 0px;
   padding: 0px;
-  table-layout: fixed;
-}
-
-#unrosteredPlayersBtnTable th
-{
   background-color: transparent;
 }
 
-#unrosteredPlayersBtnTable button
+#unrosteredPlayersTable th, #unrosteredPlayersTable td
 {
-  width: 100%;
-  margin: 0;
+  color: black;
+  vertical-align: top;
 }
 
 #tooltipContainer
