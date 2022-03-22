@@ -49,12 +49,7 @@ const ALLSESSIONSLOTS = [
 const ALLTEAMS = [
     "BLUE",
     "RED",
-    "CASUAL"
-];
-const ALLTEAMS_PLAYERCOUNT = [
-    7,
-    7,
-    2
+    "RED2"
 ];
 // Array of InputCBScheduleResponse
 let inputCBResponseArray = [];
@@ -356,9 +351,6 @@ function UpdateRosteringTableCellColors() {
 }
 function UpdateSessionClanBaseHeader() {
     for (let team = 0; team < cbRoster.Players.length; team++) {
-        if (team > 1) {
-            return;
-        }
         for (let session = 0; session < cbRoster.Players[team].length; session++) {
             // Clan base label header element id
             let clanBaseLabelHeaderElementId = team + "-" + session;
@@ -440,14 +432,14 @@ function UpdateAssignedSlotsTrackerWithRosterData() {
     }
 }
 function UpdateTableWithRosterData() {
-    let rosteringTableIDs = ["rostering-table-blue", "rostering-table-red", "rostering-table-casual"];
+    let rosteringTableIDs = ["rostering-table-blue", "rostering-table-red", "rostering-table-red2"];
     // Clear the table body
     let rosterTable_blue = document.getElementById(rosteringTableIDs[0]);
     let rosterTable_red = document.getElementById(rosteringTableIDs[1]);
-    let rosterTable_casual = document.getElementById(rosteringTableIDs[2]);
+    let rosterTable_red2 = document.getElementById(rosteringTableIDs[2]);
     rosterTable_blue.tBodies[0].innerHTML = "";
     rosterTable_red.tBodies[0].innerHTML = "";
-    rosterTable_casual.tBodies[0].innerHTML = "";
+    rosterTable_red2.tBodies[0].innerHTML = "";
     // Loop the teams
     for (let team = 0; team < ALLTEAMS.length; team++) {
         // Loop the playerPositions
@@ -456,7 +448,7 @@ function UpdateTableWithRosterData() {
             let elementsToAdd = [];
             // Loop the number of sessions
             for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) {
-                if (playerPosition >= ALLTEAMS_PLAYERCOUNT[team]) {
+                if (playerPosition >= 7) {
                     continue;
                 }
                 // Players available in player slot
@@ -591,7 +583,7 @@ function GenerateRosterData() {
         player5_candidates = PushArray(player5_candidates, availablePlayers.filter(x => x.PlayerType == PlayerTypes.CALLER || x.PlayerType == PlayerTypes.PLAYER));
         let allPlayerCandidates = [caller1_candidates, caller2_candidates, player1_candidates, player2_candidates, player3_candidates, player4_candidates, player5_candidates];
         for (let team = 0; team < ALLTEAMS.length; team++) {
-            for (let memberCount = 0; memberCount < ALLTEAMS_PLAYERCOUNT[team]; memberCount++) {
+            for (let memberCount = 0; memberCount < 7; memberCount++) {
                 cbRoster.Players[team][sessionSlot][memberCount] = JSON.parse(JSON.stringify(allPlayerCandidates[memberCount]));
             }
         }
