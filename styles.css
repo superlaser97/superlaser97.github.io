@@ -442,6 +442,7 @@ div#assignedSlotsTracker-div
 {
   color: black;
   vertical-align: top;
+  font-size: 0.75vw;
 }
 
 #tooltipContainer

@@ -341,58 +341,19 @@ function UpdateUnrosteredPlayers(): void
     unrosteredPlayersTable.innerHTML = "";
     let unrosteredPlayers: string[] = [];
 
-    // Get players that are not selected from a specific session
-    let rosteredPlayers: string[] = [];
-    let playersInSession: string[] = []
-
     for(let sessionIndex = 0; sessionIndex < 10; sessionIndex++)
     {
-        // Loop cbRoster.Players
-        for (let team = 0; team < cbRoster.Players.length; team++)
-        {
-            let sessionTarget: PlayerInSlot[][] = cbRoster.Players[team][sessionIndex];
-    
-            for(let playerCandidates = 0; playerCandidates < sessionTarget.length; playerCandidates++)
-            {
-                let playerCandidatesInSlot = sessionTarget[playerCandidates];
-                
-                // For each player in slot
-                for (let j = 0; j < playerCandidatesInSlot.length; j++)
-                {
-                    let playerCandidate: PlayerInSlot = playerCandidatesInSlot[j];
-    
-                    playersInSession.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
-                    if (playerCandidate.Selected)
-                    {
-                        rosteredPlayers.push("[" + playerCandidate.Clan + "] " + playerCandidate.IGN);
-                    }
-                }
-            }
-        }
-    
-        // Deduplicate rostered players
-        rosteredPlayers = rosteredPlayers.filter((value, index, self) => self.indexOf(value) === index);
-        // Deduplicate all players in session
-        playersInSession = playersInSession.filter((value, index, self) => self.indexOf(value) === index);
-    
-        // remove "None" from playersInSession
-        playersInSession.splice(playersInSession.indexOf("[X] None"), 1);
-    
-        // Remove players from playerInSession that appears in rosteredPlayers
-        // And save them in unrosteredPlayers
-        let unrosteredPlayersInSession: string[] = playersInSession.filter(x => !rosteredPlayers.includes(x));
-
-        // Foreach unrosteredPlayersInSession, contatenate them to unrosteredPlayersInSession_string
+        let unrosteredPlayersInSession: string[] = GetUnrosteredPlayersFromSession(sessionIndex);
         let unrosteredPlayersInSession_string: string = "";
-        for(let unrosteredPlayerIndex = 0; unrosteredPlayerIndex < unrosteredPlayersInSession.length; unrosteredPlayerIndex++)
+
+        // foreach unrosteredPlayersInSession
+        for(let i = 0; i < unrosteredPlayersInSession.length; i++)
         {
-            unrosteredPlayersInSession_string += unrosteredPlayersInSession[unrosteredPlayerIndex] + "<br>";
-            // Regex remove clan tag from unrosteredPlayersInSession_string
-            unrosteredPlayersInSession_string = unrosteredPlayersInSession_string.replace(/\[.*\] /g, "");
+            unrosteredPlayersInSession_string += unrosteredPlayersInSession[i] + "<br>";
         }
         unrosteredPlayers.push(unrosteredPlayersInSession_string);
-
     }
+        
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
 }
 
@@ -1833,6 +1794,75 @@ function ToggleTableVisibility(tableID: string): void {
 
     // Toggle the parent element visibility
     table.parentElement.style.display = table.parentElement.style.display == "none" ? "block" : "none";
+}
+
+// Get unrostered players from a specific session
+// Takes in a session id
+// Returns an array of string
+function GetUnrosteredPlayersFromSession(sessionID: number): string[]
+{
+    // Create an array to store the players
+    let selectedPlayers: string[] = [];
+    let unselectedPlayers: string[] = [];
+
+    // Loop through the cbroster teams
+    for (let team: number = 0; team < cbRoster.Players.length; team++)
+    {
+        let playersInSession: PlayerInSlot[][] = cbRoster.Players[team][sessionID];
+
+        for(let playerPosition: number = 0; playerPosition < cbRoster.Players[team][sessionID].length; playerPosition++)
+        {
+            let selectedPlayerInPosition = playersInSession[playerPosition].find(x => x.Selected == true);
+            let notSelectedPlayerInPosition = playersInSession[playerPosition].filter(x => x.Selected == false);
+            let selectedPlayerInPositionString: string = "";
+
+            if(selectedPlayerInPosition != null)
+            {
+                selectedPlayerInPosition = selectedPlayerInPosition as PlayerInSlot;
+                selectedPlayerInPositionString = "[" + selectedPlayerInPosition.Clan + "] " + selectedPlayerInPosition.IGN;
+            }
+            
+            if(notSelectedPlayerInPosition != null)
+            {
+                // for each notSelectedPlayerInPosition
+                notSelectedPlayerInPosition = notSelectedPlayerInPosition as PlayerInSlot[];
+                for(let i: number = 0; i < notSelectedPlayerInPosition.length; i++)
+                {
+                    let player: PlayerInSlot = notSelectedPlayerInPosition[i];
+                    let playerString: string = "[" + player.Clan + "] " + player.IGN;
+                    unselectedPlayers.push(playerString);
+                }
+            }
+
+            // If selectedPlayerInPositionString is not in selectedPlayers array
+            if(selectedPlayerInPositionString != "" && selectedPlayers.indexOf(selectedPlayerInPositionString) == -1)
+            {
+                // Add the selected player to the selectedPlayers array
+                selectedPlayers.push(selectedPlayerInPositionString);
+            }
+        }
+    }
+
+    // Loop the unselected players
+    for(let i: number = 0; i < unselectedPlayers.length; i++)
+    {
+        // If the unselected player is in the selected players array
+        // Remove the unselected player from the unselected players array
+        if(selectedPlayers.indexOf(unselectedPlayers[i]) != -1)
+        {
+            unselectedPlayers.splice(i, 1);
+            i--;
+        }
+    }
+
+    // Dedupe the unselected players array
+    unselectedPlayers = unselectedPlayers.filter((value, index, self) => self.indexOf(value) === index);
+
+    // Sort the unselected players array
+    unselectedPlayers.sort();
+
+    // Return the array
+    return unselectedPlayers;
 }
 
 // Function to clear table body
