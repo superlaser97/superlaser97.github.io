@@ -113,7 +113,6 @@ interface CBRoster
     // Second layer - Position in Session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
     // Third layer - Pool of players (AnotherLazyBoy, Bob778_, Cascayd etc.)
     Players: PlayerInSlot[][][][];
-
     PlayerSlotAssigments: PlayerSlotAssigment[];
 }
 
