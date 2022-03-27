@@ -10,10 +10,12 @@ html
   padding: 70px 0px 70px 0px;
 
   /* Disable text selection */
+  /*
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  */
 
   /* Variables */
   --accent-color: rgb(48, 105, 105);
