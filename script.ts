@@ -278,6 +278,38 @@ function OnSelectElementHovered(selectElement: HTMLSelectElement)
 
     hoverElement.innerHTML = playerDetailRemarks;
     hoverElement.style.display = "block";
+
+    // Get select element global position relative to the screen
+    let selectElement_topPos = selectElement.getBoundingClientRect().top;
+    let selectElement_leftPos = selectElement.getBoundingClientRect().left;
+
+    // Get hoverElement height
+    let hoverElement_height = hoverElement.getBoundingClientRect().height;
+
+    // Get width and height of display
+    let displayWidth = window.innerWidth;
+    let displayHeight = window.innerHeight;
+
+    if(displayWidth - selectElement_leftPos < 350)
+    {
+        hoverElement.style.left = (selectElement_leftPos - 250) + "px";
+    }
+    else
+    {
+        hoverElement.style.left = (selectElement_leftPos) + "px";
+    }
+
+    hoverElement.style.top = (selectElement_topPos + 25) + "px";
+
+    
+    if(displayHeight - selectElement_topPos < 350)
+    {
+        hoverElement.style.top = (selectElement_topPos - hoverElement_height) + "px";
+    }
+    else
+    {
+        hoverElement.style.bottom = (selectElement_topPos) + "px";
+    }
 }
 
 function OnSelectElementUnhovered()

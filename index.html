@@ -10,14 +10,14 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body onload="OnPageLoad()">
-        <div id="overlayBackground2" onclick="CloseCustomSelectWindow()" style="display: none;">
+        <div id="overlayBackground2" onclick="CloseCustomSelectWindow()" style="display: none; z-index: 100;">
             <div id="CustomSelectWindow">
         </div>
         </div>
 
         <div id="tooltipContainer" style="display: none;"></div>
 
-        <div class="TitleBar">Clan Battles Rostering System v1.12</div>
+        <div class="TitleBar">Clan Battles Rostering System v1.13</div>
         <button id="ResetBtn" onclick="OnBtnClick_Reset()">Reset</button>
 
         <!-- Textbox to paste responses data -->

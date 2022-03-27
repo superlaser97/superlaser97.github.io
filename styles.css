@@ -447,20 +447,8 @@ div#assignedSlotsTracker-div
 
 #tooltipContainer
 {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   z-index: 99998;
-  text-align: center;
-  margin: 20px 200px 0 200px;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.685);
-  background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius-high);
-  box-shadow: var(--def-shadow);
-  backdrop-filter: blur(5px);
 }
 
 .tableSelect.purpleBackground
@@ -482,6 +470,17 @@ select:hover
   cursor: pointer;
 }
 
+#tooltipContainer
+{
+  position: fixed;
+  height: fit-content;
+  width: 350px;
+  padding: 10px;
+  background-color: rgb(255, 255, 255);
+  z-index: 99999;
+  box-shadow: var(--def-shadow);
+}
+
 #CustomSelectWindow
 {
   position: fixed;
@@ -493,6 +492,7 @@ select:hover
   overflow-x: hidden;
   box-shadow: var(--thick-shadow);
 }
+
 
 .overlay_selectItem
 {
