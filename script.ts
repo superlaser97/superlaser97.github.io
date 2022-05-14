@@ -1063,7 +1063,7 @@ function GeneratePlayersOnboardArray(): void
     for (let i = 0; i < inputCBResponseArray.length; i++)
     {
         // If player ign is not found in inputplayerdetailsarray, add it to the playersOnboardArray with PLAYER_NOT_FOUND remark
-        if (inputPlayerDetailsArray.findIndex(x => x.IGN == inputCBResponseArray[i].IGN) == -1)
+        if (inputPlayerDetailsArray.findIndex(x => x.IGN.toLowerCase() == inputCBResponseArray[i].IGN.toLowerCase()) == -1)
         {
             let newPlayerOnboard: PlayerOnboard = 
             {
