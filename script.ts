@@ -380,7 +380,7 @@ function UpdateUnrosteredPlayers(): void
         unrosteredPlayersCount.push(unrosteredPlayersInSession.length.toString() + " Players Unrostered");
     }
         
-    AddRowToTable("unrosteredPlayersTable", unrosteredPlayersCount, "redColoredTableRow");
+    AddRowToTable("unrosteredPlayersTable", unrosteredPlayersCount, "orangeColoredTableRow");
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
 }
 
