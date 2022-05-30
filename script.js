@@ -212,7 +212,7 @@ function UpdateUnrosteredPlayers() {
         unrosteredPlayers.push(unrosteredPlayersInSession_string);
         unrosteredPlayersCount.push(unrosteredPlayersInSession.length.toString() + " Players Unrostered");
     }
-    AddRowToTable("unrosteredPlayersTable", unrosteredPlayersCount);
+    AddRowToTable("unrosteredPlayersTable", unrosteredPlayersCount, "redColoredTableRow");
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
 }
 function ImportRosterDataFromTextbox() {
