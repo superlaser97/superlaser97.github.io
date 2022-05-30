@@ -201,6 +201,7 @@ function UpdateUnrosteredPlayers() {
     }
     unrosteredPlayersTable.innerHTML = "";
     let unrosteredPlayers = [];
+    let unrosteredPlayersCount = [];
     for (let sessionIndex = 0; sessionIndex < 10; sessionIndex++) {
         let unrosteredPlayersInSession = GetUnrosteredPlayersFromSession(sessionIndex);
         let unrosteredPlayersInSession_string = "";
@@ -208,9 +209,10 @@ function UpdateUnrosteredPlayers() {
         for (let i = 0; i < unrosteredPlayersInSession.length; i++) {
             unrosteredPlayersInSession_string += unrosteredPlayersInSession[i] + "<br>";
         }
-        unrosteredPlayersInSession_string += unrosteredPlayersInSession.length + " Players";
         unrosteredPlayers.push(unrosteredPlayersInSession_string);
+        unrosteredPlayersCount.push(unrosteredPlayersInSession.length.toString() + " Players Unrostered");
     }
+    AddRowToTable("unrosteredPlayersTable", unrosteredPlayersCount);
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
 }
 function ImportRosterDataFromTextbox() {
