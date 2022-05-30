@@ -375,6 +375,7 @@ function UpdateUnrosteredPlayers(): void
         {
             unrosteredPlayersInSession_string += unrosteredPlayersInSession[i] + "<br>";
         }
+        unrosteredPlayersInSession_string += unrosteredPlayersInSession.length + " Players";
         unrosteredPlayers.push(unrosteredPlayersInSession_string);
     }
         
