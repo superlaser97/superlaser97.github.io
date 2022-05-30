@@ -364,6 +364,7 @@ function UpdateUnrosteredPlayers(): void
 
     unrosteredPlayersTable.innerHTML = "";
     let unrosteredPlayers: string[] = [];
+    let unrosteredPlayersInSessionNum: string[] = [];
 
     for(let sessionIndex = 0; sessionIndex < 10; sessionIndex++)
     {
@@ -375,11 +376,12 @@ function UpdateUnrosteredPlayers(): void
         {
             unrosteredPlayersInSession_string += unrosteredPlayersInSession[i] + "<br>";
         }
-        unrosteredPlayersInSession_string += unrosteredPlayersInSession.length + " Players";
         unrosteredPlayers.push(unrosteredPlayersInSession_string);
+        unrosteredPlayersInSessionNum.push(unrosteredPlayersInSession.length + " Players");
     }
         
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
+    AddRowToTable("unrosteredPlayersTable", unrosteredPlayersInSessionNum);
 }
 
 
