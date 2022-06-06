@@ -316,6 +316,7 @@ div#assignedSlotsTracker-div
 .ClanBase_ColumnLabel
 {
   background-color: rgb(51, 51, 51);
+  cursor: pointer;
 }
 
 .Timeslot_Label

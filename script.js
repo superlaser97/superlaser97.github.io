@@ -1363,6 +1363,31 @@ function ClearTableBody(tableID) {
     // Clear the table body
     table.tBodies[0].innerHTML = "";
 }
+function ClearWatch(sessionID) {
+    // Prompt if the user wants to clear the watch
+    if (!confirm("Are you sure you want to clear the watch?")) {
+        return;
+    }
+    // Split sessionId into team and session with '-' as a delimiter
+    let team = parseInt(sessionID.split("-")[0]);
+    let session = parseInt(sessionID.split("-")[1]);
+    // Get the players in session
+    let playersInSession = cbRoster.Players[team][session];
+    // For each player position
+    for (let i = 0; i < playersInSession.length; i++) {
+        // for each player in position
+        for (let j = 0; j < playersInSession[i].length; j++) {
+            // Set the player to not selected
+            playersInSession[i][j].Selected = false;
+            // If player ign is "None"
+            if (playersInSession[i][j].IGN == "None") {
+                // Set the player to selected
+                playersInSession[i][j].Selected = true;
+            }
+        }
+    }
+    UpdateRosteringTableUIElements();
+}
 // Function to push an array of elements to an array
 // Takes in array to be pushed to
 // Takes in an array of items to push
