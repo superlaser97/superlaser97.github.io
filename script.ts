@@ -242,7 +242,6 @@ function OnSelectElementChanged(selectElement: HTMLSelectElement)
     }
 
     UpdateRosteringTableUIElements();
-    ExportRosterDataToTextbox();
 }
 
 function OnSelectElementHovered(selectElement: HTMLSelectElement)
@@ -380,38 +379,6 @@ function UpdateUnrosteredPlayers(): void
 
 
 
-function ExportRosterDataToTextbox()
-{
-    let roster_textarea: HTMLTextAreaElement = document.getElementById("export-import-rosteringtable-textarea") as HTMLTextAreaElement;
-
-    let backupCBRoster: CBRosterBackup = { SelectedPlayers: [] };
-
-    // Iterate over cbRoster.Players and get the selected players
-    for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++)
-    {
-        backupCBRoster.SelectedPlayers[teamIndex] = [];
-
-        for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++)
-        {
-            backupCBRoster.SelectedPlayers[teamIndex][sessionIndex] = [];
-
-            for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++)
-            {
-                let playerInSlots: PlayerInSlot[] = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
-
-                // For each player in the slot, check if they are selected
-                for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++)
-                {
-                    if (playerInSlots[playerInSlotIndex].Selected)
-                    {
-                        backupCBRoster.SelectedPlayers[teamIndex][sessionIndex].push(playerInSlots[playerInSlotIndex].IGN);
-                    }
-                }
-            }
-        }
-    }
-    roster_textarea.value = JSON.stringify(backupCBRoster);
-}
 
 function UpdateRosteringTableUIElements()
 {
@@ -747,6 +714,36 @@ function UpdateTableWithRosterData()
 
 function GenerateRosterData() 
 {
+    let backupCBRoster: CBRosterBackup = { SelectedPlayers: [] };
+
+    if(cbRoster.Players.length > 0)
+    {
+        // Iterate over cbRoster.Players and get the selected players
+        for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++)
+        {
+            backupCBRoster.SelectedPlayers[teamIndex] = [];
+
+            for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++)
+            {
+                backupCBRoster.SelectedPlayers[teamIndex][sessionIndex] = [];
+
+                for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++)
+                {
+                    let playerInSlots: PlayerInSlot[] = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
+
+                    // For each player in the slot, check if they are selected
+                    for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++)
+                    {
+                        if (playerInSlots[playerInSlotIndex].Selected)
+                        {
+                            backupCBRoster.SelectedPlayers[teamIndex][sessionIndex].push(playerInSlots[playerInSlotIndex].IGN);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // Clear the roster data
     cbRoster.Players = [];
     cbRoster.PlayerSlotAssigments = [];
@@ -880,6 +877,44 @@ function GenerateRosterData()
             for(let memberCount = 0; memberCount < 7; memberCount++)
             {
                 cbRoster.Players[team][sessionSlot][memberCount] = JSON.parse(JSON.stringify(allPlayerCandidates[memberCount]));
+            }
+        }
+    }
+
+    if(backupCBRoster.SelectedPlayers.length > 0)
+    {
+        // Restore the roster data
+        // Iterate over cbRoster.Players
+        // Team
+        for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++)
+        {
+            // Session
+            for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++)
+            {
+                // Player Candidates
+                for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++)
+                {
+                    // All player candidates
+                    let playerInSlots: PlayerInSlot[] = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
+
+                    // Iterate over playerInSlots
+                    for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++)
+                    {
+                        playerInSlots[playerInSlotIndex].Selected = false;
+
+                        if (backupCBRoster.SelectedPlayers[teamIndex][sessionIndex][playerIndex] === playerInSlots[playerInSlotIndex].IGN)
+                        {
+                            playerInSlots[playerInSlotIndex].Selected = true;
+                        }
+                    }
+
+                    // Check if there are no players that are selected
+                    if (playerInSlots.filter(player => player.Selected).length === 0)
+                    {
+                        // Set the last player as selected
+                        playerInSlots[playerInSlots.length - 1].Selected = true;
+                    }
+                }
             }
         }
     }
@@ -1248,9 +1283,6 @@ function OpenCustomSelectMenu(selectElement: HTMLSelectElement): void
     // Get width and height of display
     let displayWidth = window.innerWidth;
     let displayHeight = window.innerHeight;
-
-    console.log("selectElement_topPos: " + selectElement_topPos);
-    console.log("selectElement_leftPos: " + selectElement_leftPos);
 
     if(displayWidth - selectElement_leftPos < 250)
     {
