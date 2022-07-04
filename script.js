@@ -59,24 +59,29 @@ let playersOnboardArray = [];
 // cbRosterData
 let cbRoster = { Players: [], PlayerSlotAssigments: [] };
 let showExtraPlayerInfoInRosteringTable = true;
+// Use JsonBlob to save everything to cloud
+let jsonBlobAPIKey = "";
 function OnPageLoad() {
-    TryLoadDataFromLastSession();
+    let jsonApiKeyTextArea = document.getElementById("key-textarea");
+    let key = localStorage.getItem("jsonBlobAPIKey");
+    if (key != null)
+        jsonApiKeyTextArea.value = key;
+}
+function OnKeyChange() {
+    let jsonApiKeyTextArea = document.getElementById("key-textarea");
+    localStorage.setItem("jsonBlobAPIKey", jsonApiKeyTextArea.value);
 }
 function OnBtnClick_LoadCBResponses() {
     // Get the input string from the textarea
     let textArea = document.getElementById("inputCBResponses-textarea");
     ParseInputCBResponseString(textArea.value);
     UpdateTableWithCBResponses();
-    // Save the data to local storage
-    localStorage.setItem("inputCBResponses", textArea.value);
 }
 function OnBtnClick_LoadPlayerDetails() {
     // Get the input string from the textarea
     let textArea = document.getElementById("inputPlayerDetails-textarea");
     ParseInputPlayerDetailsString(textArea.value);
     UpdateTableWithPlayerDetails();
-    // Save the data to local storage
-    localStorage.setItem("inputPlayerDetails", textArea.value);
 }
 function OnBtnClick_GeneratePlayersOnboard() {
     GeneratePlayersOnboardArray();
@@ -85,16 +90,6 @@ function OnBtnClick_GeneratePlayersOnboard() {
 function OnBtnClick_GenerateRosteringTable() {
     GenerateRosterData();
     UpdateRosteringTableUIElements();
-}
-function OnBtnClick_ImportRosterData() {
-    // Check if cbRoster is empty
-    if (cbRoster.Players.length == 0) {
-        alert("cbRoster is empty. Please generate roster data first.");
-        return;
-    }
-    ImportRosterDataFromTextbox();
-    UpdateRosteringTableUIElements();
-    ExportRosterDataToTextbox();
 }
 function OnBtnClick_ToggleExtraInfo() {
     showExtraPlayerInfoInRosteringTable = !showExtraPlayerInfoInRosteringTable;
@@ -187,12 +182,6 @@ function OnCellClicked(cell) {
         textboxElement.style.display = "block";
     }
 }
-function OnBtnClick_Reset() {
-    // Clear local storage
-    localStorage.clear();
-    // Refresh the page
-    location.reload();
-}
 function UpdateUnrosteredPlayers() {
     let unrosteredPlayersTable = document.getElementById("unrosteredPlayersTable");
     if (!unrosteredPlayersTable) {
@@ -215,43 +204,6 @@ function UpdateUnrosteredPlayers() {
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayersCount, "orangeColoredTableRow");
     AddRowToTable("unrosteredPlayersTable", unrosteredPlayers);
 }
-function ImportRosterDataFromTextbox() {
-    let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
-    let backupCBRoster = { SelectedPlayers: [] };
-    // Try to parse the string
-    try {
-        backupCBRoster = JSON.parse(roster_textarea.value);
-    }
-    catch (e) {
-        alert("Error parsing roster data. Please make sure the data is valid.");
-        return;
-    }
-    // Restore the roster data
-    // Iterate over cbRoster.Players
-    // Team
-    for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++) {
-        // Session
-        for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++) {
-            // Player Candidates
-            for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++) {
-                // All player candidates
-                let playerInSlots = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
-                // Iterate over playerInSlots
-                for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++) {
-                    playerInSlots[playerInSlotIndex].Selected = false;
-                    if (backupCBRoster.SelectedPlayers[teamIndex][sessionIndex][playerIndex] === playerInSlots[playerInSlotIndex].IGN) {
-                        playerInSlots[playerInSlotIndex].Selected = true;
-                    }
-                }
-                // Check if there are no players that are selected
-                if (playerInSlots.filter(player => player.Selected).length === 0) {
-                    // Set the last player as selected
-                    playerInSlots[playerInSlots.length - 1].Selected = true;
-                }
-            }
-        }
-    }
-}
 function ExportRosterDataToTextbox() {
     let roster_textarea = document.getElementById("export-import-rosteringtable-textarea");
     let backupCBRoster = { SelectedPlayers: [] };
@@ -272,7 +224,6 @@ function ExportRosterDataToTextbox() {
         }
     }
     roster_textarea.value = JSON.stringify(backupCBRoster);
-    localStorage.setItem("selectedPlayers", roster_textarea.value);
 }
 function UpdateRosteringTableUIElements() {
     UpdateTableWithRosterData();
@@ -1568,34 +1519,65 @@ function CSVToArray(strData, strDelimiter) {
     // Return the parsed data.
     return (arrData);
 }
-function TryLoadDataFromLastSession() {
-    // Get the data from the local storage
-    let inputCBResponses = localStorage.getItem("inputCBResponses");
-    if (inputCBResponses != null) {
-        inputCBResponses = inputCBResponses;
-        let inputCBResponses_textarea = document.getElementById("inputCBResponses-textarea");
-        inputCBResponses_textarea.textContent = inputCBResponses;
-        OnBtnClick_LoadCBResponses();
-    }
-    // Get the data from the local storage
-    let inputPlayerDetails = localStorage.getItem("inputPlayerDetails");
-    if (inputPlayerDetails != null) {
-        inputPlayerDetails = inputPlayerDetails;
-        let inputPlayerDetails_textArea = document.getElementById("inputPlayerDetails-textarea");
-        inputPlayerDetails_textArea.textContent = inputPlayerDetails;
-        OnBtnClick_LoadPlayerDetails();
-    }
-    if (inputCBResponses == null || inputPlayerDetails == null) {
+function TestSave() {
+    jsonBlobAPIKey = document.getElementById("key-textarea").value;
+    if (jsonBlobAPIKey == "") {
+        alert("Please enter your JSON Blob API key.");
         return;
     }
-    OnBtnClick_GeneratePlayersOnboard();
-    OnBtnClick_GenerateRosteringTable();
-    // Get the data from the local storage
-    let selectedPlayers = localStorage.getItem("selectedPlayers");
-    if (selectedPlayers != null) {
-        let exportImport_textArea = document.getElementById("export-import-rosteringtable-textarea");
-        exportImport_textArea.textContent = selectedPlayers;
-        OnBtnClick_ImportRosterData();
+    // Initialize sessionBackup object
+    let sessionBackup = {
+        bk_cbroster: cbRoster,
+        bk_inputCBResponseArray: inputCBResponseArray,
+        bk_inputPlayerDetailsArray: inputPlayerDetailsArray,
+        bk_playersOnboardArray: playersOnboardArray,
+        bk_loadCbResponsesText: document.getElementById("inputCBResponses-textarea").value,
+        bk_loadPlayerDetailsText: document.getElementById("inputPlayerDetails-textarea").value,
+    };
+    // Send a HTTP put request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("PUT", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(sessionBackup));
+}
+function TestLoad() {
+    jsonBlobAPIKey = document.getElementById("key-textarea").value;
+    if (jsonBlobAPIKey == "") {
+        alert("Please enter your JSON Blob API key.");
+        return;
     }
+    // Send a HTTP get request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+    // When the server responds
+    xhr.onload = function () {
+        // Get the data from the server
+        let sessionBackup = JSON.parse(xhr.responseText);
+        // Load the data from the server
+        cbRoster = sessionBackup.bk_cbroster;
+        inputCBResponseArray = sessionBackup.bk_inputCBResponseArray;
+        inputPlayerDetailsArray = sessionBackup.bk_inputPlayerDetailsArray;
+        playersOnboardArray = sessionBackup.bk_playersOnboardArray;
+        document.getElementById("inputCBResponses-textarea").value = sessionBackup.bk_loadCbResponsesText;
+        document.getElementById("inputPlayerDetails-textarea").value = sessionBackup.bk_loadPlayerDetailsText;
+        // Update the UI
+        OnBtnClick_GeneratePlayersOnboard();
+        UpdateRosteringTableUIElements();
+    };
+}
+function TestReset() {
+    jsonBlobAPIKey = document.getElementById("key-textarea").value;
+    if (jsonBlobAPIKey != "") {
+        // Send a HTTP delete request to the server
+        let xhr = new XMLHttpRequest();
+        xhr.open("DELETE", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send();
+    }
+    // Refresh the page
+    location.reload();
+    localStorage.clear();
 }
 //# sourceMappingURL=script.js.map

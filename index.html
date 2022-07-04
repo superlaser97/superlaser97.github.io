@@ -17,8 +17,11 @@
 
         <div id="tooltipContainer" style="display: none;"></div>
 
-        <div class="TitleBar">Clan Battles Rostering System v1.20</div>
-        <button id="ResetBtn" onclick="OnBtnClick_Reset()">Reset</button>
+        <div class="TitleBar">Clan Battles Rostering System v1.3</div>
+        <button id="ResetBtn" onclick="TestReset()">Reset</button>
+        <button id="LoadBtn" onclick="TestLoad()">Load</button>
+        <button id="SaveBtn" onclick="TestSave()">Save</button>
+        <input id="key-textarea" onchange="OnKeyChange()"></input>
 
         <!-- Textbox to paste responses data -->
         <div class="splitContainer">
@@ -239,13 +242,6 @@
         <h1>Unrostered Players</h1>
         <table id="unrosteredPlayersTable">
         </table>
-
-        <h1>Import Export Rostering Table</h1>
-        <div class="splitContainer">
-            <textarea id="export-import-rosteringtable-textarea"></textarea>
-            <!-- Button to load csv file -->
-            <button onclick="OnBtnClick_ImportRosterData()">Import Rostering Table</button>
-        </div>
 
         <!-- Container to display players and number of slots assigned -->
         <div class="bottomFloatingPanel">

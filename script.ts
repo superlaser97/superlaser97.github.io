@@ -1,5 +1,15 @@
 //# sourceMappingURL=E:\_Stuff\Projects\superlaser97.github.io\script.js.map
 
+interface SessionBackup
+{
+    bk_cbroster: CBRoster;
+    bk_inputCBResponseArray: CBResponse[];
+    bk_inputPlayerDetailsArray: PlayerDetail[];
+    bk_playersOnboardArray: PlayerOnboard[];
+    bk_loadCbResponsesText: string;
+    bk_loadPlayerDetailsText: string;
+}
+
 // Struct that stores a single CBResponse
 interface CBResponse 
 {
@@ -157,11 +167,22 @@ let cbRoster: CBRoster = { Players: [], PlayerSlotAssigments: [] };
 
 let showExtraPlayerInfoInRosteringTable = true;
 
+// Use JsonBlob to save everything to cloud
+let jsonBlobAPIKey:string = "";
 
-
-function OnPageLoad() 
+function OnPageLoad()
 {
-    TryLoadDataFromLastSession();
+    let jsonApiKeyTextArea:HTMLTextAreaElement = document.getElementById("key-textarea") as HTMLTextAreaElement;
+
+    let key:any = localStorage.getItem("jsonBlobAPIKey");
+    if(key != null)
+        jsonApiKeyTextArea.value = key as string;
+}
+
+function OnKeyChange()
+{
+    let jsonApiKeyTextArea:HTMLTextAreaElement = document.getElementById("key-textarea") as HTMLTextAreaElement;
+    localStorage.setItem("jsonBlobAPIKey", jsonApiKeyTextArea.value);
 }
 
 function OnBtnClick_LoadCBResponses() 
@@ -170,9 +191,6 @@ function OnBtnClick_LoadCBResponses()
     let textArea: HTMLTextAreaElement = document.getElementById("inputCBResponses-textarea") as HTMLTextAreaElement;
     ParseInputCBResponseString(textArea.value);
     UpdateTableWithCBResponses();
-
-    // Save the data to local storage
-    localStorage.setItem("inputCBResponses", textArea.value);
 }
 
 function OnBtnClick_LoadPlayerDetails() 
@@ -181,9 +199,6 @@ function OnBtnClick_LoadPlayerDetails()
     let textArea: HTMLTextAreaElement = document.getElementById("inputPlayerDetails-textarea") as HTMLTextAreaElement;
     ParseInputPlayerDetailsString(textArea.value);
     UpdateTableWithPlayerDetails();
-
-    // Save the data to local storage
-    localStorage.setItem("inputPlayerDetails", textArea.value);
 }
 
 function OnBtnClick_GeneratePlayersOnboard() 
@@ -196,19 +211,6 @@ function OnBtnClick_GenerateRosteringTable()
 {
     GenerateRosterData();
     UpdateRosteringTableUIElements()
-}
-
-function OnBtnClick_ImportRosterData() 
-{
-    // Check if cbRoster is empty
-    if (cbRoster.Players.length == 0)
-    {
-        alert("cbRoster is empty. Please generate roster data first.");
-        return;
-    }
-    ImportRosterDataFromTextbox();
-    UpdateRosteringTableUIElements();
-    ExportRosterDataToTextbox();
 }
 
 function OnBtnClick_ToggleExtraInfo()
@@ -343,15 +345,6 @@ function OnCellClicked(cell: HTMLTableCellElement)
     }
 }
 
-function OnBtnClick_Reset()
-{
-    // Clear local storage
-    localStorage.clear();
-
-    // Refresh the page
-    location.reload();
-}
-
 function UpdateUnrosteredPlayers(): void
 {
     let unrosteredPlayersTable = document.getElementById("unrosteredPlayersTable");
@@ -387,59 +380,6 @@ function UpdateUnrosteredPlayers(): void
 
 
 
-
-function ImportRosterDataFromTextbox()
-{
-    let roster_textarea: HTMLTextAreaElement = document.getElementById("export-import-rosteringtable-textarea") as HTMLTextAreaElement;
-
-    let backupCBRoster: CBRosterBackup = { SelectedPlayers: [] };
-    // Try to parse the string
-    try
-    {
-        backupCBRoster = JSON.parse(roster_textarea.value);
-    }
-    catch (e)
-    {
-        alert("Error parsing roster data. Please make sure the data is valid.");
-        return;
-    }
-
-    // Restore the roster data
-    // Iterate over cbRoster.Players
-    // Team
-    for (let teamIndex = 0; teamIndex < cbRoster.Players.length; teamIndex++)
-    {
-        // Session
-        for (let sessionIndex = 0; sessionIndex < cbRoster.Players[teamIndex].length; sessionIndex++)
-        {
-            // Player Candidates
-            for (let playerIndex = 0; playerIndex < cbRoster.Players[teamIndex][sessionIndex].length; playerIndex++)
-            {
-                // All player candidates
-                let playerInSlots: PlayerInSlot[] = cbRoster.Players[teamIndex][sessionIndex][playerIndex];
-
-                // Iterate over playerInSlots
-                for (let playerInSlotIndex = 0; playerInSlotIndex < playerInSlots.length; playerInSlotIndex++)
-                {
-                    playerInSlots[playerInSlotIndex].Selected = false;
-
-                    if (backupCBRoster.SelectedPlayers[teamIndex][sessionIndex][playerIndex] === playerInSlots[playerInSlotIndex].IGN)
-                    {
-                        playerInSlots[playerInSlotIndex].Selected = true;
-                    }
-                }
-
-                // Check if there are no players that are selected
-                if (playerInSlots.filter(player => player.Selected).length === 0)
-                {
-                    // Set the last player as selected
-                    playerInSlots[playerInSlots.length - 1].Selected = true;
-                }
-            }
-        }
-    }
-}
-
 function ExportRosterDataToTextbox()
 {
     let roster_textarea: HTMLTextAreaElement = document.getElementById("export-import-rosteringtable-textarea") as HTMLTextAreaElement;
@@ -471,7 +411,6 @@ function ExportRosterDataToTextbox()
         }
     }
     roster_textarea.value = JSON.stringify(backupCBRoster);
-    localStorage.setItem("selectedPlayers", roster_textarea.value);
 }
 
 function UpdateRosteringTableUIElements()
@@ -2187,50 +2126,82 @@ function CSVToArray(strData: string, strDelimiter: string): string[][]
     return (arrData);
 }
 
-function TryLoadDataFromLastSession()
+function TestSave()
 {
-    // Get the data from the local storage
-    let inputCBResponses = localStorage.getItem("inputCBResponses");
-
-    if(inputCBResponses != null)
+    jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
+    if(jsonBlobAPIKey == "")
     {
-        inputCBResponses = inputCBResponses as string;
-    
-        let inputCBResponses_textarea: HTMLTextAreaElement = document.getElementById("inputCBResponses-textarea") as HTMLTextAreaElement;
-        inputCBResponses_textarea.textContent = inputCBResponses;
-
-        OnBtnClick_LoadCBResponses();
-    }
-
-    // Get the data from the local storage
-    let inputPlayerDetails = localStorage.getItem("inputPlayerDetails");
-
-    if(inputPlayerDetails != null)
-    {
-        inputPlayerDetails = inputPlayerDetails as string;
-    
-        let inputPlayerDetails_textArea: HTMLTextAreaElement = document.getElementById("inputPlayerDetails-textarea") as HTMLTextAreaElement;
-        inputPlayerDetails_textArea.textContent = inputPlayerDetails;
-        
-        OnBtnClick_LoadPlayerDetails();
-    }
-
-    if(inputCBResponses == null || inputPlayerDetails == null)
-    {
+        alert("Please enter your JSON Blob API key.");
         return;
     }
 
-    OnBtnClick_GeneratePlayersOnboard();
-    OnBtnClick_GenerateRosteringTable();
-
-    // Get the data from the local storage
-    let selectedPlayers = localStorage.getItem("selectedPlayers");
-
-    if(selectedPlayers != null)
+    // Initialize sessionBackup object
+    let sessionBackup: SessionBackup = 
     {
-        let exportImport_textArea: HTMLTextAreaElement = document.getElementById("export-import-rosteringtable-textarea") as HTMLTextAreaElement;
-        exportImport_textArea.textContent = selectedPlayers;
-        
-        OnBtnClick_ImportRosterData();
+        bk_cbroster: cbRoster,
+        bk_inputCBResponseArray: inputCBResponseArray,
+        bk_inputPlayerDetailsArray: inputPlayerDetailsArray,
+        bk_playersOnboardArray: playersOnboardArray,
+        bk_loadCbResponsesText: (document.getElementById("inputCBResponses-textarea") as HTMLTextAreaElement).value,
+        bk_loadPlayerDetailsText: (document.getElementById("inputPlayerDetails-textarea") as HTMLTextAreaElement).value,
     }
+
+    // Send a HTTP put request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("PUT", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify(sessionBackup));
+}
+
+function TestLoad()
+{
+    jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
+    if(jsonBlobAPIKey == "")
+    {
+        alert("Please enter your JSON Blob API key.");
+        return;
+    }
+
+    // Send a HTTP get request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+
+    // When the server responds
+    xhr.onload = function()
+    {
+        // Get the data from the server
+        let sessionBackup: SessionBackup = JSON.parse(xhr.responseText);
+
+        // Load the data from the server
+        cbRoster = sessionBackup.bk_cbroster;
+        inputCBResponseArray = sessionBackup.bk_inputCBResponseArray;
+        inputPlayerDetailsArray = sessionBackup.bk_inputPlayerDetailsArray;
+        playersOnboardArray = sessionBackup.bk_playersOnboardArray;
+        (document.getElementById("inputCBResponses-textarea") as HTMLTextAreaElement).value = sessionBackup.bk_loadCbResponsesText;
+        (document.getElementById("inputPlayerDetails-textarea") as HTMLTextAreaElement).value = sessionBackup.bk_loadPlayerDetailsText;
+
+        // Update the UI
+        OnBtnClick_GeneratePlayersOnboard();
+        UpdateRosteringTableUIElements();
+    }
+}
+
+function TestReset()
+{
+    jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
+    if(jsonBlobAPIKey != "")
+    {
+        // Send a HTTP delete request to the server
+        let xhr = new XMLHttpRequest();
+        xhr.open("DELETE", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send();
+    }
+
+    // Refresh the page
+    location.reload();
+
+    localStorage.clear();
 }

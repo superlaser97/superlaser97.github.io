@@ -51,6 +51,28 @@ html
   width: 100px;
 }
 
+#LoadBtn
+{
+  position: absolute;
+  top: 10px;
+  right: 130px;
+  background-color: white;
+  color: var(--accent-color);
+  font-weight: bold;
+  width: 100px;
+}
+
+#SaveBtn
+{
+  position: absolute;
+  top: 10px;
+  right: 240px;
+  background-color: white;
+  color: var(--accent-color);
+  font-weight: bold;
+  width: 100px;
+}
+
 h1
 {
   padding-left: 10px;
@@ -90,6 +112,27 @@ textarea
 
   box-shadow: var(--def-shadow);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+input#key-textarea
+{
+  background-clip: padding-box; /* this has been added */
+  border-radius: var(--rounded-border-radius-normal);
+  border: transparent solid 0px;
+  overflow: hidden;
+  resize: none;
+  min-height: 75px;
+  margin: 5px 0;
+
+  position: absolute;
+  top: 10px;
+  right: 350px;
+  background-color: white;
+  font-weight: bold;
+  width: 200px;
+  height: 40px;
+  min-height: 20px;
+  text-align: center;
 }
 
 button
