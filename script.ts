@@ -66,6 +66,7 @@ enum PlayerRemarks
 }
 
 // Static array that contains all player positions
+// You can add or remove players from here
 const ALLPLAYERPOSITIONS: string[] =
 [
     "CALLER_1",

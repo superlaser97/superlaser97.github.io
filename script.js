@@ -23,6 +23,7 @@ var PlayerRemarks;
     PlayerRemarks["DID_NOT_SUBMIT"] = "DID NOT SUBMIT";
 })(PlayerRemarks || (PlayerRemarks = {}));
 // Static array that contains all player positions
+// You can add or remove players from here
 const ALLPLAYERPOSITIONS = [
     "CALLER_1",
     "CALLER_2",
