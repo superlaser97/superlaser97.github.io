@@ -65,8 +65,10 @@ let jsonBlobAPIKey = "";
 function OnPageLoad() {
     let jsonApiKeyTextArea = document.getElementById("key-textarea");
     let key = localStorage.getItem("jsonBlobAPIKey");
-    if (key != null)
+    if (key != null) {
+        RecrusiveTestLoad();
         jsonApiKeyTextArea.value = key;
+    }
 }
 function OnKeyChange() {
     let jsonApiKeyTextArea = document.getElementById("key-textarea");
@@ -111,6 +113,7 @@ function OnSelectElementChanged(selectElement) {
         }
     }
     UpdateRosteringTableUIElements();
+    TestSave();
 }
 function OnSelectElementHovered(selectElement) {
     // Get the selected value of the select element
@@ -556,7 +559,7 @@ function GenerateRosterData() {
         player5_candidates = PushArray(player5_candidates, availablePlayers.filter(x => x.PlayerType == PlayerTypes.CALLER || x.PlayerType == PlayerTypes.PLAYER));
         let allPlayerCandidates = [caller1_candidates, caller2_candidates, player1_candidates, player2_candidates, player3_candidates, player4_candidates, player5_candidates];
         for (let team = 0; team < ALLTEAMS.length; team++) {
-            for (let memberCount = 0; memberCount < 7; memberCount++) {
+            for (let memberCount = 0; memberCount < ALLPLAYERPOSITIONS.length; memberCount++) {
                 cbRoster.Players[team][sessionSlot][memberCount] = JSON.parse(JSON.stringify(allPlayerCandidates[memberCount]));
             }
         }
@@ -1563,10 +1566,14 @@ function TestSave() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(sessionBackup));
 }
+function RecrusiveTestLoad() {
+    TestLoad();
+    setTimeout(RecrusiveTestLoad, 1000);
+}
 function TestLoad() {
     jsonBlobAPIKey = document.getElementById("key-textarea").value;
     if (jsonBlobAPIKey == "") {
-        alert("Please enter your JSON Blob API key.");
+        //alert("Please enter your JSON Blob API key.");
         return;
     }
     // Send a HTTP get request to the server
