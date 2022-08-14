@@ -2221,7 +2221,7 @@ function RecrusiveCheckNewData()
         {
             (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "none";
         }
-        setTimeout(RecrusiveCheckNewData, 1000);
+        setTimeout(RecrusiveCheckNewData, 5000);
     }
 }
 
@@ -2276,5 +2276,5 @@ function TestReset()
     // Refresh the page
     location.reload();
 
-    localStorage.clear();
+    //localStorage.clear();
 }

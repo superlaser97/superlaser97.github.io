@@ -1589,7 +1589,7 @@ function RecrusiveCheckNewData() {
         else {
             document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "none";
         }
-        setTimeout(RecrusiveCheckNewData, 1000);
+        setTimeout(RecrusiveCheckNewData, 5000);
     };
 }
 function TestLoad() {
@@ -1631,6 +1631,6 @@ function TestReset() {
     }
     // Refresh the page
     location.reload();
-    localStorage.clear();
+    //localStorage.clear();
 }
 //# sourceMappingURL=script.js.map
