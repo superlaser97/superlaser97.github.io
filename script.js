@@ -214,6 +214,7 @@ function UpdateRosteringTableUIElements() {
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
     UpdateUnrosteredPlayers();
+    UpdateCallerAssignedCount();
 }
 function UpdateAllRosteringTableCellsWithPlayerData() {
     if (showExtraPlayerInfoInRosteringTable == false) {
@@ -1565,6 +1566,57 @@ function TestSave() {
     xhr.open("PUT", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(sessionBackup));
+}
+function UpdateCallerAssignedCount() {
+    // Zero Layer - team
+    // First layer - Session (Wed1, Wed2, Thu1, Thu2, Sat1, Sat2, SunM1, SunM2, SunN1, SunN2)
+    // Second layer - Position in Session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
+    // Third layer - Pool of players (AnotherLazyBoy, Bob778_, Cascayd etc.)
+    // Get all players assigned to caller1 and caller2
+    let callersAssigned = [];
+    let uniqueCallersAssigned = [];
+    for (let team = 0; team < cbRoster.Players.length; team++) {
+        for (let session = 0; session < cbRoster.Players[team].length; session++) {
+            let caller1Candidates = cbRoster.Players[team][session][0];
+            let selectedCaller1 = caller1Candidates.filter(player => player.Selected)[0];
+            callersAssigned.push(selectedCaller1);
+            let caller2Candidates = cbRoster.Players[team][session][1];
+            let selectedCaller2 = caller2Candidates.filter(player => player.Selected)[0];
+            callersAssigned.push(selectedCaller2);
+        }
+    }
+    // Dedup the callersAssigned array
+    for (let i = 0; i < callersAssigned.length; i++) {
+        let unique = true;
+        for (let j = 0; j < uniqueCallersAssigned.length; j++) {
+            if (callersAssigned[i].IGN == uniqueCallersAssigned[j].IGN) {
+                unique = false;
+                break;
+            }
+        }
+        if (unique) {
+            uniqueCallersAssigned.push(callersAssigned[i]);
+        }
+    }
+    // Get callerAssignedCount-div element
+    let callerAssignedCount = document.getElementById("callerAssignedCount-div");
+    if (callerAssignedCount == null)
+        return;
+    console.log(uniqueCallersAssigned);
+    // For each unique caller assigned
+    for (let i = 0; i < uniqueCallersAssigned.length; i++) {
+        if (uniqueCallersAssigned[i].IGN === "None")
+            continue;
+        // Count how many occurance of this caller is in the callersAssigned array
+        let count = 0;
+        for (let j = 0; j < callersAssigned.length; j++) {
+            if (callersAssigned[j].IGN == uniqueCallersAssigned[i].IGN) {
+                count++;
+            }
+        }
+        // Add the count to the callerAssignedCount-div element
+        callerAssignedCount.innerHTML += "[" + uniqueCallersAssigned[i].Clan + "] " + uniqueCallersAssigned[i].IGN + ": " + count + "<br>";
+    }
 }
 function RecrusiveCheckNewData() {
     jsonBlobAPIKey = document.getElementById("key-textarea").value;
