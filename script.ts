@@ -178,8 +178,8 @@ function OnPageLoad()
     let key:any = localStorage.getItem("jsonBlobAPIKey");
     if(key != null)
     {
-        RecrusiveTestLoad();
         jsonApiKeyTextArea.value = key as string;
+        RecrusiveCheckNewData();
     }
 }
 
@@ -2190,16 +2190,45 @@ function TestSave()
     xhr.send(JSON.stringify(sessionBackup));
 }
 
-function RecrusiveTestLoad()
+function RecrusiveCheckNewData()
 {
-    TestLoad();
-    setTimeout(RecrusiveTestLoad, 1000);
+    jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
+    if(jsonBlobAPIKey === "")
+    {
+        //alert("Please enter your JSON Blob API key.");
+        return;
+    }
+
+    // Send a HTTP get request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+
+    // When the server responds
+    xhr.onload = function()
+    {
+        // Get the data from the server
+        let cbRosterBackup: SessionBackup = JSON.parse(xhr.responseText).bk_cbroster;
+
+        // Check if session backup is different than cbRoster
+        if(JSON.stringify(cbRosterBackup) !== JSON.stringify(cbRoster))
+        {
+            // Unhide refresh button
+            (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "block";
+        }
+        else
+        {
+            (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "none";
+        }
+        setTimeout(RecrusiveCheckNewData, 1000);
+    }
 }
 
 function TestLoad()
 {
     jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
-    if(jsonBlobAPIKey == "")
+    if(jsonBlobAPIKey === "")
     {
         //alert("Please enter your JSON Blob API key.");
         return;
@@ -2228,6 +2257,7 @@ function TestLoad()
         // Update the UI
         OnBtnClick_GeneratePlayersOnboard();
         UpdateRosteringTableUIElements();
+        (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "none";
     }
 }
 

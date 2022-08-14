@@ -66,8 +66,8 @@ function OnPageLoad() {
     let jsonApiKeyTextArea = document.getElementById("key-textarea");
     let key = localStorage.getItem("jsonBlobAPIKey");
     if (key != null) {
-        RecrusiveTestLoad();
         jsonApiKeyTextArea.value = key;
+        RecrusiveCheckNewData();
     }
 }
 function OnKeyChange() {
@@ -1566,13 +1566,35 @@ function TestSave() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(sessionBackup));
 }
-function RecrusiveTestLoad() {
-    TestLoad();
-    setTimeout(RecrusiveTestLoad, 1000);
+function RecrusiveCheckNewData() {
+    jsonBlobAPIKey = document.getElementById("key-textarea").value;
+    if (jsonBlobAPIKey === "") {
+        //alert("Please enter your JSON Blob API key.");
+        return;
+    }
+    // Send a HTTP get request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+    // When the server responds
+    xhr.onload = function () {
+        // Get the data from the server
+        let cbRosterBackup = JSON.parse(xhr.responseText).bk_cbroster;
+        // Check if session backup is different than cbRoster
+        if (JSON.stringify(cbRosterBackup) !== JSON.stringify(cbRoster)) {
+            // Unhide refresh button
+            document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "block";
+        }
+        else {
+            document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "none";
+        }
+        setTimeout(RecrusiveCheckNewData, 1000);
+    };
 }
 function TestLoad() {
     jsonBlobAPIKey = document.getElementById("key-textarea").value;
-    if (jsonBlobAPIKey == "") {
+    if (jsonBlobAPIKey === "") {
         //alert("Please enter your JSON Blob API key.");
         return;
     }
@@ -1595,6 +1617,7 @@ function TestLoad() {
         // Update the UI
         OnBtnClick_GeneratePlayersOnboard();
         UpdateRosteringTableUIElements();
+        document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "none";
     };
 }
 function TestReset() {
