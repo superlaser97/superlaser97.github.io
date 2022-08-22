@@ -23,6 +23,7 @@ var PlayerRemarks;
     PlayerRemarks["DID_NOT_SUBMIT"] = "DID NOT SUBMIT";
 })(PlayerRemarks || (PlayerRemarks = {}));
 // Static array that contains all player positions
+// You can add or remove players from here
 const ALLPLAYERPOSITIONS = [
     "CALLER_1",
     "CALLER_2",
@@ -30,7 +31,7 @@ const ALLPLAYERPOSITIONS = [
     "PLAYER_2",
     "PLAYER_3",
     "PLAYER_4",
-    "PLAYER_5",
+    //"PLAYER_5",
 ];
 // Static array that contains all dates
 const ALLSESSIONSLOTS = [
@@ -64,8 +65,10 @@ let jsonBlobAPIKey = "";
 function OnPageLoad() {
     let jsonApiKeyTextArea = document.getElementById("key-textarea");
     let key = localStorage.getItem("jsonBlobAPIKey");
-    if (key != null)
+    if (key != null) {
         jsonApiKeyTextArea.value = key;
+        RecrusiveCheckNewData();
+    }
 }
 function OnKeyChange() {
     let jsonApiKeyTextArea = document.getElementById("key-textarea");
@@ -110,6 +113,7 @@ function OnSelectElementChanged(selectElement) {
         }
     }
     UpdateRosteringTableUIElements();
+    TestSave();
 }
 function OnSelectElementHovered(selectElement) {
     // Get the selected value of the select element
@@ -210,6 +214,7 @@ function UpdateRosteringTableUIElements() {
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
     UpdateUnrosteredPlayers();
+    UpdateCallerAssignedCount();
 }
 function UpdateAllRosteringTableCellsWithPlayerData() {
     if (showExtraPlayerInfoInRosteringTable == false) {
@@ -555,7 +560,7 @@ function GenerateRosterData() {
         player5_candidates = PushArray(player5_candidates, availablePlayers.filter(x => x.PlayerType == PlayerTypes.CALLER || x.PlayerType == PlayerTypes.PLAYER));
         let allPlayerCandidates = [caller1_candidates, caller2_candidates, player1_candidates, player2_candidates, player3_candidates, player4_candidates, player5_candidates];
         for (let team = 0; team < ALLTEAMS.length; team++) {
-            for (let memberCount = 0; memberCount < 7; memberCount++) {
+            for (let memberCount = 0; memberCount < ALLPLAYERPOSITIONS.length; memberCount++) {
                 cbRoster.Players[team][sessionSlot][memberCount] = JSON.parse(JSON.stringify(allPlayerCandidates[memberCount]));
             }
         }
@@ -1562,10 +1567,87 @@ function TestSave() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(sessionBackup));
 }
+function UpdateCallerAssignedCount() {
+    // Zero Layer - team
+    // First layer - Session (Wed1, Wed2, Thu1, Thu2, Sat1, Sat2, SunM1, SunM2, SunN1, SunN2)
+    // Second layer - Position in Session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
+    // Third layer - Pool of players (AnotherLazyBoy, Bob778_, Cascayd etc.)
+    // Get all players assigned to caller1 and caller2
+    let callersAssigned = [];
+    let uniqueCallersAssigned = [];
+    for (let team = 0; team < cbRoster.Players.length; team++) {
+        for (let session = 0; session < cbRoster.Players[team].length; session++) {
+            let caller1Candidates = cbRoster.Players[team][session][0];
+            let selectedCaller1 = caller1Candidates.filter(player => player.Selected)[0];
+            callersAssigned.push(selectedCaller1);
+            let caller2Candidates = cbRoster.Players[team][session][1];
+            let selectedCaller2 = caller2Candidates.filter(player => player.Selected)[0];
+            callersAssigned.push(selectedCaller2);
+        }
+    }
+    // Dedup the callersAssigned array
+    for (let i = 0; i < callersAssigned.length; i++) {
+        let unique = true;
+        for (let j = 0; j < uniqueCallersAssigned.length; j++) {
+            if (callersAssigned[i].IGN == uniqueCallersAssigned[j].IGN) {
+                unique = false;
+                break;
+            }
+        }
+        if (unique) {
+            uniqueCallersAssigned.push(callersAssigned[i]);
+        }
+    }
+    // Get callerAssignedCount-div element
+    let callerAssignedCount = document.getElementById("callerAssignedCount-div");
+    if (callerAssignedCount == null)
+        return;
+    console.log(uniqueCallersAssigned);
+    // For each unique caller assigned
+    for (let i = 0; i < uniqueCallersAssigned.length; i++) {
+        if (uniqueCallersAssigned[i].IGN === "None")
+            continue;
+        // Count how many occurance of this caller is in the callersAssigned array
+        let count = 0;
+        for (let j = 0; j < callersAssigned.length; j++) {
+            if (callersAssigned[j].IGN == uniqueCallersAssigned[i].IGN) {
+                count++;
+            }
+        }
+        // Add the count to the callerAssignedCount-div element
+        callerAssignedCount.innerHTML += "[" + uniqueCallersAssigned[i].Clan + "] " + uniqueCallersAssigned[i].IGN + ": " + count + "<br>";
+    }
+}
+function RecrusiveCheckNewData() {
+    jsonBlobAPIKey = document.getElementById("key-textarea").value;
+    if (jsonBlobAPIKey === "") {
+        //alert("Please enter your JSON Blob API key.");
+        return;
+    }
+    // Send a HTTP get request to the server
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+    // When the server responds
+    xhr.onload = function () {
+        // Get the data from the server
+        let cbRosterBackup = JSON.parse(xhr.responseText).bk_cbroster;
+        // Check if session backup is different than cbRoster
+        if (JSON.stringify(cbRosterBackup) !== JSON.stringify(cbRoster)) {
+            // Unhide refresh button
+            document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "block";
+        }
+        else {
+            document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "none";
+        }
+        setTimeout(RecrusiveCheckNewData, 5000);
+    };
+}
 function TestLoad() {
     jsonBlobAPIKey = document.getElementById("key-textarea").value;
-    if (jsonBlobAPIKey == "") {
-        alert("Please enter your JSON Blob API key.");
+    if (jsonBlobAPIKey === "") {
+        //alert("Please enter your JSON Blob API key.");
         return;
     }
     // Send a HTTP get request to the server
@@ -1587,6 +1669,7 @@ function TestLoad() {
         // Update the UI
         OnBtnClick_GeneratePlayersOnboard();
         UpdateRosteringTableUIElements();
+        document.getElementsByClassName("floatingRefreshBtn")[0].style.display = "none";
     };
 }
 function TestReset() {
@@ -1600,6 +1683,6 @@ function TestReset() {
     }
     // Refresh the page
     location.reload();
-    localStorage.clear();
+    //localStorage.clear();
 }
 //# sourceMappingURL=script.js.map
