@@ -300,42 +300,6 @@ div#assignedSlotsTracker-div
   box-shadow: var(--def-shadow);
 }
 
-.floatingRefreshBtn
-{
-  position: fixed;
-  bottom: 14px;
-  left: 240px;
-  background-clip: padding-box; /* this has been added */
-  border-radius: var(--rounded-border-radius-high);
-  box-shadow: var(--def-shadow);
-  border: transparent solid 0px;
-  background-color: white;
-  color: black;
-  width: 100px;
-  z-index: 1;
-  text-align: center;
-  padding: 10px 20px;
-  cursor: pointer;
-
-  animation: 1s ease-out 0s 1 blink;
-  animation-iteration-count: infinite;
-}
-
-@keyframes blink {
-  0% {
-    background-color: white;
-    scale: 0.95;
-  }
-  50% {
-    background-color: #FFB760;
-    scale: 1.05;
-  }
-  100% {
-    background-color: white;
-    scale: 0.95;
-  }
-}
-
 .bottomFloatingPanel h1
 {
   background-clip: padding-box; /* this has been added */

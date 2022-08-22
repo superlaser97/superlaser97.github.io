@@ -66,7 +66,6 @@ enum PlayerRemarks
 }
 
 // Static array that contains all player positions
-// You can add or remove players from here
 const ALLPLAYERPOSITIONS: string[] =
 [
     "CALLER_1",
@@ -177,10 +176,7 @@ function OnPageLoad()
 
     let key:any = localStorage.getItem("jsonBlobAPIKey");
     if(key != null)
-    {
         jsonApiKeyTextArea.value = key as string;
-        RecrusiveCheckNewData();
-    }
 }
 
 function OnKeyChange()
@@ -246,7 +242,6 @@ function OnSelectElementChanged(selectElement: HTMLSelectElement)
     }
 
     UpdateRosteringTableUIElements();
-    TestSave();
 }
 
 function OnSelectElementHovered(selectElement: HTMLSelectElement)
@@ -393,7 +388,6 @@ function UpdateRosteringTableUIElements()
     UpdateRosteringTableCellColors();
     UpdateAllRosteringTableCellsWithPlayerData();
     UpdateUnrosteredPlayers();
-    UpdateCallerAssignedCount();
 }
 
 function UpdateAllRosteringTableCellsWithPlayerData()
@@ -670,7 +664,7 @@ function UpdateTableWithRosterData()
             // Loop the number of sessions
             for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) 
             {
-                if(playerPosition >= 7)
+                if(playerPosition >= ALLPLAYERPOSITIONS.length)
                 {
                     continue;
                 }
@@ -2191,118 +2185,12 @@ function TestSave()
     xhr.send(JSON.stringify(sessionBackup));
 }
 
-function UpdateCallerAssignedCount()
-{
-    // Zero Layer - team
-    // First layer - Session (Wed1, Wed2, Thu1, Thu2, Sat1, Sat2, SunM1, SunM2, SunN1, SunN2)
-    // Second layer - Position in Session (Caller1, Caller2, Player1, Player2, Player3, Player4, Player5)
-    // Third layer - Pool of players (AnotherLazyBoy, Bob778_, Cascayd etc.)
-
-    // Get all players assigned to caller1 and caller2
-    let callersAssigned: PlayerInSlot[] = [];
-    let uniqueCallersAssigned: PlayerInSlot[] = [];
-    for(let team = 0; team < cbRoster.Players.length; team++)
-    {
-        for(let session = 0; session < cbRoster.Players[team].length; session++)
-        {
-            let caller1Candidates: PlayerInSlot[] = cbRoster.Players[team][session][0];
-            let selectedCaller1: PlayerInSlot = caller1Candidates.filter(player => player.Selected)[0];
-            callersAssigned.push(selectedCaller1);
-            
-            let caller2Candidates: PlayerInSlot[] = cbRoster.Players[team][session][1];
-            let selectedCaller2: PlayerInSlot = caller2Candidates.filter(player => player.Selected)[0];
-            callersAssigned.push(selectedCaller2);
-        }
-    }
-
-    // Dedup the callersAssigned array
-    for(let i = 0; i < callersAssigned.length; i++)
-    {
-        let unique = true;
-        for(let j = 0; j < uniqueCallersAssigned.length; j++)
-        {
-            if(callersAssigned[i].IGN == uniqueCallersAssigned[j].IGN)
-            {
-                unique = false;
-                break;
-            }
-        }
-        if(unique)
-        {
-            uniqueCallersAssigned.push(callersAssigned[i]);
-        }
-    }
-
-    // Get callerAssignedCount-div element
-    let callerAssignedCount = document.getElementById("callerAssignedCount-div");
-
-    if(callerAssignedCount == null)
-        return;
-
-        console.log(uniqueCallersAssigned);
-
-    // For each unique caller assigned
-    for(let i = 0; i < uniqueCallersAssigned.length; i++)
-    {
-        if(uniqueCallersAssigned[i].IGN === "None")
-            continue;
-            
-        // Count how many occurance of this caller is in the callersAssigned array
-        let count = 0;
-        for(let j = 0; j < callersAssigned.length; j++)
-        {
-            if(callersAssigned[j].IGN == uniqueCallersAssigned[i].IGN)
-            {
-                count++;
-            }
-        }
-
-        // Add the count to the callerAssignedCount-div element
-        callerAssignedCount.innerHTML += "[" + uniqueCallersAssigned[i].Clan + "] " + uniqueCallersAssigned[i].IGN + ": " + count + "<br>";
-    }
-}
-
-function RecrusiveCheckNewData()
-{
-    jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
-    if(jsonBlobAPIKey === "")
-    {
-        //alert("Please enter your JSON Blob API key.");
-        return;
-    }
-
-    // Send a HTTP get request to the server
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "https://api.jsonblob.com/api/jsonBlob/" + jsonBlobAPIKey, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send();
-
-    // When the server responds
-    xhr.onload = function()
-    {
-        // Get the data from the server
-        let cbRosterBackup: SessionBackup = JSON.parse(xhr.responseText).bk_cbroster;
-
-        // Check if session backup is different than cbRoster
-        if(JSON.stringify(cbRosterBackup) !== JSON.stringify(cbRoster))
-        {
-            // Unhide refresh button
-            (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "block";
-        }
-        else
-        {
-            (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "none";
-        }
-        setTimeout(RecrusiveCheckNewData, 5000);
-    }
-}
-
 function TestLoad()
 {
     jsonBlobAPIKey = (document.getElementById("key-textarea") as HTMLTextAreaElement).value;
-    if(jsonBlobAPIKey === "")
+    if(jsonBlobAPIKey == "")
     {
-        //alert("Please enter your JSON Blob API key.");
+        alert("Please enter your JSON Blob API key.");
         return;
     }
 
@@ -2329,7 +2217,6 @@ function TestLoad()
         // Update the UI
         OnBtnClick_GeneratePlayersOnboard();
         UpdateRosteringTableUIElements();
-        (document.getElementsByClassName("floatingRefreshBtn")[0] as HTMLElement).style.display = "none";
     }
 }
 
@@ -2348,5 +2235,5 @@ function TestReset()
     // Refresh the page
     location.reload();
 
-    //localStorage.clear();
+    localStorage.clear();
 }
