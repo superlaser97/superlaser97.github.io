@@ -135,6 +135,13 @@ input#key-textarea
   text-align: center;
 }
 
+.sticky
+{
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+
 button
 {
   width: 300px;
