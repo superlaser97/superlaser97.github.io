@@ -211,6 +211,14 @@ table th#casualTeam
   padding: 10px 0px;
 }
 
+.WatchTypeHeader
+{
+  height: 30px;
+  color:black;
+  background-color: transparent;
+  cursor: pointer;
+}
+
 table td input
 {
   background-color: transparent;

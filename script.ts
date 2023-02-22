@@ -65,6 +65,12 @@ enum PlayerRemarks
     DID_NOT_SUBMIT = "DID NOT SUBMIT",
 }
 
+interface SessionWatchType
+{
+    SessionID: string;
+    SessionTypeID: number;
+}
+
 // Static array that contains all player positions
 const ALLPLAYERPOSITIONS: string[] =
 [
@@ -124,6 +130,7 @@ interface CBRoster
     // Third layer - Pool of players (AnotherLazyBoy, Bob778_, Cascayd etc.)
     Players: PlayerInSlot[][][][];
     PlayerSlotAssigments: PlayerSlotAssigment[];
+    SessionWatchTypes: SessionWatchType[];
 }
 
 // Struct used to backup roster data
@@ -163,7 +170,7 @@ let inputPlayerDetailsArray: PlayerDetail[] = [];
 let playersOnboardArray: PlayerOnboard[] = [];
 
 // cbRosterData
-let cbRoster: CBRoster = { Players: [], PlayerSlotAssigments: [] };
+let cbRoster: CBRoster = { Players: [], PlayerSlotAssigments: [], SessionWatchTypes: []};
 
 let showExtraPlayerInfoInRosteringTable = true;
 
@@ -710,6 +717,32 @@ function UpdateTableWithRosterData()
             AddRowToTableAnyData_ForRosteringTable(rosteringTableIDs[team], elementsToAdd, classToAddToCell);
         }
     }
+
+    // Loop the sessiontypes list
+    for (let sessionType = 0; sessionType < cbRoster.SessionWatchTypes.length; sessionType++)
+    {
+        // Get session watch type html element
+        let sessionTypeHeader: HTMLElement = 
+            document.getElementById(cbRoster.SessionWatchTypes[sessionType].SessionID) as HTMLElement;
+
+        switch(cbRoster.SessionWatchTypes[sessionType].SessionTypeID)
+        {
+            case 1:
+                sessionTypeHeader.style.backgroundColor = "#C5E2B7";
+                sessionTypeHeader.innerHTML = "Practice";
+                break;
+            
+            case 2:
+                sessionTypeHeader.style.backgroundColor = "#BDD7EC";
+                sessionTypeHeader.innerHTML = "Pushing";
+                break;
+            
+            case 3:
+                sessionTypeHeader.style.backgroundColor = "#F8CAB0";
+                sessionTypeHeader.innerHTML = "Casual";
+                break;
+        }
+    }
 }
 
 function GenerateRosterData() 
@@ -917,6 +950,31 @@ function GenerateRosterData()
                 }
             }
         }
+    }
+
+    let sessionIDList: string[] = [];
+
+    // Loop the sessions
+    for (let team = 0; team < ALLTEAMS.length; team++)
+    {
+        // Loop the number of sessions
+        for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++)
+        {
+            let sessionIDString = "wt " + team.toString() + "-" + sessionSlot.toString();
+            sessionIDList.push(sessionIDString);
+        }
+    }
+    
+    // Loop the cbroster session
+    for(let a = 0; a < sessionIDList.length; a++)
+    {
+        let NewSessionWatchType: SessionWatchType = 
+        {
+            SessionID: sessionIDList[a],
+            SessionTypeID: 1
+        }
+
+        cbRoster.SessionWatchTypes.push(NewSessionWatchType)
     }
 }
 
@@ -1880,6 +1938,29 @@ function ClearTableBody(tableID: string): void {
 
     // Clear the table body
     table.tBodies[0].innerHTML = "";
+}
+
+function CycleWatchType(sessionID: string): void
+{
+    let sessionWatchType = cbRoster.SessionWatchTypes.find(x => x.SessionID == sessionID);
+    
+    if (!sessionWatchType) {
+        // Handle the case where a matching object was found
+        console.log("Invalid Session ID");
+    } 
+    else 
+    {
+        sessionWatchType = sessionWatchType as SessionWatchType;
+
+        console.log("Session ID: " + sessionWatchType.SessionID);
+        console.log("Curr Session Type ID: " + sessionWatchType.SessionTypeID);
+
+        sessionWatchType.SessionTypeID++;
+        if(sessionWatchType.SessionTypeID > 3)
+            sessionWatchType.SessionTypeID = 1;
+    }
+
+    UpdateRosteringTableUIElements();
 }
 
 function ClearWatch(sessionID: string): void

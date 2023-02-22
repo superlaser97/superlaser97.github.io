@@ -57,7 +57,7 @@ let inputCBResponseArray = [];
 let inputPlayerDetailsArray = [];
 let playersOnboardArray = [];
 // cbRosterData
-let cbRoster = { Players: [], PlayerSlotAssigments: [] };
+let cbRoster = { Players: [], PlayerSlotAssigments: [], SessionWatchTypes: [] };
 let showExtraPlayerInfoInRosteringTable = true;
 // Use JsonBlob to save everything to cloud
 let jsonBlobAPIKey = "";
@@ -435,6 +435,25 @@ function UpdateTableWithRosterData() {
             AddRowToTableAnyData_ForRosteringTable(rosteringTableIDs[team], elementsToAdd, classToAddToCell);
         }
     }
+    // Loop the sessiontypes list
+    for (let sessionType = 0; sessionType < cbRoster.SessionWatchTypes.length; sessionType++) {
+        // Get session watch type html element
+        let sessionTypeHeader = document.getElementById(cbRoster.SessionWatchTypes[sessionType].SessionID);
+        switch (cbRoster.SessionWatchTypes[sessionType].SessionTypeID) {
+            case 1:
+                sessionTypeHeader.style.backgroundColor = "#C5E2B7";
+                sessionTypeHeader.innerHTML = "Practice";
+                break;
+            case 2:
+                sessionTypeHeader.style.backgroundColor = "#BDD7EC";
+                sessionTypeHeader.innerHTML = "Pushing";
+                break;
+            case 3:
+                sessionTypeHeader.style.backgroundColor = "#F8CAB0";
+                sessionTypeHeader.innerHTML = "Casual";
+                break;
+        }
+    }
 }
 function GenerateRosterData() {
     let backupCBRoster = { SelectedPlayers: [] };
@@ -586,6 +605,23 @@ function GenerateRosterData() {
                 }
             }
         }
+    }
+    let sessionIDList = [];
+    // Loop the sessions
+    for (let team = 0; team < ALLTEAMS.length; team++) {
+        // Loop the number of sessions
+        for (let sessionSlot = 0; sessionSlot < ALLSESSIONSLOTS.length; sessionSlot++) {
+            let sessionIDString = "wt " + team.toString() + "-" + sessionSlot.toString();
+            sessionIDList.push(sessionIDString);
+        }
+    }
+    // Loop the cbroster session
+    for (let a = 0; a < sessionIDList.length; a++) {
+        let NewSessionWatchType = {
+            SessionID: sessionIDList[a],
+            SessionTypeID: 1
+        };
+        cbRoster.SessionWatchTypes.push(NewSessionWatchType);
     }
 }
 // Function to updat the table with the player details
@@ -1335,6 +1371,22 @@ function ClearTableBody(tableID) {
     }
     // Clear the table body
     table.tBodies[0].innerHTML = "";
+}
+function CycleWatchType(sessionID) {
+    let sessionWatchType = cbRoster.SessionWatchTypes.find(x => x.SessionID == sessionID);
+    if (!sessionWatchType) {
+        // Handle the case where a matching object was found
+        console.log("Invalid Session ID");
+    }
+    else {
+        sessionWatchType = sessionWatchType;
+        console.log("Session ID: " + sessionWatchType.SessionID);
+        console.log("Curr Session Type ID: " + sessionWatchType.SessionTypeID);
+        sessionWatchType.SessionTypeID++;
+        if (sessionWatchType.SessionTypeID > 3)
+            sessionWatchType.SessionTypeID = 1;
+    }
+    UpdateRosteringTableUIElements();
 }
 function ClearWatch(sessionID) {
     // Prompt if the user wants to clear the watch
