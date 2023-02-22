@@ -728,16 +728,21 @@ function UpdateTableWithRosterData()
         switch(cbRoster.SessionWatchTypes[sessionType].SessionTypeID)
         {
             case 1:
+                sessionTypeHeader.style.backgroundColor = "transparent";
+                sessionTypeHeader.innerHTML = "";
+                break;
+            
+            case 2:
                 sessionTypeHeader.style.backgroundColor = "#C5E2B7";
                 sessionTypeHeader.innerHTML = "Practice";
                 break;
             
-            case 2:
+            case 3:
                 sessionTypeHeader.style.backgroundColor = "#BDD7EC";
                 sessionTypeHeader.innerHTML = "Pushing";
                 break;
             
-            case 3:
+            case 4:
                 sessionTypeHeader.style.backgroundColor = "#F8CAB0";
                 sessionTypeHeader.innerHTML = "Casual";
                 break;
@@ -1956,7 +1961,7 @@ function CycleWatchType(sessionID: string): void
         console.log("Curr Session Type ID: " + sessionWatchType.SessionTypeID);
 
         sessionWatchType.SessionTypeID++;
-        if(sessionWatchType.SessionTypeID > 3)
+        if(sessionWatchType.SessionTypeID > 4)
             sessionWatchType.SessionTypeID = 1;
     }
 
