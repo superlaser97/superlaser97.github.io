@@ -217,6 +217,7 @@ table th#casualTeam
   color:black;
   background-color: transparent;
   cursor: pointer;
+  user-select: none;
 }
 
 table td input
