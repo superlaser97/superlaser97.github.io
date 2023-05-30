@@ -554,6 +554,24 @@ function UpdateSessionClanBaseHeader()
                 }
             }
 
+            // Check if there is a player assigned to the first player in the list
+            if(playersInPosition[0].IGN != "None")
+            {
+                clanBaseLabelHeader.innerText = playersInPosition[0].Clan;
+
+                // Remove class
+                clanBaseLabelHeader.classList.remove("noBase");
+            }
+            else
+            {
+                // Set clan base label header
+                clanBaseLabelHeader.innerText = "No Clan Base";
+
+                // Add class
+                clanBaseLabelHeader.classList.add("noBase");
+            }
+
+            /*
             // Get list of clans from players in position
             let clansInPosition: string[] = playersInPosition.map(player => player.Clan);
 
@@ -577,7 +595,7 @@ function UpdateSessionClanBaseHeader()
                 // Add class
                 clanBaseLabelHeader.classList.add("noBase");
             }
-
+            */
         }
     }
 }
